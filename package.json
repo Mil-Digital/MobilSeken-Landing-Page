@@ -1,0 +1,32 @@
+{
+  "name": "mobil-seken-lp",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit",
+    "screens": "node scripts/screens.mjs http://localhost:3000 screenshots/latest"
+  },
+  "dependencies": {
+    "embla-carousel-autoplay": "^8.6.0",
+    "embla-carousel-react": "^8.6.0",
+    "motion": "^14.14.0",
+    "next": "16.4.6",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.65.1",
+    "@tailwindcss/turbopack": "4.3.3",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "sharp": "^0.35.5",
+    "tailwindcss": "4.3.3",
+    "typescript": "^5"
+  },
+  "packageManager": "pnpm@12.21.0"
+}
