@@ -34,6 +34,7 @@ export function PressLink({
       ref={ref}
       className={`press ${styles[variant]} ${className}`}
       style={sweepStyle}
+      data-magnetic=""
       onPointerDown={(e) => {
         if (variant === "primary") runSweep(ref.current);
         onPointerDown?.(e);

@@ -2,8 +2,9 @@
 
 import useEmblaCarousel from "embla-carousel-react";
 import Link from "next/link";
-import { useEffect, useState, ViewTransition } from "react";
+import { useEffect, useRef, useState, ViewTransition } from "react";
 import { CarPhoto } from "@/components/car-photo";
+import { useTilt } from "@/components/fx/use-tilt";
 import { km, priceShort, transmissionShort } from "@/lib/format";
 import type { CardCar } from "@/lib/filters";
 
@@ -11,6 +12,8 @@ export function CarCard({ car, eager = false }: { car: CardCar; eager?: boolean 
   const photos = car.images.slice(0, 3);
   const [viewport, api] = useEmblaCarousel({ loop: false, dragFree: false, containScroll: "trimSnaps" });
   const [index, setIndex] = useState(0);
+  const tiltRef = useRef<HTMLAnchorElement>(null);
+  useTilt(tiltRef);
 
   useEffect(() => {
     if (!api) return;
@@ -24,8 +27,12 @@ export function CarCard({ car, eager = false }: { car: CardCar; eager?: boolean 
   const name = `${car.brand} ${car.model}`;
 
   return (
-    <article className="group">
-      <Link href={`${car.path}${index ? `?foto=${index + 1}` : ""}`} className="block" aria-label={`${name} ${car.year}, ${priceShort(car.price)}`}>
+    <article className="card-3d group">
+      <Link
+        ref={tiltRef}
+        href={`${car.path}${index ? `?foto=${index + 1}` : ""}`}
+        className="card-tilt block"
+        aria-label={`${name} ${car.year}, ${priceShort(car.price)}`}>
         <ViewTransition name={`car-${car.id}`} share="morph" default="none">
           <div className="reveal-card relative aspect-[4/3] overflow-hidden rounded-[14px] bg-cabin">
             <div ref={viewport} className="reveal-zoom absolute inset-0 overflow-hidden">
@@ -42,6 +49,9 @@ export function CarCard({ car, eager = false }: { car: CardCar; eager?: boolean 
                 ))}
               </div>
             </div>
+
+            {/* Kilau cat yang mengikuti kursor (desktop) */}
+            <span aria-hidden className="card-glare pointer-events-none absolute inset-0 z-[1]" />
 
             {car.status === "booking" && (
               <span className="absolute top-3 left-3 rounded-full bg-signal px-3 py-1 text-micro font-semibold text-night">

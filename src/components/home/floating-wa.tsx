@@ -16,17 +16,29 @@ export function FloatingWa() {
     const sentinel = document.querySelector("[data-header-sentinel]");
     const showroom = document.getElementById("showroom");
     const ios: IntersectionObserver[] = [];
+    // Posisi sentinel dibaca saat scroll (bukan IO) supaya tetap benar setelah lompatan scroll jauh.
+    let raf = 0;
+    const check = () => {
+      raf = 0;
+      if (sentinel) setPastHero(sentinel.getBoundingClientRect().top < 0);
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(check);
+    };
     if (sentinel) {
-      const io = new IntersectionObserver(([e]) => setPastHero(!e.isIntersecting && e.boundingClientRect.top < 0));
-      io.observe(sentinel);
-      ios.push(io);
+      check();
+      window.addEventListener("scroll", onScroll, { passive: true });
     }
     if (showroom) {
       const io = new IntersectionObserver(([e]) => setNearShowroom(e.isIntersecting), { rootMargin: "0px 0px -30% 0px" });
       io.observe(showroom);
       ios.push(io);
     }
-    return () => ios.forEach((io) => io.disconnect());
+    return () => {
+      ios.forEach((io) => io.disconnect());
+      cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", onScroll);
+    };
   }, []);
 
   const show = pastHero && !nearShowroom;

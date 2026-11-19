@@ -34,6 +34,7 @@ export default async function Home() {
         year: c.year,
         price: c.price,
         mileageKm: c.mileageKm,
+        transmission: c.transmission,
         status: c.status,
         image: c.images[pick.image],
         focus: pick.focus,

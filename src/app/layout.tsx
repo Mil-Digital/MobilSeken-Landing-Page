@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Anybody, Instrument_Sans } from "next/font/google";
+import { Ambient } from "@/components/fx/ambient";
 import { MotionProvider } from "@/components/motion-provider";
 import { SITE } from "@/lib/site";
 import "./globals.css";
@@ -52,6 +53,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       </head>
       <body>
         <MotionProvider>{children}</MotionProvider>
+        <Ambient />
       </body>
     </html>
   );

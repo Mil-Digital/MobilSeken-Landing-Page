@@ -2,12 +2,13 @@ import { Odometer } from "@/components/odometer";
 import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
 import { Gallery } from "@/components/detail/gallery";
+import { KmGauge } from "@/components/detail/gauge";
 import { ActionBar, Description, SimilarRow } from "@/components/detail/parts";
 import { IconWhatsApp } from "@/components/icons";
 import { PressLink } from "@/components/press";
 import { SiteFooter } from "@/components/showroom";
 import { allCarIds, carPath, carTitle, getCar, similarCars, type Car } from "@/lib/cars";
-import { km, kmCompact, priceFull, transmissionShort } from "@/lib/format";
+import { km, priceFull } from "@/lib/format";
 import type { CardCar } from "@/lib/filters";
 import { SITE, telLink, waLink } from "@/lib/site";
 
@@ -74,10 +75,9 @@ export default async function CarPage({ params }: PageProps<"/mobil/[slug]">) {
   const waText = `Halo, saya tertarik dengan ${car.brand} ${car.model} ${car.year} (${car.id}). ${url}`;
 
   const instruments = [
-    { label: "Tahun", value: String(car.year), roll: true },
-    { label: "Kilometer", value: kmCompact(car.mileageKm), full: km(car.mileageKm), roll: true },
-    { label: "Transmisi", value: transmissionShort(car.transmission), full: car.transmission },
-    { label: "Bahan bakar", value: car.fuel },
+    { label: "Tahun", value: String(car.year), roll: true, full: undefined },
+    { label: "Transmisi", value: car.transmission, full: car.transmission, roll: false },
+    { label: "Bahan bakar", value: car.fuel, full: undefined, roll: false },
   ];
 
   const specs = [
@@ -108,17 +108,25 @@ export default async function CarPage({ params }: PageProps<"/mobil/[slug]">) {
             </div>
           </header>
 
-          {/* Panel instrumen */}
-          <dl className="tnum mt-7 grid grid-cols-4 border-y border-hairline">
-            {instruments.map((it, i) => (
-              <div key={it.label} className={`py-4 ${i ? "border-l border-hairline pl-3" : "pr-3"}`}>
-                <dt className="text-micro text-steel">{it.label}</dt>
-                <dd className="mt-1 truncate text-lead font-medium text-platinum" title={it.full}>
-                  {it.roll ? <Odometer value={it.value} delay={500 + i * 120} /> : it.value}
-                </dd>
+          {/* Panel instrumen: speedometer jarak tempuh + bacaan digital di sampingnya */}
+          <div className="cluster tnum relative mt-7 grid grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] items-center gap-4 overflow-hidden rounded-[20px] border border-hairline bg-cabin/60 px-3 py-5 md:max-w-[640px] md:gap-8 md:px-8">
+            <span aria-hidden className="cluster-glow pointer-events-none absolute inset-0" />
+            <KmGauge km={car.mileageKm} label={km(car.mileageKm).replace(" km", "")} />
+            <dl className="relative">
+              <div className="sr-only">
+                <dt>Kilometer</dt>
+                <dd>{km(car.mileageKm)}</dd>
               </div>
-            ))}
-          </dl>
+              {instruments.map((it, i) => (
+                <div key={it.label} className={`py-2.5 ${i ? "border-t border-hairline" : ""}`}>
+                  <dt className="text-micro text-steel">{it.label}</dt>
+                  <dd className="mt-0.5 truncate text-lead font-medium text-platinum" title={it.full}>
+                    {it.roll ? <Odometer value={it.value} delay={500 + i * 120} /> : it.value}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          </div>
 
           <section className="mt-10" aria-labelledby="desc-title">
             <h2 id="desc-title" className="sr-only">

@@ -12,11 +12,25 @@ export function SiteHeader() {
   useEffect(() => {
     const sentinel = document.querySelector("[data-header-sentinel]");
     if (!sentinel) return;
-    const io = new IntersectionObserver(([e]) => setSolid(!e.isIntersecting), {
-      rootMargin: "-56px 0px 0px 0px",
-    });
-    io.observe(sentinel);
-    return () => io.disconnect();
+    // Solid hanya setelah hero lewat ke atas layar. Dihitung dari posisi sentinel saat scroll
+    // (bukan IntersectionObserver) supaya tetap benar setelah lompatan scroll jauh, dan
+    // hero setinggi layar di desktop tidak membuat header langsung solid.
+    let raf = 0;
+    const check = () => {
+      raf = 0;
+      setSolid(sentinel.getBoundingClientRect().top < 56);
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(check);
+    };
+    check();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll, { passive: true });
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
   }, []);
 
   return (

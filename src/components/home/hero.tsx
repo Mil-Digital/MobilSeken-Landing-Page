@@ -9,9 +9,11 @@ import { IconWhatsApp } from "@/components/icons";
 import { Odometer } from "@/components/odometer";
 import { PressLink, runSweep } from "@/components/press";
 import type { CarImage, CarStatus } from "@/lib/cars";
-import { kmCompact, priceShort } from "@/lib/format";
+import { clamp, finePointer, lerp, reducedMotion, settleLoop } from "@/lib/fx";
+import { kmCompact, priceShort, transmissionShort } from "@/lib/format";
 import { markHeroReady, onIntroReveal } from "@/lib/intro";
 import { SITE, waLink } from "@/lib/site";
+import { StageLight, StudioBackdrop } from "./studio-backdrop";
 
 export type LineupCar = {
   id: string;
@@ -21,6 +23,7 @@ export type LineupCar = {
   year: number;
   price: number;
   mileageKm: number;
+  transmission: string;
   status: CarStatus;
   image: CarImage;
   focus: string;
@@ -128,15 +131,66 @@ export function Hero({ cars, total }: { cars: LineupCar[]; total: number }) {
     };
   }, [embla]);
 
+  // Panggung 3D: miring mengikuti kursor (desktop) atau kemiringan HP (Android, tanpa izin).
+  // Nilai −1…1 ditulis ke --tx/--ty; CSS yang mengubahnya jadi rotasi, glare, dan geser lampu.
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || reducedMotion()) return;
+    let tx = 0;
+    let ty = 0;
+    let x = 0;
+    let y = 0;
+    const loop = settleLoop(() => {
+      x = lerp(x, tx, 0.08);
+      y = lerp(y, ty, 0.08);
+      el.style.setProperty("--tx", x.toFixed(4));
+      el.style.setProperty("--ty", y.toFixed(4));
+      return Math.abs(tx - x) + Math.abs(ty - y) > 0.002;
+    });
+    const move = (e: PointerEvent) => {
+      if (e.pointerType !== "mouse") return;
+      const r = el.getBoundingClientRect();
+      tx = clamp(((e.clientX - r.left) / r.width) * 2 - 1, -1, 1);
+      ty = clamp(((e.clientY - r.top) / r.height) * 2 - 1, -1, 1);
+      loop.kick();
+    };
+    const leave = () => {
+      tx = 0;
+      ty = 0;
+      loop.kick();
+    };
+    const tilt = (e: DeviceOrientationEvent) => {
+      if (e.gamma == null || e.beta == null) return;
+      tx = clamp(e.gamma / 25, -1, 1);
+      ty = clamp((e.beta - 45) / 30, -1, 1);
+      loop.kick();
+    };
+    const fine = finePointer();
+    // iOS meminta izin untuk sensor gerak; di in-app browser itu mengganggu, jadi dilewati.
+    const DOE = window.DeviceOrientationEvent as unknown as { requestPermission?: unknown } | undefined;
+    const gyro = !fine && DOE && typeof DOE.requestPermission !== "function";
+    if (fine) {
+      el.addEventListener("pointermove", move, { passive: true });
+      el.addEventListener("pointerleave", leave);
+    } else if (gyro) window.addEventListener("deviceorientation", tilt, { passive: true });
+    return () => {
+      loop.stop();
+      el.removeEventListener("pointermove", move);
+      el.removeEventListener("pointerleave", leave);
+      window.removeEventListener("deviceorientation", tilt);
+    };
+  }, []);
+
   const car = cars[selected] ?? cars[0];
 
   return (
     <section
       ref={ref}
       id="top"
-      className="hero-stage relative flex flex-col overflow-hidden bg-night pt-[calc(var(--header-h)+env(safe-area-inset-top))] md:min-h-[100svh]"
+      className="hero-stage relative isolate flex flex-col overflow-hidden bg-night pt-[calc(var(--header-h)+env(safe-area-inset-top))] md:min-h-[100svh]"
     >
-      <div className="hero-copy mx-auto w-full max-w-[1200px] px-5 pt-7 md:px-10 md:pt-16">
+      <StudioBackdrop />
+      <div className="hero-copy relative mx-auto w-full max-w-[1200px] px-5 pt-7 md:px-10 md:pt-16">
         <h1 className="hero-title font-display text-[clamp(26px,7.2vw,30px)] leading-[1.14] font-[520] text-platinum md:text-[56px]">
           <span className="hero-line">
             <span>Mobil seken pilihan</span>
@@ -154,9 +208,11 @@ export function Hero({ cars, total }: { cars: LineupCar[]; total: number }) {
       </div>
 
       {/* Panggung */}
-      <div className="hero-lineup relative mt-7 md:mt-12">
+      <div className="hero-lineup relative mt-6 md:mt-10">
+        <StageLight />
+        <div className="stage-tilt">
         <div ref={emblaRef} className="overflow-hidden" aria-roledescription="carousel" aria-label="Stok di showroom">
-          <ul className="flex touch-pan-y [perspective:1100px]">
+          <ul className="flex touch-pan-y pt-7 pb-16 [perspective:1100px]">
             {cars.map((c, i) => (
               <li
                 key={c.id}
@@ -167,11 +223,12 @@ export function Hero({ cars, total }: { cars: LineupCar[]; total: number }) {
                 aria-roledescription="slide"
                 aria-label={`${i + 1} dari ${cars.length}`}
               >
+                <div className="coverflow-card relative">
                 <Link
                   href={c.path}
                   draggable={false}
                   onFocus={() => embla?.scrollTo(i)}
-                  className="coverflow-card relative block aspect-[4/5] overflow-hidden rounded-[20px] bg-cabin"
+                  className="coverflow-face relative block aspect-[4/5] overflow-hidden rounded-[20px] bg-cabin"
                   aria-label={`${c.brand} ${c.model} ${c.year}, ${priceShort(c.price)}`}
                 >
                   <div className="coverflow-photo absolute inset-y-0 -inset-x-[14%]">
@@ -191,6 +248,7 @@ export function Hero({ cars, total }: { cars: LineupCar[]; total: number }) {
                     className="sweep sweep-strong pointer-events-none absolute inset-0"
                     style={{ "--sweep-dur": "1300ms" } as React.CSSProperties}
                   />
+                  <span className="coverflow-glare pointer-events-none absolute inset-0" />
                   <span className="coverflow-shade pointer-events-none absolute inset-0 bg-night" />
                   {c.status === "booking" && (
                     <span className="absolute top-3 left-3 rounded-full bg-signal px-3 py-1 text-micro font-semibold text-night">
@@ -198,16 +256,28 @@ export function Hero({ cars, total }: { cars: LineupCar[]; total: number }) {
                     </span>
                   )}
                 </Link>
+                {/* HUD kaca yang melayang di sekitar mobil yang sedang tersorot */}
+                <span aria-hidden className="hud hud-a tnum">
+                  <span className="hud-dot" />
+                  {c.year}
+                </span>
+                <span aria-hidden className="hud hud-b tnum">
+                  {kmCompact(c.mileageKm)} km
+                </span>
+                <span aria-hidden className="hud hud-c">
+                  {transmissionShort(c.transmission)}
+                </span>
+                </div>
               </li>
             ))}
           </ul>
         </div>
-        {/* Pantulan lantai studio: garis cahaya tipis di bawah panggung */}
-        <div aria-hidden className="stage-floor pointer-events-none mx-auto mt-4 h-px w-[76%] sm:w-[46%] md:w-[32%] lg:w-[26%]" />
+        </div>
+
       </div>
 
       {/* Info mobil yang sedang tersorot */}
-      <div className="hero-info mx-auto mt-4 w-full max-w-[1200px] px-5 md:px-10" aria-live="polite">
+      <div className="hero-info relative mx-auto -mt-6 w-full max-w-[1200px] px-5 md:px-10" aria-live="polite">
         <div className="flex items-end justify-between gap-4">
           <div key={car.id} className="roll-in min-w-0">
             <p className="text-micro text-steel">{car.brand}</p>
@@ -238,7 +308,7 @@ export function Hero({ cars, total }: { cars: LineupCar[]; total: number }) {
         </div>
       </div>
 
-      <div className="hero-cta mx-auto mt-6 flex w-full max-w-[1200px] gap-3 px-5 pb-[max(22px,env(safe-area-inset-bottom))] md:px-10 md:pb-14">
+      <div className="hero-cta relative mx-auto mt-6 flex w-full max-w-[1200px] gap-3 px-5 pb-[max(22px,env(safe-area-inset-bottom))] md:px-10 md:pb-14">
         <StockLink />
         <PressLink
           href={waLink("Halo MS Garage, saya ingin tanya stok mobil.")}
@@ -260,6 +330,7 @@ function StockLink() {
     <a
       ref={ref}
       href="#stok"
+      data-magnetic=""
       className="press sweep sweep-strong inline-flex min-h-[52px] flex-1 items-center justify-center rounded-full bg-xenon px-7 text-lead font-semibold text-xenon-ink md:flex-none"
       style={{ "--sweep-dur": "650ms" } as React.CSSProperties}
       onPointerDown={() => runSweep(ref.current)}
