@@ -4,6 +4,8 @@ const nextConfig: NextConfig = {
   cacheComponents: true,
   partialPrefetching: true,
   devIndicators: false,
+  // Uji langsung di HP lewat IP laptop di Wi-Fi yang sama (hanya berlaku saat `pnpm dev`).
+  allowedDevOrigins: ["192.168.*.*"],
   images: {
     formats: ["image/avif", "image/webp"],
     qualities: [75, 85],

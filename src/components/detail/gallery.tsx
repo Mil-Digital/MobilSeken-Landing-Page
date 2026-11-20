@@ -3,7 +3,8 @@
 import useEmblaCarousel from "embla-carousel-react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import { useEffect, useLayoutEffect, useState, ViewTransition } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, ViewTransition } from "react";
+import Image from "next/image";
 import { CarPhoto } from "@/components/car-photo";
 import { IconBack } from "@/components/icons";
 import type { CarImage } from "@/lib/cars";
@@ -23,10 +24,18 @@ export function Gallery({
   dim?: boolean;
 }) {
   const router = useRouter();
-  const [viewport, api] = useEmblaCarousel({ loop: false, containScroll: "trimSnaps", watchDrag: !dim });
+  // dragThreshold kecil: geser pendek sudah dianggap swipe (lebih responsif di HP).
+  const [viewport, api] = useEmblaCarousel({ loop: false, containScroll: "trimSnaps", watchDrag: !dim, dragThreshold: 4 });
+  const strip = useRef<HTMLDivElement>(null);
   const [index, setIndex] = useState(0);
   const [open, setOpen] = useState<number | null>(null);
   const [viewerLoaded, setViewerLoaded] = useState(false);
+
+  // Thumbnail aktif selalu terlihat di strip.
+  useEffect(() => {
+    const el = strip.current?.children[index] as HTMLElement | undefined;
+    el?.scrollIntoView({ block: "nearest", inline: "center", behavior: "smooth" });
+  }, [index]);
 
   useEffect(() => {
     if (!api) return;
@@ -109,13 +118,65 @@ export function Gallery({
         )}
       </div>
 
+      {/* Panah: selalu bisa dipakai meski gestur geser tidak terbaca */}
       {!dim && shown.length > 1 && (
-        <div className="absolute inset-x-0 bottom-0 mx-auto flex h-[3px] max-w-[1120px] gap-[3px] px-0 md:bottom-0 md:px-10" aria-hidden>
+        <div className="pointer-events-none absolute inset-x-0 top-0 mx-auto aspect-[4/3] max-w-[1200px] md:mt-6 md:px-10">
+          <div className="relative h-full">
+            {index > 0 && (
+              <button
+                type="button"
+                onClick={() => api?.scrollPrev()}
+                aria-label="Foto sebelumnya"
+                className="press pointer-events-auto absolute top-1/2 left-2 grid size-10 -translate-y-1/2 place-items-center rounded-full bg-night/55 text-platinum md:left-4 md:size-12"
+              >
+                <IconBack width={20} height={20} />
+              </button>
+            )}
+            {index < shown.length - 1 && (
+              <button
+                type="button"
+                onClick={() => api?.scrollNext()}
+                aria-label="Foto berikutnya"
+                className="press pointer-events-auto absolute top-1/2 right-2 grid size-10 -translate-y-1/2 place-items-center rounded-full bg-night/55 text-platinum md:right-4 md:size-12"
+              >
+                <IconBack width={20} height={20} className="rotate-180" />
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+
+      {!dim && shown.length > 1 && (
+        <div className="absolute inset-x-0 top-0 mx-auto mt-[calc(75vw-3px)] flex h-[3px] max-w-[1120px] gap-[3px] px-0 md:hidden" aria-hidden>
           {shown.map((img, i) => (
             <span
               key={img.src}
               className={`h-full flex-1 transition-colors duration-300 ${i === index ? "bg-platinum" : "bg-platinum/20"}`}
             />
+          ))}
+        </div>
+      )}
+
+      {/* Strip thumbnail: ketuk untuk lompat ke foto mana pun */}
+      {!dim && shown.length > 1 && (
+        <div
+          ref={strip}
+          className="no-scrollbar mx-auto flex max-w-[1200px] gap-2 overflow-x-auto px-5 pt-3 md:px-10"
+          role="tablist"
+          aria-label="Pilih foto"
+        >
+          {shown.map((img, i) => (
+            <button
+              key={img.src}
+              type="button"
+              role="tab"
+              aria-selected={i === index}
+              aria-label={`Foto ${i + 1}`}
+              onClick={() => api?.scrollTo(i)}
+              className={`thumb relative h-12 w-16 shrink-0 overflow-hidden rounded-[8px] bg-cabin ${i === index ? "is-active" : ""}`}
+            >
+              <Image src={img.src} alt="" fill sizes="64px" className="object-cover" />
+            </button>
           ))}
         </div>
       )}

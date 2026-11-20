@@ -58,9 +58,9 @@ export function ActionBar({ waHref, telHref }: { waHref: string; telHref: string
 
 export function SimilarRow({ cars }: { cars: CardCar[] }) {
   return (
-    <div className="no-scrollbar -mx-5 flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-px-5 px-5 pb-2 md:mx-0 md:grid md:grid-cols-4 md:px-0">
+    <div className="flow-reveal no-scrollbar -mx-5 flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-px-5 px-5 pb-2 md:mx-0 md:grid md:grid-cols-4 md:px-0">
       {cars.map((c) => (
-        <Link key={c.id} href={c.path} className="press block w-[72%] max-w-[300px] shrink-0 snap-start md:w-auto">
+        <Link key={c.id} href={c.path} className="flow-x press block w-[72%] max-w-[300px] shrink-0 snap-start md:w-auto">
           <div className="relative aspect-[4/3] overflow-hidden rounded-[12px]">
             <CarPhoto image={c.images[0]} alt={`${c.brand} ${c.model}`} sizes="(min-width: 768px) 280px, 72vw" />
             {c.status === "booking" && (

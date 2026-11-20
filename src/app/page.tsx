@@ -3,6 +3,7 @@ import { BrandMarquee } from "@/components/home/brand-marquee";
 import { FloatingWa } from "@/components/home/floating-wa";
 import { Hero, type LineupCar } from "@/components/home/hero";
 import { Intro } from "@/components/home/intro";
+import { PageFlow } from "@/components/page-flow";
 import { SiteHeader } from "@/components/home/site-header";
 import { Showroom, SiteFooter } from "@/components/showroom";
 import { carPath, listCars, type Car } from "@/lib/cars";
@@ -31,6 +32,7 @@ export default async function Home() {
         path: carPath(c),
         brand: c.brand,
         model: c.model,
+        variant: c.variant,
         year: c.year,
         price: c.price,
         mileageKm: c.mileageKm,
@@ -64,12 +66,14 @@ export default async function Home() {
     <>
       <Intro />
       <SiteHeader />
+      <PageFlow>
       <main>
         <Hero cars={lineup} total={cars.length} />
         <BrandMarquee brands={brands} />
         <CarBrowser cars={cards} />
         <Showroom />
       </main>
+      </PageFlow>
       <SiteFooter />
       <FloatingWa />
     </>

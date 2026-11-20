@@ -1,4 +1,5 @@
 import { Odometer } from "@/components/odometer";
+import { PageFlow } from "@/components/page-flow";
 import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
 import { Gallery } from "@/components/detail/gallery";
@@ -90,13 +91,14 @@ export default async function CarPage({ params }: PageProps<"/mobil/[slug]">) {
 
   return (
     <>
+      <PageFlow>
       <main className="pb-[calc(92px+env(safe-area-inset-bottom))]">
         <Gallery id={car.id} images={car.images} alt={title} />
 
         <div className="mx-auto max-w-[1200px] px-5 md:px-10">
           <header className="pt-7">
             <p className="text-lead text-steel">{car.brand}</p>
-            <h1 className="wide mt-1 text-display text-platinum md:text-hero">{car.model}</h1>
+            <h1 className="hero-rise wide mt-1 text-display text-platinum md:text-hero">{car.model}</h1>
             <p className="mt-2 text-body text-steel">{car.variant}</p>
             <div className="mt-5 flex items-center gap-3">
               <p className="tnum text-title font-semibold text-platinum">
@@ -109,7 +111,7 @@ export default async function CarPage({ params }: PageProps<"/mobil/[slug]">) {
           </header>
 
           {/* Panel instrumen: speedometer jarak tempuh + bacaan digital di sampingnya */}
-          <div className="cluster tnum relative mt-7 grid grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] items-center gap-4 overflow-hidden rounded-[20px] border border-hairline bg-cabin/60 px-3 py-5 md:max-w-[640px] md:gap-8 md:px-8">
+          <div className="flow-reveal cluster tnum relative mt-7 grid grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] items-center gap-4 overflow-hidden rounded-[20px] border border-hairline bg-cabin/60 px-3 py-5 md:max-w-[640px] md:gap-8 md:px-8">
             <span aria-hidden className="cluster-glow pointer-events-none absolute inset-0" />
             <KmGauge km={car.mileageKm} label={km(car.mileageKm).replace(" km", "")} />
             <dl className="relative">
@@ -128,7 +130,7 @@ export default async function CarPage({ params }: PageProps<"/mobil/[slug]">) {
             </dl>
           </div>
 
-          <section className="mt-10" aria-labelledby="desc-title">
+          <section className="flow-reveal mt-10" aria-labelledby="desc-title">
             <h2 id="desc-title" className="sr-only">
               Deskripsi
             </h2>
@@ -136,12 +138,12 @@ export default async function CarPage({ params }: PageProps<"/mobil/[slug]">) {
           </section>
 
           <section className="mt-12" aria-labelledby="spec-title">
-            <h2 id="spec-title" className="wide-section text-title text-platinum">
+            <h2 id="spec-title" className="flow-mask wide-section text-title text-platinum">
               Spesifikasi
             </h2>
             <dl className="tnum mt-4 border-t border-hairline">
               {specs.map((s) => (
-                <div key={s.label} className="flex justify-between gap-6 border-b border-hairline py-3.5 text-body">
+                <div key={s.label} className="flow-row flex justify-between gap-6 border-b border-hairline py-3.5 text-body">
                   <dt className="shrink-0 text-steel">{s.label}</dt>
                   <dd className="text-right text-platinum">{s.value}</dd>
                 </div>
@@ -151,7 +153,7 @@ export default async function CarPage({ params }: PageProps<"/mobil/[slug]">) {
 
           {similar.length > 0 && (
             <section className="mt-14 mb-14" aria-labelledby="similar-title">
-              <h2 id="similar-title" className="wide-section mb-5 text-title text-platinum">
+              <h2 id="similar-title" className="flow-mask wide-section mb-5 text-title text-platinum">
                 Mobil serupa
               </h2>
               <SimilarRow cars={similar} />
@@ -160,6 +162,7 @@ export default async function CarPage({ params }: PageProps<"/mobil/[slug]">) {
         </div>
         <SiteFooter />
       </main>
+      </PageFlow>
 
       <ActionBar waHref={waLink(waText)} telHref={telLink()} />
     </>
@@ -169,6 +172,7 @@ export default async function CarPage({ params }: PageProps<"/mobil/[slug]">) {
 function SoldView({ car, similar }: { car: Car; similar: CardCar[] }) {
   const name = `${car.brand} ${car.model} ${car.year}`;
   return (
+    <PageFlow>
     <main>
       <div className="relative">
         <Gallery id={car.id} images={car.images} alt={name} dim />
@@ -198,7 +202,7 @@ function SoldView({ car, similar }: { car: Car; similar: CardCar[] }) {
 
         {similar.length > 0 && (
           <section className="mt-14 mb-16" aria-labelledby="similar-title">
-            <h2 id="similar-title" className="wide-section mb-5 text-title text-platinum">
+            <h2 id="similar-title" className="flow-mask wide-section mb-5 text-title text-platinum">
               Masih tersedia
             </h2>
             <SimilarRow cars={similar} />
@@ -207,5 +211,6 @@ function SoldView({ car, similar }: { car: Car; similar: CardCar[] }) {
       </div>
       <SiteFooter />
     </main>
+    </PageFlow>
   );
 }

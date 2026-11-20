@@ -1,8 +1,10 @@
+import { PageFlow } from "@/components/page-flow";
 import Link from "next/link";
 import { Emblem } from "@/components/emblem";
 
 export default function NotFound() {
   return (
+    <PageFlow>
     <main className="grid min-h-[100svh] place-items-center px-6 text-center">
       <div>
         <Emblem className="mx-auto w-20 text-platinum/70" />
@@ -18,5 +20,6 @@ export default function NotFound() {
         </Link>
       </div>
     </main>
+    </PageFlow>
   );
 }

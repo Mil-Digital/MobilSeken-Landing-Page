@@ -8,17 +8,17 @@ import map from "../../public/img/peta-showroom.webp";
 
 export function Showroom() {
   return (
-    <section id="showroom" aria-labelledby="showroom-title" className="scroll-mt-[var(--header-h)] border-t border-hairline">
+    <section id="showroom" aria-labelledby="showroom-title" className="flow-divider scroll-mt-[var(--header-h)] border-t border-hairline">
       <div className="mx-auto grid max-w-[1200px] gap-10 px-5 py-16 md:grid-cols-2 md:items-center md:px-10 md:py-24">
         <div>
-          <h2 id="showroom-title" className="wide-section text-title text-platinum md:text-display">
+          <h2 id="showroom-title" className="flow-mask wide-section text-title text-platinum md:text-display">
             Lihat langsung di showroom
           </h2>
-          <p className="mt-4 max-w-[40ch] text-body text-steel">
+          <p className="flow-reveal mt-4 max-w-[40ch] text-body text-steel">
             Foto tidak pernah cukup. Datang, buka pintunya, dengarkan mesinnya. Kabari kami dulu supaya unitnya sudah siap.
           </p>
 
-          <address className="mt-8 not-italic">
+          <address className="flow-reveal mt-8 not-italic">
             <p className="text-lead text-platinum">{SITE.address.street}</p>
             <p className="text-body text-steel">
               {SITE.address.area}, {SITE.address.city}
@@ -27,14 +27,14 @@ export function Showroom() {
 
           <dl className="tnum mt-6 border-t border-hairline">
             {SITE.hours.map((h) => (
-              <div key={h.days} className="flex justify-between border-b border-hairline py-3 text-body">
+              <div key={h.days} className="flow-row flex justify-between border-b border-hairline py-3 text-body">
                 <dt className="text-steel">{h.days}</dt>
                 <dd className="text-platinum">{h.time}</dd>
               </div>
             ))}
           </dl>
 
-          <div className="mt-8 flex gap-3">
+          <div className="flow-reveal mt-8 flex gap-3">
             <PressLink href={waLink("Halo MS Garage, saya ingin datang ke showroom.")} className="flex-1 md:flex-none">
               <IconWhatsApp width={20} height={20} />
               Tanya via WhatsApp
@@ -83,8 +83,8 @@ export function Showroom() {
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-hairline">
-      <div className="mx-auto flex max-w-[1200px] flex-col gap-6 px-5 pt-10 pb-[max(40px,env(safe-area-inset-bottom))] md:flex-row md:items-center md:justify-between md:px-10">
+    <footer className="flow-divider border-t border-hairline">
+      <div className="flow-reveal mx-auto flex max-w-[1200px] flex-col gap-6 px-5 pt-10 pb-[max(40px,env(safe-area-inset-bottom))] md:flex-row md:items-center md:justify-between md:px-10">
         <div className="flex items-center gap-4">
           <Emblem className="w-12 text-platinum/80" />
           <p className="text-micro text-steel">

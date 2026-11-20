@@ -5,7 +5,7 @@ import { Emblem } from "@/components/emblem";
 import { IconWhatsApp } from "@/components/icons";
 import { waLink } from "@/lib/site";
 
-/** Header: transparan di atas hero, solid dengan blur halus setelah hero lewat. */
+/** Header: transparan di puncak halaman, solid dengan blur halus begitu halaman discroll. */
 export function SiteHeader() {
   const [solid, setSolid] = useState(false);
 
@@ -18,7 +18,7 @@ export function SiteHeader() {
     let raf = 0;
     const check = () => {
       raf = 0;
-      setSolid(sentinel.getBoundingClientRect().top < 56);
+      setSolid(window.scrollY > 8 || sentinel.getBoundingClientRect().top < 56);
     };
     const onScroll = () => {
       if (!raf) raf = requestAnimationFrame(check);

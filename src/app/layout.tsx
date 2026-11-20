@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Anybody, Instrument_Sans } from "next/font/google";
 import { Ambient } from "@/components/fx/ambient";
+import { RouteRunner } from "@/components/route-runner";
 import { MotionProvider } from "@/components/motion-provider";
 import { SITE } from "@/lib/site";
 import "./globals.css";
@@ -38,6 +39,8 @@ export const viewport: Viewport = {
 };
 
 // Loader penuh hanya pada kunjungan pertama per sesi. Dijalankan sebelum paint agar tidak berkedip.
+const vtAbortScript = `(function(){function q(r){return r&&r.name==='InvalidStateError'&&/Transition was aborted|skipped/i.test(r.message||'')}addEventListener('unhandledrejection',function(e){if(q(e.reason))e.preventDefault()});addEventListener('error',function(e){if(q(e.error))e.preventDefault()})})()`;
+
 const introScript = `try{var s=sessionStorage,d=document.documentElement;if(s.getItem('ms-intro'))d.dataset.intro='skip';else s.setItem('ms-intro','1')}catch(e){document.documentElement.dataset.intro='skip'}`;
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -45,6 +48,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html lang="id" className={`${anybody.variable} ${instrument.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: introScript }} />
+        {/* Browser membatalkan view transition bila viewport berubah di tengah jalan (mis. address bar HP
+            mengecil). Itu bukan error aplikasi; halaman tetap tampil normal, jadi jangan dilempar ke konsol. */}
+        <script dangerouslySetInnerHTML={{ __html: vtAbortScript }} />
         {/* Tanpa JS loader tidak pernah membuka hero: tampilkan langsung. */}
         <noscript>
           <style>{`.hero-meta,.hero-info,.hero-cta,.hero-lineup,.hero-line>span,.intro-follow{opacity:1!important;transform:none!important}`}</style>
@@ -54,6 +60,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body>
         <MotionProvider>{children}</MotionProvider>
         <Ambient />
+        <RouteRunner />
       </body>
     </html>
   );

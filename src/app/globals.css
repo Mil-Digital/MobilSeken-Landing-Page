@@ -253,7 +253,68 @@ html:not([data-intro="skip"]):not([data-intro="done"]) [data-brand-mark] {
   }
 }
 
-/* ───────────── View transitions (kartu → detail) ───────────── */
+/* ───────────── View transitions (kartu → detail + aliran antar halaman) ───────────── */
+/* Lapisan transisi tidak boleh menelan sentuhan/klik (mis. swipe galeri tepat setelah pindah halaman). */
+::view-transition {
+  pointer-events: none;
+}
+/* Halaman lama mundur & memudar cepat; halaman baru mengalir naik sedikit lebih lambat. */
+::view-transition-old(.flow-out) {
+  animation: flow-out 240ms cubic-bezier(0.4, 0, 1, 1) both;
+}
+::view-transition-new(.flow-in) {
+  animation: flow-in 520ms cubic-bezier(0.2, 0.8, 0.2, 1) 90ms both;
+}
+@keyframes flow-out {
+  to {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+}
+@keyframes flow-in {
+  from {
+    opacity: 0;
+    transform: translateY(36px);
+  }
+}
+/* Garis cahaya yang berlari di puncak layar saat pindah halaman */
+.route-runner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 70;
+  width: 45%;
+  height: 2px;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgb(168 216 255 / 0.9) 40%, #fff 55%, transparent);
+  box-shadow: 0 0 12px 1px rgb(168 216 255 / 0.55);
+  animation: route-run 900ms cubic-bezier(0.3, 0.7, 0.2, 1) both;
+  will-change: transform, opacity;
+}
+@keyframes route-run {
+  from {
+    transform: translateX(-100%);
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  to {
+    transform: translateX(240%);
+    opacity: 0;
+  }
+}
+/* Nama mobil di detail melebar saat halaman dibuka */
+.hero-rise {
+  animation: widen-in 1200ms var(--ease-out) both;
+}
+@keyframes widen-in {
+  from {
+    font-variation-settings: "wdth" 96;
+    opacity: 0.2;
+  }
+}
+
 ::view-transition-group(.morph) {
   animation-duration: 420ms;
   animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -339,7 +400,8 @@ html:not([data-intro]) .hero-cta {
   opacity: 0;
   transform: translateY(14px);
 }
-html:not([data-intro]) .hero-meta .odo-col {
+html:not([data-intro]) .hero-meta .odo-col,
+html:not([data-intro]) .hero-info .odo-col {
   animation-play-state: paused;
 }
 html:not([data-intro]) .hero-lineup {
@@ -379,42 +441,92 @@ html[data-intro="reveal"] .hero-cta {
   animation-delay: 700ms !important;
 }
 
-/* Panggung coverflow: --d = jarak slide ke tengah (−1…1), --ad = |d| */
-.coverflow {
-  position: relative;
-  padding-inline: 5px;
-  /* Mobil aktif selalu di depan tetangganya (HUD-nya boleh menimpa kartu sebelah) */
-  z-index: calc(10 - var(--ad, 0) * 9);
+/* Panggung coverflow (transform & opacity ditulis langsung oleh JS per frame) */
+.hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: "copy" "stage" "info" "cta";
+}
+@media (min-width: 1024px) {
+  .hero-grid {
+    grid-template-columns: minmax(0, 6fr) minmax(0, 7fr);
+    grid-template-rows: auto auto 1fr;
+    grid-template-areas: "copy stage" "info stage" "cta stage";
+    column-gap: 40px;
+    align-items: start;
+  }
 }
 .coverflow-card {
-  transform: perspective(1100px) translateX(calc(var(--d, 0) * -9%)) rotateY(calc(var(--d, 0) * -13deg))
-    scale(calc(1 - var(--ad, 0) * 0.13));
   will-change: transform;
+  backface-visibility: hidden;
 }
 .coverflow-face {
   box-shadow:
-    0 30px 60px -30px rgb(0 0 0 / 0.8),
-    0 0 0 1px rgb(230 234 240 / 0.06);
-  /* Pantulan di lantai studio yang mengkilap (Safari & Chromium; browser lain tanpa pantulan) */
-  -webkit-box-reflect: below 8px linear-gradient(transparent 74%, rgb(255 255 255 / 0.14));
-}
-/* Kilau cat yang ikut bergeser saat panggung dimiringkan */
-.coverflow-glare {
-  z-index: 1;
-  background: radial-gradient(
-    110% 70% at calc(50% + var(--tx, 0) * 45%) calc(18% + var(--ty, 0) * 30%),
-    rgb(220 240 255 / 0.2),
-    transparent 58%
-  );
-  mix-blend-mode: soft-light;
-  opacity: calc(1 - var(--ad, 0));
+    0 34px 60px -34px rgb(0 0 0 / 0.85),
+    0 0 0 1px rgb(230 234 240 / 0.07);
 }
 .coverflow-photo {
-  transform: translateX(calc(var(--d, 0) * -12%));
   will-change: transform;
 }
 .coverflow-shade {
-  opacity: calc(var(--ad, 0) * 0.6);
+  will-change: opacity;
+}
+/* Kilau atas yang tetap (tanpa blend, tanpa repaint) */
+.coverflow-top {
+  z-index: 1;
+  background: linear-gradient(170deg, rgb(225 240 255 / 0.14), transparent 38%);
+}
+/* Bayangan lantai di bawah mobil aktif */
+.stage-shadow {
+  position: absolute;
+  left: 50%;
+  bottom: 18px;
+  width: 58%;
+  height: 34px;
+  translate: -50% 0;
+  background: radial-gradient(closest-side, rgb(0 0 0 / 0.75), transparent);
+}
+/* Tepi panggung memudar ke latar (overlay biasa, bukan mask) */
+@media (min-width: 1024px) {
+  .stage-viewport {
+    position: relative;
+  }
+  .stage-viewport::before,
+  .stage-viewport::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 12%;
+    z-index: 20;
+    pointer-events: none;
+  }
+  .stage-viewport::before {
+    left: 0;
+    background: linear-gradient(90deg, var(--night), transparent);
+  }
+  .stage-viewport::after {
+    right: 0;
+    background: linear-gradient(-90deg, var(--night), transparent);
+  }
+}
+/* Rail thumbnail desktop */
+.thumb {
+  opacity: 0.45;
+  outline: 1px solid transparent;
+  outline-offset: 2px;
+  transition:
+    opacity 300ms ease,
+    outline-color 300ms ease,
+    transform 380ms cubic-bezier(0.25, 1.6, 0.4, 1);
+}
+.thumb:hover {
+  opacity: 0.8;
+  transform: translateY(-2px);
+}
+.thumb.is-active {
+  opacity: 1;
+  outline-color: rgb(168 216 255 / 0.7);
 }
 .roll-in {
   animation: roll-in 560ms var(--ease-out) both;
@@ -509,7 +621,7 @@ html[data-intro="reveal"] .hero-cta {
     animation-timeline: scroll(root);
   }
   /* Hero perlahan mundur saat discroll lewat */
-  .hero-stage .hero-lineup .overflow-hidden {
+  .hero-stage .stage-viewport {
     animation: stage-out linear both;
     animation-timeline: view();
     animation-range: exit 0% exit 100%;
@@ -548,6 +660,116 @@ html[data-intro="reveal"] .hero-cta {
   }
 }
 
+/* Section dengan efek 3D/kilau berjalan tidak boleh membuat halaman bisa digeser ke samping. */
+.flow-divider {
+  overflow-x: clip;
+}
+
+/* ───────────── Aliran saat scroll (semua halaman) ─────────────
+   Elemen mengalir masuk mengikuti posisi scroll, bukan timer: berhenti saat berhenti scroll,
+   mundur saat scroll balik. Hanya transform/opacity/clip-path, jadi ringan. */
+@supports (animation-timeline: view()) {
+  .flow-reveal {
+    animation: flow-reveal linear both;
+    animation-timeline: view();
+    animation-range: entry 5% entry 90%;
+  }
+  .flow-mask {
+    animation: flow-mask linear both;
+    animation-timeline: view();
+    animation-range: entry 20% entry 100%;
+  }
+  /* Baris data: bergeser masuk + kilau cahaya berlari di sepanjang garisnya */
+  .flow-row {
+    position: relative;
+    overflow: clip;
+    view-timeline: --row block;
+    animation: flow-row linear both;
+    animation-timeline: --row;
+    animation-range: entry 0% entry 100%;
+  }
+  .flow-row::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 40%;
+    height: 1px;
+    pointer-events: none;
+    background: linear-gradient(90deg, transparent, rgb(168 216 255 / 0.95), transparent);
+    animation: line-run linear both;
+    animation-timeline: --row;
+    animation-range: entry 30% cover 55%;
+  }
+  /* Garis pemisah section: cahaya berlari dari kiri ke kanan saat section masuk layar */
+  .flow-divider {
+    position: relative;
+    view-timeline: --divider block;
+  }
+  .flow-divider::before {
+    content: "";
+    position: absolute;
+    top: -1px;
+    left: 0;
+    width: 30%;
+    height: 1px;
+    pointer-events: none;
+    background: linear-gradient(90deg, transparent, rgb(168 216 255 / 0.95), transparent);
+    box-shadow: 0 0 10px rgb(168 216 255 / 0.5);
+    animation: line-run linear both;
+    animation-timeline: --divider;
+    animation-range: entry 0% entry 60%;
+  }
+  /* Kartu di baris geser horizontal membesar saat masuk dari kanan */
+  .flow-x {
+    animation: flow-x linear both;
+    animation-timeline: view(inline);
+    animation-range: entry 0% entry 100%;
+  }
+}
+@keyframes flow-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(34px) scale(0.985);
+  }
+}
+@keyframes flow-mask {
+  from {
+    clip-path: inset(0 0 100% 0);
+    transform: translateY(0.5em);
+  }
+  to {
+    clip-path: inset(0 0 -25% 0);
+    transform: none;
+  }
+}
+@keyframes flow-row {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+}
+@keyframes line-run {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  15%,
+  80% {
+    opacity: 1;
+  }
+  to {
+    transform: translateX(250%);
+    opacity: 0;
+  }
+}
+@keyframes flow-x {
+  from {
+    opacity: 0.35;
+    transform: scale(0.88);
+  }
+}
+
 /* ───────────── Tombol WA mengambang ───────────── */
 .floating-wa {
   transform: translateY(calc(100% + 32px)) scale(0.9);
@@ -573,10 +795,18 @@ html[data-intro="reveal"] .hero-cta {
   }
   .odo-col,
   .roll-in,
+  .flow-reveal,
+  .flow-mask,
+  .flow-row,
+  .flow-row::after,
+  .flow-divider::before,
+  .flow-x,
+  .route-runner,
+  .hero-rise,
   .reveal-card,
   .reveal-zoom,
   .reveal-line,
-  .hero-stage .hero-lineup .overflow-hidden {
+  .hero-stage .stage-viewport {
     animation: none !important;
   }
   .press:active {
@@ -633,27 +863,16 @@ html[data-intro="reveal"] .hero-cta {
   outline-offset: 3px;
 }
 
-/* ═════════════ Lapisan 3D & gerak (revisi futuristik) ═════════════ */
+/* ═════════════ Lapisan 3D & gerak (ringan: hanya transform & opacity) ═════════════ */
 
-/* Panggung miring mengikuti kursor / kemiringan HP + melayang pelan */
+/* Panggung miring mengikuti kursor (desktop, ditulis JS ke satu elemen) */
 .stage-tilt {
-  position: relative;
   z-index: 1;
-  transform: perspective(1400px) rotateX(calc(var(--ty, 0) * -3.5deg)) rotateY(calc(var(--tx, 0) * 5deg));
   transform-origin: 50% 60%;
-  animation: stage-float 7s ease-in-out infinite;
-}
-@keyframes stage-float {
-  0%,
-  100% {
-    translate: 0 0;
-  }
-  50% {
-    translate: 0 -5px;
-  }
+  will-change: transform;
 }
 
-/* HUD kaca melayang di sekitar mobil aktif */
+/* HUD: label kecil di sekitar mobil aktif, muncul bertahap saat mobil naik panggung */
 .hud {
   position: absolute;
   z-index: 3;
@@ -667,99 +886,47 @@ html[data-intro="reveal"] .hero-cta {
   font-weight: 500;
   white-space: nowrap;
   color: var(--platinum);
-  background: rgb(16 20 27 / 0.58);
+  background: rgb(24 30 39 / 0.92);
   border: 1px solid rgb(230 234 240 / 0.14);
-  -webkit-backdrop-filter: blur(12px) saturate(1.4);
-  backdrop-filter: blur(12px) saturate(1.4);
-  box-shadow:
-    0 14px 30px -12px rgb(0 0 0 / 0.75),
-    inset 0 1px 0 rgb(255 255 255 / 0.09);
+  box-shadow: 0 14px 30px -12px rgb(0 0 0 / 0.75);
   pointer-events: none;
-  opacity: max(0, 1 - var(--ad, 0) * 3.2);
-  scale: calc(1 - var(--ad, 0) * 0.25);
-  translate: 0 0;
-  animation: hud-float 5.6s ease-in-out infinite;
+  animation: hud-in 620ms cubic-bezier(0.2, 1.3, 0.4, 1) both;
 }
 .hud-a {
   top: 16px;
   right: -10px;
+  animation-delay: 260ms;
 }
 .hud-b {
   top: 46%;
   left: -14px;
-  animation-delay: -1.9s;
+  animation-delay: 380ms;
 }
 .hud-c {
   bottom: 16%;
   right: -8px;
-  animation-delay: -3.6s;
+  animation-delay: 500ms;
 }
 .hud-dot {
   width: 6px;
   height: 6px;
   border-radius: 999px;
   background: var(--xenon);
-  box-shadow: 0 0 10px 1px rgb(168 216 255 / 0.8);
-  animation: hud-pulse 2.4s ease-in-out infinite;
+  box-shadow: 0 0 8px 1px rgb(168 216 255 / 0.7);
 }
-@keyframes hud-float {
-  0%,
-  100% {
-    translate: 0 0;
-  }
-  50% {
-    translate: 0 -7px;
+@keyframes hud-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.85);
   }
 }
-@keyframes hud-pulse {
-  50% {
-    opacity: 0.35;
-  }
-}
-/* HUD menunggu sampai loader membuka panggung */
 html:not([data-intro]) .hud {
-  opacity: 0;
+  animation-play-state: paused;
 }
 
-/* Studio: lantai grid perspektif + debu dalam berkas cahaya */
+/* Studio: lantai grid + debu (canvas) */
 .studio {
   z-index: 0;
-}
-.studio-floor {
-  position: absolute;
-  inset: auto 0 0 0;
-  height: 58%;
-  perspective: 420px;
-  perspective-origin: 50% 0%;
-  -webkit-mask-image: radial-gradient(75% 90% at 50% 0%, #000 25%, transparent 78%);
-  mask-image: radial-gradient(75% 90% at 50% 0%, #000 25%, transparent 78%);
-}
-.studio-floor-plane {
-  position: absolute;
-  inset: 0 -60% -140%;
-  overflow: hidden;
-  transform: rotateX(72deg) translateX(calc(var(--tx, 0) * -30px));
-  transform-origin: 50% 0%;
-}
-/* Grid digeser dengan transform (dikomposit GPU), bukan background-position yang memicu paint */
-.studio-floor-plane::before {
-  content: "";
-  position: absolute;
-  inset: -64px 0 0;
-  background-image:
-    linear-gradient(rgb(168 216 255 / 0.22) 1px, transparent 1px),
-    linear-gradient(90deg, rgb(168 216 255 / 0.15) 1px, transparent 1px);
-  background-size: 64px 64px;
-  animation: floor-run 5s linear infinite;
-  will-change: transform;
-}
-@keyframes floor-run {
-  to {
-    transform: translateY(64px);
-  }
-}
-.studio-dust {
-  mix-blend-mode: screen;
 }
 html:not([data-intro]) .studio {
   opacity: 0;
@@ -771,24 +938,22 @@ html[data-intro="reveal"] .studio {
 /* Lampu panjang di atas panggung + kerucut cahayanya */
 .stage-light {
   position: absolute;
-  inset: -6px 0 0;
+  inset: 0 0 0;
   z-index: 0;
   pointer-events: none;
-  translate: calc(var(--tx, 0) * 22px) 0;
+  will-change: transform;
 }
 .stage-light-bar {
   position: absolute;
   top: 0;
   left: 50%;
-  width: min(78%, 620px);
+  width: min(70%, 560px);
   height: 2px;
   translate: -50% 0;
   border-radius: 2px;
   overflow: hidden;
   background: linear-gradient(90deg, transparent, rgb(168 216 255 / 0.55) 20%, rgb(230 244 255 / 0.95) 50%, rgb(168 216 255 / 0.55) 80%, transparent);
-  box-shadow:
-    0 0 14px 2px rgb(168 216 255 / 0.35),
-    0 0 50px 8px rgb(168 216 255 / 0.12);
+  box-shadow: 0 0 14px 2px rgb(168 216 255 / 0.3);
 }
 .stage-light-bar::after {
   content: "";
@@ -797,36 +962,35 @@ html[data-intro="reveal"] .studio {
   width: 22%;
   background: linear-gradient(90deg, transparent, #fff, transparent);
   animation: bar-glint 4.8s var(--ease-out) infinite;
+  will-change: transform;
 }
 @keyframes bar-glint {
   0% {
-    translate: -120% 0;
+    transform: translateX(-120%);
   }
   55%,
   100% {
-    translate: 560% 0;
+    transform: translateX(560%);
   }
 }
 .stage-light-cone {
   position: absolute;
   top: 1px;
   left: 50%;
-  width: min(118%, 980px);
-  height: 92%;
+  width: min(110%, 900px);
+  height: 88%;
   translate: -50% 0;
-  background: linear-gradient(to bottom, rgb(168 216 255 / 0.13), rgb(168 216 255 / 0.02) 70%, transparent);
-  clip-path: polygon(30% 0, 70% 0, 100% 100%, 0 100%);
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 30%, #000 70%, transparent);
-  mask-image: linear-gradient(90deg, transparent, #000 30%, #000 70%, transparent);
+  background: radial-gradient(60% 100% at 50% 0%, rgb(168 216 255 / 0.12), rgb(168 216 255 / 0.03) 55%, transparent 75%);
   animation: cone-breathe 6s ease-in-out infinite;
+  will-change: opacity;
 }
 @keyframes cone-breathe {
   50% {
-    opacity: 0.65;
+    opacity: 0.6;
   }
 }
 
-/* Lampu studio yang mengikuti kursor (desktop) */
+/* Lampu studio yang mengikuti kursor (desktop). Tanpa blend mode supaya tidak memaksa repaint. */
 .cursor-light {
   position: fixed;
   top: 0;
@@ -836,8 +1000,7 @@ html[data-intro="reveal"] .studio {
   height: 600px;
   border-radius: 50%;
   pointer-events: none;
-  background: radial-gradient(closest-side, rgb(168 216 255 / 0.075), rgb(168 216 255 / 0.03) 45%, transparent);
-  mix-blend-mode: screen;
+  background: radial-gradient(closest-side, rgb(168 216 255 / 0.05), rgb(168 216 255 / 0.018) 45%, transparent);
   opacity: 0;
   transition: opacity 500ms ease;
   will-change: transform;
@@ -859,11 +1022,10 @@ html[data-intro="reveal"] .studio {
 .card-glare {
   background: radial-gradient(
     60% 55% at var(--gx, 50%) var(--gy, 30%),
-    rgb(225 242 255 / 0.32),
-    rgb(168 216 255 / 0.08) 45%,
+    rgb(225 242 255 / 0.14),
+    rgb(168 216 255 / 0.04) 45%,
     transparent 70%
   );
-  mix-blend-mode: soft-light;
   opacity: var(--go, 0);
 }
 @media (hover: hover) and (pointer: fine) {
@@ -934,9 +1096,9 @@ html[data-intro="reveal"] .studio {
 }
 .map-scan {
   left: 0;
-  background: linear-gradient(90deg, transparent, rgb(168 216 255 / 0.22), transparent);
-  mix-blend-mode: screen;
+  background: linear-gradient(90deg, transparent, rgb(168 216 255 / 0.12), transparent);
   animation: map-scan 5.5s var(--ease-out) infinite;
+  will-change: translate;
 }
 @keyframes map-scan {
   0% {
@@ -1010,16 +1172,10 @@ html[data-intro="reveal"] .studio {
   .map-radar,
   .map-pin,
   .card-3d,
-  .stage-tilt,
   .hud,
-  .hud-dot,
-  .studio-floor-plane::before,
   .stage-light-bar::after,
   .stage-light-cone {
     animation: none !important;
-  }
-  .stage-tilt {
-    transform: none;
   }
   .cursor-light {
     display: none;
