@@ -6,7 +6,7 @@ type Variant = "primary" | "ghost" | "icon";
 
 const styles: Record<Variant, string> = {
   primary:
-    "sweep sweep-strong inline-flex min-h-[52px] items-center justify-center gap-2.5 rounded-full bg-xenon px-6 text-lead font-semibold text-xenon-ink",
+    "sweep sweep-strong inline-flex min-h-[52px] items-center justify-center gap-2.5 rounded-full btn-lux px-6 text-lead font-semibold",
   ghost:
     "inline-flex min-h-[52px] items-center justify-center gap-2.5 rounded-full border border-platinum/20 px-6 text-lead font-medium text-platinum",
   icon: "inline-grid size-[52px] shrink-0 place-items-center rounded-full border border-platinum/20 text-platinum",

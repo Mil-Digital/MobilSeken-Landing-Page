@@ -6,7 +6,7 @@ import dynamic from "next/dynamic";
 import { useEffect, useMemo, useState } from "react";
 import { BRAND_EVENT } from "./brand-marquee";
 import { CarCard } from "@/components/car-card";
-import { IconFilter, IconWhatsApp } from "@/components/icons";
+import { IconAllCars, IconClose, IconFilter, IconMPV, IconSedan, IconSUV, IconWhatsApp } from "@/components/icons";
 import { CATEGORIES } from "@/lib/category";
 import { PressButton, PressLink } from "@/components/press";
 import { advancedCount, applyFilters, boundsOf, defaultFilters, type CardCar, type Filters } from "@/lib/filters";
@@ -50,40 +50,32 @@ export function CarBrowser({ cars }: { cars: CardCar[] }) {
 
   return (
     <section id="stok" aria-labelledby="stok-title" className="relative scroll-mt-[var(--header-h)]">
-      {/* Bar kelompok mobil, lengket di bawah header */}
-      <div className="ink intro-follow sticky top-[calc(var(--header-h)+env(safe-area-inset-top))] z-30 border-b border-hairline bg-night/[0.97] backdrop-blur-xl">
-        <div className="mx-auto flex h-[var(--chips-h)] max-w-[1200px] items-center md:px-6">
-          <LayoutGroup id="brand-chips">
-            <div
-              className="no-scrollbar flex min-w-0 flex-1 items-center gap-0.5 overflow-x-auto px-3 md:gap-1 md:px-0"
-              style={{ maskImage: "linear-gradient(to right, #000 calc(100% - 28px), transparent)" }}
-              role="tablist"
-              aria-label="Jenis mobil"
-            >
-              <Chip
+      {/* Konsol jenis mobil: kartu gelap mengambang, lengket di bawah header */}
+      <div className="intro-follow pointer-events-none sticky top-[calc(var(--header-h)+env(safe-area-inset-top)+10px)] z-30 px-3 pt-6 md:px-6 md:pt-8">
+        <div className="pointer-events-auto mx-auto flex max-w-[760px] items-stretch gap-2">
+          <LayoutGroup id="type-console">
+            <div className="ink cat-console grid min-w-0 flex-1 grid-cols-4" role="tablist" aria-label="Jenis mobil">
+              <Segment
                 active={filters.category === null && filters.brand === null}
                 onClick={() => setFilters((f) => ({ ...f, category: null, brand: null }))}
-              >
-                Semua
-              </Chip>
-              {groups.map(({ group, count }) => (
-                <Chip
-                  key={group}
-                  active={filters.category === group}
-                  disabled={count === 0 && filters.category !== group}
-                  onClick={() => setFilters((f) => ({ ...f, brand: null, category: f.category === group ? null : group }))}
-                >
-                  {group}
-                  <span className="tnum ml-1.5 text-micro opacity-60">{count}</span>
-                </Chip>
-              ))}
-              {filters.brand && (
-                <Chip active onClick={() => setFilters((f) => ({ ...f, brand: null }))} label={`Hapus filter merek ${filters.brand}`}>
-                  {filters.brand}
-                  <span aria-hidden className="ml-1.5 text-micro opacity-70">✕</span>
-                </Chip>
-              )}
-              <span className="w-6 shrink-0" />
+                icon={<IconAllCars />}
+                label="Semua"
+                count={cars.length}
+              />
+              {groups.map(({ group, count }) => {
+                const Icon = TYPE_ICON[group];
+                return (
+                  <Segment
+                    key={group}
+                    active={filters.category === group}
+                    disabled={count === 0 && filters.category !== group}
+                    onClick={() => setFilters((f) => ({ ...f, brand: null, category: f.category === group ? null : group }))}
+                    icon={<Icon />}
+                    label={group}
+                    count={count}
+                  />
+                );
+              })}
             </div>
           </LayoutGroup>
           <button
@@ -91,11 +83,11 @@ export function CarBrowser({ cars }: { cars: CardCar[] }) {
             onClick={openSheet}
             onPointerEnter={() => setSheetLoaded(true)}
             aria-label={adv ? `Filter lanjutan, ${adv} aktif` : "Filter lanjutan"}
-            className="press relative mr-2 grid size-11 shrink-0 place-items-center rounded-full text-platinum md:mr-0"
+            className="ink cat-console press relative grid w-[58px] shrink-0 place-items-center text-platinum md:w-[66px]"
           >
             <IconFilter />
             {adv > 0 && (
-              <span className="tnum absolute top-1 right-1 grid size-[18px] place-items-center rounded-full bg-xenon text-[11px] font-semibold text-xenon-ink">
+              <span className="tnum absolute top-1.5 right-1.5 grid size-[18px] place-items-center rounded-full bg-xenon text-[11px] font-semibold text-xenon-ink">
                 {adv}
               </span>
             )}
@@ -103,14 +95,27 @@ export function CarBrowser({ cars }: { cars: CardCar[] }) {
         </div>
       </div>
 
-      <div className="mx-auto max-w-[1200px] px-5 pt-10 pb-20 md:px-10">
+      <div className="mx-auto max-w-[1200px] px-5 pt-8 pb-20 md:px-10 md:pt-10">
         <div className="intro-follow mb-8 flex items-baseline justify-between">
           <h2 id="stok-title" className="wide-section text-title text-platinum md:text-display">
             Stok tersedia
           </h2>
-          <p className="tnum text-body text-steel" aria-live="polite">
-            {shown.length} mobil
-          </p>
+          <div className="flex items-center gap-3">
+            {filters.brand && (
+              <button
+                type="button"
+                onClick={() => setFilters((f) => ({ ...f, brand: null }))}
+                aria-label={`Hapus filter merek ${filters.brand}`}
+                className="press inline-flex h-9 items-center gap-2 rounded-full border border-hairline bg-cabin pr-3 pl-3.5 text-micro font-medium text-platinum"
+              >
+                {filters.brand}
+                <IconClose width={14} height={14} />
+              </button>
+            )}
+            <p className="tnum text-body text-steel" aria-live="polite">
+              {shown.length} mobil
+            </p>
+          </div>
         </div>
 
         {shown.length > 0 ? (
@@ -149,18 +154,23 @@ export function CarBrowser({ cars }: { cars: CardCar[] }) {
   );
 }
 
-function Chip({
+const TYPE_ICON = { SUV: IconSUV, MPV: IconMPV, Sedan: IconSedan } as const;
+
+/** Satu segmen konsol: siluet + nama jenis + jumlah. Sorotan emas meluncur ke segmen aktif. */
+function Segment({
   active,
   disabled,
   onClick,
+  icon,
   label,
-  children,
+  count,
 }: {
   active: boolean;
   disabled?: boolean;
   onClick: () => void;
-  label?: string;
-  children: React.ReactNode;
+  icon: React.ReactNode;
+  label: string;
+  count: number;
 }) {
   return (
     <button
@@ -169,18 +179,19 @@ function Chip({
       aria-selected={active}
       disabled={disabled}
       onClick={onClick}
-      aria-label={label}
-      className="press relative flex h-11 shrink-0 items-center px-3.5 text-body md:px-4 font-medium whitespace-nowrap disabled:opacity-35"
+      className={`cat-seg press ${active ? "is-active" : ""}`}
     >
       {active && (
         <m.span
-          layoutId="chip-active"
-          className="absolute inset-x-0 inset-y-[5px] rounded-full bg-platinum"
-          transition={{ type: "spring", stiffness: 520, damping: 40 }}
+          layoutId="type-active"
+          className="cat-seg-glow"
+          transition={{ type: "spring", stiffness: 480, damping: 38 }}
         />
       )}
-      <span className={`relative flex items-baseline transition-colors duration-200 ${active ? "text-night" : "text-platinum/85"}`}>
-        {children}
+      <span className="cat-seg-icon">{icon}</span>
+      <span className="cat-seg-text">
+        <span className="cat-seg-label">{label}</span>
+        <span className="cat-seg-count tnum">{count}</span>
       </span>
     </button>
   );

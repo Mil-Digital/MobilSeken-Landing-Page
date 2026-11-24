@@ -30,7 +30,7 @@ export function Description({ text }: { text: string }) {
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="press mt-2 -ml-1 min-h-11 px-1 text-body font-medium text-xenon"
+          className="press mt-2 -ml-1 min-h-11 px-1 text-body font-medium text-[var(--gold-deep)]"
         >
           Baca selengkapnya
         </button>

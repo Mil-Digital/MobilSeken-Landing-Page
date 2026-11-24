@@ -84,3 +84,45 @@ export const IconGear = (p: P) => (
     <path d="M6 7.1v9.8M12 7.1v9.8M18 7.1V12H6" />
   </svg>
 );
+
+// Siluet samping untuk navigasi jenis mobil (lebar 36×18).
+const body = { ...base, width: 36, height: 18, viewBox: "0 0 36 18", strokeWidth: 1.5 };
+const Wheels = () => (
+  <>
+    <circle cx="9.5" cy="13.4" r="2.5" />
+    <circle cx="26.5" cy="13.4" r="2.5" />
+    <path d="M2.5 13.4H7M12 13.4h12M29 13.4h4.5" />
+  </>
+);
+
+export const IconSedan = (p: P) => (
+  <svg {...body} {...p}>
+    <path d="M2.5 13.4v-2.2c0-.8.5-1.4 1.3-1.6L9 8.5l4.4-3.5c.6-.5 1.3-.7 2-.7h6.2c.8 0 1.5.3 2 .9L27 8.5l4.6.7c1.1.2 1.9 1.1 1.9 2.2v2" />
+    <Wheels />
+  </svg>
+);
+
+export const IconSUV = (p: P) => (
+  <svg {...body} {...p}>
+    <path d="M2.5 13.4V9.6c0-.8.6-1.5 1.4-1.6L7.5 7.6l3-3.7c.4-.5 1-.8 1.6-.8h14.8c.7 0 1.3.4 1.6 1l1.8 3.7 1.9.5c.9.2 1.5 1 1.5 1.9v3.2" />
+    <path d="M17.5 3.1v4.6" />
+    <Wheels />
+  </svg>
+);
+
+export const IconMPV = (p: P) => (
+  <svg {...body} {...p}>
+    <path d="M2.5 13.4v-3.3c0-.7.4-1.3 1.1-1.5L8.4 6.8l4-3c.5-.4 1.1-.6 1.7-.6h17.4c1.1 0 2 .9 2 2v8.2" />
+    <path d="M15 3.2v4.4M23.5 3.2v4.4" />
+    <Wheels />
+  </svg>
+);
+
+export const IconAllCars = (p: P) => (
+  <svg {...body} {...p} fill="currentColor" stroke="none">
+    <rect x="11" y="2.5" width="6" height="6" rx="1.6" />
+    <rect x="19" y="2.5" width="6" height="6" rx="1.6" opacity=".55" />
+    <rect x="11" y="10.5" width="6" height="6" rx="1.6" opacity=".55" />
+    <rect x="19" y="10.5" width="6" height="6" rx="1.6" />
+  </svg>
+);

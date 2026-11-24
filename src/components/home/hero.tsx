@@ -509,7 +509,7 @@ function StockLink() {
       ref={ref}
       href="#stok"
       data-magnetic=""
-      className="press sweep sweep-strong inline-flex min-h-[52px] flex-1 items-center justify-center rounded-full bg-xenon px-7 text-lead font-semibold text-xenon-ink lg:flex-none"
+      className="press sweep sweep-strong inline-flex min-h-[52px] flex-1 items-center justify-center gap-3 rounded-full btn-lux px-7 text-lead font-semibold lg:flex-none"
       style={{ "--sweep-dur": "650ms" } as React.CSSProperties}
       onPointerDown={() => runSweep(ref.current)}
       onClick={(e) => {
@@ -520,6 +520,9 @@ function StockLink() {
       }}
     >
       <RollText>Lihat semua stok</RollText>
+      <svg aria-hidden width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="lux-arrow">
+        <path d="M5 12h14M13 6l6 6-6 6" />
+      </svg>
     </a>
   );
 }
