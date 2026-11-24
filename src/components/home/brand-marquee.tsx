@@ -12,22 +12,31 @@ export const BRAND_EVENT = "ms-brand";
 export function BrandMarquee({ brands }: { brands: { name: string; count: number }[] }) {
   const track = useRef<HTMLDivElement>(null);
 
+  // Pita berjalan lewat animasi CSS (.marquee-track) sehingga tetap jalan walau JavaScript gagal.
+  // JavaScript hanya: (1) menjeda saat pita tak terlihat, (2) mempercepat/membalik arah selama halaman discroll.
   useEffect(() => {
     const el = track.current;
-    if (!el || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const anim = el.animate([{ transform: "translateX(0)" }, { transform: "translateX(-50%)" }], {
-      duration: 9000 + Math.max(8, brands.length) * 3500,
-      iterations: Infinity,
-    });
+    const band = el?.closest<HTMLElement>(".marquee-band");
+    if (!el || !band) return;
+    const anim = () => el.getAnimations().find((a) => (a as CSSAnimation).animationName === "marquee-run");
+    const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    // Loop rAF hanya hidup selama halaman discroll; begitu laju kembali normal, loop berhenti
-    // (animasi pita sendiri berjalan di compositor, tidak membebani thread utama).
     let raf = 0;
     let lastY = window.scrollY;
     let lastT = 0;
     let rate = 1;
-    let visible = false;
+    let visible = true;
 
+    const setRate = (r: number) => {
+      const a = anim();
+      if (a) a.playbackRate = r;
+    };
+    const settle = () => {
+      cancelAnimationFrame(raf);
+      raf = 0;
+      rate = 1;
+      setRate(1);
+    };
     const loop = (t: number) => {
       const y = window.scrollY;
       const dt = lastT ? Math.max(1, t - lastT) : 16;
@@ -37,40 +46,39 @@ export function BrandMarquee({ brands }: { brands: { name: string; count: number
       const dir = v < -0.05 ? -1 : 1;
       const target = dir * (1 + Math.min(6, Math.abs(v) * 4));
       rate += (target - rate) * 0.08;
-      if (Math.abs(rate - 1) < 0.01 && Math.abs(v) < 0.01) {
-        rate = 1;
-        anim.playbackRate = 1;
-        raf = 0;
-        return;
-      }
-      anim.playbackRate = rate;
+      if (Math.abs(rate - 1) < 0.01 && Math.abs(v) < 0.01) return settle();
+      setRate(rate);
       raf = requestAnimationFrame(loop);
     };
     const kick = () => {
-      if (!visible || raf) return;
+      if (still || !visible || raf) return;
       lastT = 0;
       raf = requestAnimationFrame(loop);
     };
     const io = new IntersectionObserver(([e]) => {
       visible = e.isIntersecting;
-      if (visible) {
-        anim.play();
-        lastY = window.scrollY;
-      } else {
-        anim.pause();
-        cancelAnimationFrame(raf);
-        raf = 0;
+      lastY = window.scrollY;
+      if (visible) band.removeAttribute("data-off");
+      else {
+        band.setAttribute("data-off", "");
+        settle();
       }
     });
-    io.observe(el);
+    io.observe(band);
+    // Kembali dari cache halaman (tombol back di Safari): pastikan pita berjalan lagi dengan laju normal.
+    const show = () => {
+      settle();
+      band.removeAttribute("data-off");
+    };
     window.addEventListener("scroll", kick, { passive: true });
+    window.addEventListener("pageshow", show);
     return () => {
       io.disconnect();
       window.removeEventListener("scroll", kick);
+      window.removeEventListener("pageshow", show);
       cancelAnimationFrame(raf);
-      anim.cancel();
     };
-  }, [brands.length]);
+  }, []);
 
   const pick = (name: string) => {
     trackEvent("brand", { label: name });
@@ -103,7 +111,11 @@ export function BrandMarquee({ brands }: { brands: { name: string; count: number
   return (
     <nav aria-label="Merek di showroom" className="ink marquee-band border-t border-hairline py-6 md:py-9">
       <div className="marquee overflow-hidden">
-        <div ref={track} className="flex w-max will-change-transform">
+        <div
+          ref={track}
+          className="marquee-track flex w-max"
+          style={{ "--marquee-dur": `${9 + Math.max(8, brands.length) * 3.5}s` } as React.CSSProperties}
+        >
           <ul className="flex">{row(0)}</ul>
           <ul className="flex">{row(1)}</ul>
         </div>

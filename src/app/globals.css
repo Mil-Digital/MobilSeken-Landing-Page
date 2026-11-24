@@ -785,6 +785,28 @@ html[data-intro="reveal"] .hero-cta {
 }
 
 /* ───────────── Pita merek ───────────── */
+/* Animasi CSS murni (jalan tanpa JavaScript); dijeda saat pita di luar layar ([data-off]). */
+.marquee-track {
+  animation: marquee-run var(--marquee-dur, 70s) linear infinite;
+  will-change: transform;
+}
+.marquee-band[data-off] .marquee-track {
+  animation-play-state: paused;
+}
+@keyframes marquee-run {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  /* Tetap bergerak, tapi jauh lebih pelan */
+  .marquee-track {
+    animation-duration: calc(var(--marquee-dur, 70s) * 3);
+  }
+}
 .marquee {
   mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
 }
