@@ -5,7 +5,7 @@ import { notFound, permanentRedirect } from "next/navigation";
 import { Gallery } from "@/components/detail/gallery";
 import { KmGauge } from "@/components/detail/gauge";
 import { ActionBar, Description, SimilarRow } from "@/components/detail/parts";
-import { IconWhatsApp } from "@/components/icons";
+import { IconPhone, IconWhatsApp } from "@/components/icons";
 import { PressLink } from "@/components/press";
 import { SiteFooter } from "@/components/showroom";
 import { allCarIds, carPath, carTitle, getCar, similarCars, type Car } from "@/lib/cars";
@@ -92,11 +92,15 @@ export default async function CarPage({ params }: PageProps<"/mobil/[slug]">) {
   return (
     <>
       <PageFlow>
-      <main className="pb-[calc(92px+env(safe-area-inset-bottom))]">
-        <Gallery id={car.id} images={car.images} alt={title} />
+      <main className="pb-[calc(92px+env(safe-area-inset-bottom))] lg:pb-0">
+        {/* HP: galeri → info → detail. Desktop: galeri & detail di kiri, info + tombol menempel di kanan. */}
+        <div className="lg:mx-auto lg:grid lg:max-w-[1200px] lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-x-12 lg:px-10 lg:pt-8">
+        <div className="min-w-0 lg:col-start-1 lg:row-start-1">
+          <Gallery id={car.id} images={car.images} alt={title} />
+        </div>
 
-        <div className="mx-auto max-w-[1200px] px-5 md:px-10">
-          <header className="pt-7">
+        <aside className="px-5 md:px-10 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:self-start lg:px-0 lg:sticky lg:top-8">
+          <header className="pt-7 lg:pt-0">
             <p className="text-lead text-steel">{car.brand}</p>
             <h1 className="hero-rise wide mt-1 text-display text-platinum md:text-hero">{car.model}</h1>
             <p className="mt-2 text-body text-steel">{car.variant}</p>
@@ -130,6 +134,20 @@ export default async function CarPage({ params }: PageProps<"/mobil/[slug]">) {
             </dl>
           </div>
 
+          {/* Tombol kontak di panel (desktop); di HP memakai bar bawah */}
+          <div className="mt-6 hidden gap-3 lg:flex">
+            <PressLink href={waLink(waText)} className="flex-1">
+              <IconWhatsApp width={20} height={20} />
+              Tanya via WhatsApp
+            </PressLink>
+            <PressLink href={telLink()} variant="icon" aria-label="Telepon showroom">
+              <IconPhone />
+            </PressLink>
+          </div>
+          <p className="tnum mt-3 hidden text-micro text-steel lg:block">Kode unit {car.id} · sebutkan saat menghubungi kami</p>
+        </aside>
+
+        <div className="min-w-0 px-5 md:px-10 lg:col-start-1 lg:row-start-2 lg:px-0">
           <section className="flow-reveal mt-10" aria-labelledby="desc-title">
             <h2 id="desc-title" className="sr-only">
               Deskripsi
@@ -150,7 +168,10 @@ export default async function CarPage({ params }: PageProps<"/mobil/[slug]">) {
               ))}
             </dl>
           </section>
+        </div>
+        </div>
 
+        <div className="mx-auto max-w-[1200px] px-5 md:px-10">
           {similar.length > 0 && (
             <section className="mt-14 mb-14" aria-labelledby="similar-title">
               <h2 id="similar-title" className="flow-mask wide-section mb-5 text-title text-platinum">

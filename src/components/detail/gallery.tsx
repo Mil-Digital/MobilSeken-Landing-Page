@@ -62,7 +62,7 @@ export function Gallery({
   const shown = dim ? images.slice(0, 1) : images;
 
   return (
-    <div className="relative mx-auto max-w-[1200px] md:px-10 md:pt-6">
+    <div className="relative mx-auto max-w-[1200px] md:px-10 md:pt-6 lg:max-w-none lg:px-0 lg:pt-0">
       <ViewTransition name={`car-${id}`} share="morph" default="none">
         <div className="relative aspect-[4/3] overflow-hidden bg-cabin md:rounded-[18px]">
           <div ref={viewport} className="absolute inset-0 overflow-hidden">
@@ -100,7 +100,7 @@ export function Gallery({
 
       {/* Kontrol di atas foto */}
       <div
-        className="absolute inset-x-0 top-0 flex items-center justify-between px-3 md:px-12 md:pt-6"
+        className="absolute inset-x-0 top-0 flex items-center justify-between px-3 md:px-12 md:pt-6 lg:px-3 lg:pt-3"
         style={{ paddingTop: "max(8px, env(safe-area-inset-top))" }}
       >
         <button
@@ -120,7 +120,7 @@ export function Gallery({
 
       {/* Panah: selalu bisa dipakai meski gestur geser tidak terbaca */}
       {!dim && shown.length > 1 && (
-        <div className="pointer-events-none absolute inset-x-0 top-0 mx-auto aspect-[4/3] max-w-[1200px] md:mt-6 md:px-10">
+        <div className="pointer-events-none absolute inset-x-0 top-0 mx-auto aspect-[4/3] max-w-[1200px] md:mt-6 md:px-10 lg:mt-0 lg:max-w-none lg:px-0">
           <div className="relative h-full">
             {index > 0 && (
               <button
@@ -161,7 +161,7 @@ export function Gallery({
       {!dim && shown.length > 1 && (
         <div
           ref={strip}
-          className="no-scrollbar mx-auto flex max-w-[1200px] gap-2 overflow-x-auto px-5 pt-3 md:px-10"
+          className="no-scrollbar mx-auto flex max-w-[1200px] gap-2 overflow-x-auto px-5 pt-3 md:px-10 lg:max-w-none lg:px-0"
           role="tablist"
           aria-label="Pilih foto"
         >
