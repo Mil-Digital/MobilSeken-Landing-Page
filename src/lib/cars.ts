@@ -2,7 +2,7 @@
 // foto milik showroom diunduh dari website lama dan disimpan lokal (bukan hotlink).
 // Fase 2 menggantikan modul ini dengan query Neon Postgres; bentuk tipe `Car` sengaja mengikuti skema di brief.
 
-import { cacheTag } from "next/cache";
+import { cacheLife, cacheTag } from "next/cache";
 import { readStoredCars } from "./store/local";
 import photos from "./dummy-photos.json";
 import { slugify } from "./format";
@@ -219,6 +219,7 @@ export const carPath = (c: Car) => `/mobil/${c.id}-${carSlug(c)}`;
 export async function listCars(): Promise<Car[]> {
   "use cache";
   cacheTag("cars");
+  cacheLife({ stale: 60, revalidate: 60, expire: 86400 });
   return (await allCars())
     .filter((c) => c.status !== "sold")
     .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
@@ -227,6 +228,7 @@ export async function listCars(): Promise<Car[]> {
 export async function getCar(id: string): Promise<Car | null> {
   "use cache";
   cacheTag("cars");
+  cacheLife({ stale: 60, revalidate: 60, expire: 86400 });
   return (await allCars()).find((c) => c.id === id) ?? null;
 }
 
@@ -239,6 +241,7 @@ export async function canonicalPathById(id: string): Promise<string | null> {
 export async function allCarIds() {
   "use cache";
   cacheTag("cars");
+  cacheLife({ stale: 60, revalidate: 60, expire: 86400 });
   return (await allCars()).map((c) => ({ id: c.id, path: carPath(c) }));
 }
 

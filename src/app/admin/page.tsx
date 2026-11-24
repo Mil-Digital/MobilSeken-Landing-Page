@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import { carPath } from "@/lib/cars";
 import { priceShort } from "@/lib/format";
 import { readStoredCars } from "@/lib/store/local";
+import { RefreshButton } from "./refresh-button";
 import { StatusSelect } from "./status-select";
 
 export default function AdminHome() {
@@ -37,10 +38,13 @@ async function CarList() {
   }
   return (
     <>
-    <p className="mt-6 rounded-[14px] bg-panel p-3 text-micro text-steel">
-      Landing page menampilkan persis {cars.filter((c) => c.status !== "sold").length} mobil di daftar ini (kecuali yang
-      berstatus Terjual).
-    </p>
+    <div className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-[14px] bg-panel p-3">
+      <p className="text-micro text-steel">
+        Landing page menampilkan {cars.filter((c) => c.status !== "sold").length} mobil di daftar ini (kecuali yang berstatus
+        Terjual). Perubahan muncul otomatis dalam ±1 menit.
+      </p>
+      <RefreshButton />
+    </div>
     <ul className="mt-4 grid gap-3">
       {cars.map((c) => (
         <li key={c.id} className="flex items-center gap-3 rounded-[16px] border border-hairline bg-cabin p-2.5">

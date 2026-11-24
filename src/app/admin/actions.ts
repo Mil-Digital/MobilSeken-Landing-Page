@@ -17,3 +17,11 @@ export async function setCarStatus(id: string, status: CarStatus): Promise<{ ok:
   updateTag("cars");
   return { ok: true };
 }
+
+/** Paksa halaman publik memuat data mobil terbaru (mis. setelah impor dari laptop). */
+export async function refreshWeb(): Promise<{ ok: boolean; error?: string }> {
+  const gate = checkAdmin((await headers()).get("authorization"));
+  if (gate !== "ok" && gate !== "open") return { ok: false, error: "Sesi admin tidak valid." };
+  updateTag("cars");
+  return { ok: true };
+}
