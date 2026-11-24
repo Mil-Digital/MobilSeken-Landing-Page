@@ -34,6 +34,14 @@ export type LineupCar = {
 };
 
 const ADVANCE_MS = 5200;
+const RAIL_SIZE = 5;
+
+/** Indeks mobil yang tampil di rail: mobil tersorot di posisi tengah, tidak melewati ujung daftar. */
+function railWindow(total: number, selected: number): number[] {
+  const n = Math.min(RAIL_SIZE, total);
+  const start = Math.max(0, Math.min(selected - Math.floor(n / 2), total - n));
+  return Array.from({ length: n }, (_, k) => start + k);
+}
 
 type EmblaApi = NonNullable<UseEmblaCarouselType[1]>;
 
@@ -394,9 +402,11 @@ export function Hero({ cars, total }: { cars: LineupCar[]; total: number }) {
             </span>
           </div>
 
-          {/* Rail thumbnail (desktop): lompat langsung ke mobil mana pun */}
+          {/* Rail thumbnail (desktop): jendela 5 mobil yang bergeser mengikuti mobil tersorot */}
           <div className="mt-6 hidden items-center gap-2.5 lg:flex" role="tablist" aria-label="Pilih mobil">
-            {cars.map((c, i) => (
+            {railWindow(cars.length, selected).map((i) => {
+              const c = cars[i];
+              return (
               <button
                 key={c.id}
                 type="button"
@@ -404,14 +414,22 @@ export function Hero({ cars, total }: { cars: LineupCar[]; total: number }) {
                 aria-selected={i === selected}
                 aria-label={`${c.brand} ${c.model}`}
                 onClick={() => embla?.scrollTo(i)}
-                className={`thumb relative h-[52px] w-[68px] overflow-hidden rounded-[10px] bg-cabin ${i === selected ? "is-active" : ""}`}
+                className={`thumb relative h-[52px] w-[68px] shrink-0 overflow-hidden rounded-[10px] bg-cabin ${i === selected ? "is-active" : ""}`}
               >
                 <Image src={c.image.src} alt="" fill sizes="68px" className="object-cover" style={{ objectPosition: c.focus }} />
                 <span className="absolute inset-x-1.5 bottom-1.5 block h-[2px] overflow-hidden rounded-full bg-platinum/20">
                   {i === selected && <Progress run={playing} k={selected} />}
                 </span>
               </button>
-            ))}
+              );
+            })}
+            {cars.length > RAIL_SIZE && (
+              <p className="tnum ml-3 shrink-0 text-body text-steel">
+                <span className="text-platinum">{String(selected + 1).padStart(2, "0")}</span>
+                <span className="mx-1.5">/</span>
+                {String(cars.length).padStart(2, "0")}
+              </p>
+            )}
           </div>
         </div>
 
