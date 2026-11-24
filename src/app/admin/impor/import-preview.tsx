@@ -59,7 +59,7 @@ export function ImportPreview({ sellers }: { sellers: string[] }) {
         <p className="mt-2 text-body text-steel">
           Halaman ini dibuka oleh tombol <strong className="text-platinum">Kirim ke MS Garage</strong> dari halaman iklan OLX.
         </p>
-        <Link href="/admin/tombol" className="mt-4 inline-flex text-body text-[var(--gold-deep)] underline underline-offset-4">
+        <Link href="/admin/tombol" className="mt-4 inline-flex text-body text-[var(--accent-text)] underline underline-offset-4">
           Cara memasang tombolnya
         </Link>
       </div>
@@ -81,7 +81,7 @@ export function ImportPreview({ sellers }: { sellers: string[] }) {
         <p className="wide mt-2 text-title text-platinum">
           {listing.brand} {listing.model}
         </p>
-        <p className="tnum mt-1 text-body font-semibold whitespace-nowrap text-[var(--gold-deep)]">{result.id}</p>
+        <p className="tnum mt-1 text-body font-semibold whitespace-nowrap text-[var(--accent-text)]">{result.id}</p>
         <p className="mt-1 text-body text-steel">{result.photos} foto tersimpan di server sendiri.</p>
         <div className="mt-5 flex flex-wrap justify-center gap-2">
           <Link href={result.path} className="press inline-flex h-12 items-center rounded-full bg-xenon px-6 text-body font-semibold text-xenon-ink">
@@ -298,7 +298,7 @@ function BulkImport({ items, sellers }: { items: BulkItem[]; sellers: string[] }
                   {l ? `${priceFull(l.price)} · ${l.images.length} foto · ${suggestCategory(l)}` : item.error}
                 </p>
                 {r?.note && (
-                  <p className={`mt-0.5 truncate text-micro ${r.state === "failed" ? "text-sold" : "text-[var(--gold-deep)]"}`}>{r.note}</p>
+                  <p className={`mt-0.5 truncate text-micro ${r.state === "failed" ? "text-sold" : "text-[var(--accent-text)]"}`}>{r.note}</p>
                 )}
               </div>
               <span className="shrink-0 text-micro text-steel">

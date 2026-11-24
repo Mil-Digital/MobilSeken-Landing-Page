@@ -438,6 +438,7 @@ export function Hero({ cars, total }: { cars: LineupCar[]; total: number }) {
           <PressLink
             href={waLink("Halo MS Garage, saya ingin tanya stok mobil.")}
             variant="icon"
+            className="wa-chip border-0"
             aria-label="Tanya via WhatsApp"
           >
             <IconWhatsApp width={22} height={22} />

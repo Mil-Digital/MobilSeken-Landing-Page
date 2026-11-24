@@ -137,7 +137,7 @@ export default async function CarPage({ params }: PageProps<"/mobil/[slug]">) {
 
           {/* Tombol kontak di panel (desktop); di HP memakai bar bawah */}
           <div className="mt-6 hidden gap-3 lg:flex">
-            <PressLink href={waLink(waText)} className="flex-1">
+            <PressLink variant="wa" href={waLink(waText)} className="flex-1">
               <IconWhatsApp width={20} height={20} />
               Tanya via WhatsApp
             </PressLink>
@@ -213,7 +213,7 @@ function SoldView({ car, similar }: { car: Car; similar: CardCar[] }) {
           <p className="mt-4 max-w-[46ch] text-body text-steel">
             Unit ini sudah menemukan pemilik barunya. Masih ada pilihan serupa di bawah, atau ceritakan mobil yang kamu cari ke tim kami.
           </p>
-          <PressLink
+          <PressLink variant="wa"
             href={waLink(`Halo, saya lihat ${name} (${car.id}) sudah terjual. Ada unit serupa?`)}
             className="mt-7 w-full md:w-auto"
           >

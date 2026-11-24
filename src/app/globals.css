@@ -10,11 +10,15 @@
   --platinum: #0d1b2e;
   --steel: #59667a;
   --hairline: rgb(13 27 46 / 0.12);
-  /* Aksen: champagne (emas pucat) — menggantikan biru yang terasa generik */
-  --xenon: #c6a26b;
-  --xenon-ink: #1c1407;
-  --gold-deep: #86622d; /* teks/tautan emas di atas latar terang (kontras cukup) */
-  --gold-metal: linear-gradient(135deg, #f1dfba 0%, #cfab73 38%, #a27b42 68%, #dcc08e 100%);
+  /* Aksen netral: biru-abu gelap (di latar terang) dan perak (di permukaan gelap, lihat .ink) */
+  --xenon: #24344f;
+  --xenon-ink: #ffffff;
+  --accent-text: #2f4566; /* teks/tautan aksen di atas latar terang */
+  --metal: linear-gradient(135deg, #ffffff 0%, #e8ecf1 38%, #bcc5d2 70%, #f3f5f8 100%); /* perak */
+  /* WhatsApp: hijau seperti umumnya */
+  --wa: #25d366;
+  --wa-deep: #1a9e4c;
+  --wa-rgb: 37 211 102;
   --signal: #f5b544;
   --signal-ink: #2a1c04;
   --sold: #e5484d;
@@ -24,24 +28,24 @@
   --cabin-rgb: 255 255 255;
   --panel-rgb: 227 232 239;
   --platinum-rgb: 13 27 46;
-  --xenon-rgb: 198 162 107;
+  --xenon-rgb: 36 52 79;
   --shadow-rgb: 13 27 46;
 
   /* Hero: langit siang + jalan (dibaca juga oleh canvas) */
   --sky-top: #ffffff;
   --sky-mid: #eef3fa;
-  --sky-glow-rgb: 198 162 107;
+  --sky-glow-rgb: 100 116 139;
   --sky-glow-a: 0.1;
-  --bar-core-rgb: 184 146 90;
-  --fx-horizon-rgb: 184 146 90;
+  --bar-core-rgb: 70 84 110;
+  --fx-horizon-rgb: 70 84 110;
   --fx-haze-rgb: 255 255 255;
   --fx-edge-rgb: 13 27 46;
   --fx-paint-rgb: 13 27 46;
   --fx-road-rgb: 13 27 46;
   --fx-road-a: 0.14;
-  --fx-head-rgb: 198 162 107;
+  --fx-head-rgb: 120 135 160;
   --fx-tail-rgb: 230 57 70;
-  --fx-dust-rgb: 184 146 90;
+  --fx-dust-rgb: 100 116 139;
 
   --header-h: 64px;
   --chips-h: 60px;
@@ -71,6 +75,9 @@
   --cabin-rgb: 20 34 58;
   --panel-rgb: 28 44 71;
   --platinum-rgb: 243 246 251;
+  --xenon: #e7ebf1;
+  --xenon-ink: #0d1b2e;
+  --xenon-rgb: 231 235 241;
   color-scheme: dark;
 }
 /* Header: biru malam pekat dengan cahaya lampu samar dari atas dan garis kaca di bawah. */
@@ -91,38 +98,45 @@
 .hdr-dark.is-solid {
   box-shadow: 0 14px 34px -18px rgb(8 17 31 / 0.55);
 }
-/* Tombol utama: biru malam pekat dengan tepi champagne tipis, seperti kunci mobil mewah. */
+/* Tombol utama: biru malam pekat dengan tepi kaca tipis. */
 .btn-lux {
   background: linear-gradient(180deg, #1b2b46 0%, #0b1526 100%);
   color: #f7f1e6;
   box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.12),
-    inset 0 0 0 1px rgb(var(--xenon-rgb) / 0.38),
+    inset 0 1px 0 rgb(255 255 255 / 0.14),
+    inset 0 0 0 1px rgb(255 255 255 / 0.1),
     0 16px 30px -16px rgb(11 21 38 / 0.75);
   transition: box-shadow 500ms var(--ease-swift), transform 380ms cubic-bezier(0.25, 1.6, 0.4, 1);
 }
 @media (hover: hover) and (pointer: fine) {
   .btn-lux:hover {
     box-shadow:
-      inset 0 1px 0 rgb(255 255 255 / 0.16),
-      inset 0 0 0 1px rgb(var(--xenon-rgb) / 0.75),
+      inset 0 1px 0 rgb(255 255 255 / 0.2),
+      inset 0 0 0 1px rgb(255 255 255 / 0.28),
       0 20px 36px -16px rgb(11 21 38 / 0.8);
   }
 }
 .btn-lux .lux-arrow {
-  color: var(--xenon);
+  color: rgb(255 255 255 / 0.7);
   transition: translate 500ms var(--ease-swift);
 }
 .btn-lux:hover .lux-arrow {
   translate: 4px 0;
 }
-/* Logam champagne untuk chip ikon (WhatsApp, sorotan segmen aktif) */
-.metal-gold {
-  background: var(--gold-metal);
-  color: var(--xenon-ink);
+/* WhatsApp: chip ikon hijau dan tombol hijau, seperti yang dikenal orang */
+.wa-chip {
+  background: var(--wa);
+  color: #ffffff;
   box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.5),
-    0 6px 16px -8px rgb(var(--xenon-rgb) / 0.85);
+    inset 0 1px 0 rgb(255 255 255 / 0.35),
+    0 6px 16px -8px rgb(var(--wa-rgb) / 0.9);
+}
+.btn-wa {
+  background: linear-gradient(180deg, #27c862 0%, var(--wa-deep) 100%);
+  color: #ffffff;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.25),
+    0 14px 28px -14px rgb(26 158 76 / 0.75);
 }
 
 /* ───────────── Konsol jenis mobil (SUV / MPV / Sedan) ───────────── */
@@ -162,7 +176,7 @@
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  background: var(--gold-metal);
+  background: var(--metal);
   box-shadow:
     inset 0 1px 0 rgb(255 255 255 / 0.55),
     inset 0 -1px 0 rgb(90 62 22 / 0.25),
@@ -335,7 +349,7 @@
     100deg,
     transparent 0%,
     rgb(var(--xenon-rgb) / 0) 18%,
-    rgb(255 243 220 / 0.6) 48%,
+    rgb(255 255 255 / 0.6) 48%,
     rgb(var(--xenon-rgb) / 0) 78%,
     transparent 100%
   );
@@ -1023,8 +1037,8 @@ html[data-intro="reveal"] .hero-cta {
   color: var(--signal-ink);
 }
 .flag-accent {
-  background: var(--xenon);
-  color: var(--xenon-ink);
+  background: var(--metal);
+  color: #0d1b2e;
 }
 .flag-light {
   background: #ffffff;
@@ -1495,11 +1509,11 @@ html[data-intro="reveal"] .hdr-in {
   width: 34px;
   height: 34px;
   border-radius: 10px;
-  background: var(--gold-metal);
-  color: var(--xenon-ink);
+  background: var(--wa);
+  color: #ffffff;
   box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.5),
-    0 0 18px -6px rgb(var(--xenon-rgb) / 0.7);
+    inset 0 1px 0 rgb(255 255 255 / 0.35),
+    0 0 18px -6px rgb(var(--wa-rgb) / 0.7);
   transition: rotate 600ms var(--ease-swift), scale 600ms var(--ease-swift);
 }
 @media (hover: hover) and (pointer: fine) {

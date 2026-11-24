@@ -209,6 +209,7 @@ function EmptyState({ onReset }: { onReset: () => void }) {
           Reset filter
         </PressButton>
         <PressLink
+          variant="wa"
           href={waLink("Halo MS Garage, saya sedang mencari mobil. Apakah ada stok yang belum tayang?")}
           className="w-full max-w-[280px]"
         >

@@ -2,11 +2,12 @@
 
 import { useRef, type ComponentProps } from "react";
 
-type Variant = "primary" | "ghost" | "icon";
+type Variant = "primary" | "wa" | "ghost" | "icon";
 
 const styles: Record<Variant, string> = {
   primary:
     "sweep sweep-strong inline-flex min-h-[52px] items-center justify-center gap-2.5 rounded-full btn-lux px-6 text-lead font-semibold",
+  wa: "sweep sweep-strong inline-flex min-h-[52px] items-center justify-center gap-2.5 rounded-full btn-wa px-6 text-lead font-semibold",
   ghost:
     "inline-flex min-h-[52px] items-center justify-center gap-2.5 rounded-full border border-platinum/20 px-6 text-lead font-medium text-platinum",
   icon: "inline-grid size-[52px] shrink-0 place-items-center rounded-full border border-platinum/20 text-platinum",
@@ -36,7 +37,7 @@ export function PressLink({
       style={sweepStyle}
       data-magnetic=""
       onPointerDown={(e) => {
-        if (variant === "primary") runSweep(ref.current);
+        if (variant === "primary" || variant === "wa") runSweep(ref.current);
         onPointerDown?.(e);
       }}
       {...props}
@@ -58,7 +59,7 @@ export function PressButton({
       className={`press ${styles[variant]} ${className}`}
       style={sweepStyle}
       onPointerDown={(e) => {
-        if (variant === "primary") runSweep(ref.current);
+        if (variant === "primary" || variant === "wa") runSweep(ref.current);
         onPointerDown?.(e);
       }}
       {...props}

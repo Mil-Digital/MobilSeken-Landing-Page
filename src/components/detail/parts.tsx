@@ -30,7 +30,7 @@ export function Description({ text }: { text: string }) {
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="press mt-2 -ml-1 min-h-11 px-1 text-body font-medium text-[var(--gold-deep)]"
+          className="press mt-2 -ml-1 min-h-11 px-1 text-body font-medium text-[var(--accent-text)]"
         >
           Baca selengkapnya
         </button>
@@ -44,7 +44,7 @@ export function ActionBar({ waHref, telHref }: { waHref: string; telHref: string
   return (
     <div className="fixed inset-x-0 bottom-0 z-40 border-t border-hairline bg-night/85 backdrop-blur-xl lg:hidden">
       <div className="mx-auto flex max-w-[640px] items-center gap-3 px-4 pt-3 pb-safe">
-        <PressLink href={waHref} className="flex-1">
+        <PressLink variant="wa" href={waHref} className="flex-1">
           <IconWhatsApp width={20} height={20} />
           Tanya via WhatsApp
         </PressLink>

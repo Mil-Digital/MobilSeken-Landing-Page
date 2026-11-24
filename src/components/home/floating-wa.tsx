@@ -51,7 +51,7 @@ export function FloatingWa() {
       data-show={show ? "" : undefined}
       className="floating-wa press fixed right-4 bottom-[max(16px,env(safe-area-inset-bottom))] z-30 inline-flex h-[52px] items-center gap-2.5 rounded-full border border-hairline bg-cabin/85 pr-5 pl-4 text-body font-semibold text-platinum shadow-[0_12px_32px_-12px_rgb(0_0_0/0.7)] backdrop-blur-xl"
     >
-      <span className="metal-gold grid size-8 place-items-center rounded-full">
+      <span className="wa-chip grid size-8 place-items-center rounded-full">
         <IconWhatsApp width={18} height={18} />
       </span>
       Tanya stok

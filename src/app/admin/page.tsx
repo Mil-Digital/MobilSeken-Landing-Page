@@ -15,7 +15,7 @@ export default function AdminHome() {
       <p className="mt-2 max-w-[60ch] text-body text-steel">
         Untuk menambah atau memperbarui mobil: buka iklan OLX MS Garage di browser, lalu ketuk tombol{" "}
         <strong className="text-platinum">Kirim ke MS Garage</strong>. Belum pasang tombolnya?{" "}
-        <Link href="/admin/tombol" className="text-[var(--gold-deep)] underline underline-offset-4">
+        <Link href="/admin/tombol" className="text-[var(--accent-text)] underline underline-offset-4">
           Lihat caranya
         </Link>
         .
@@ -67,7 +67,7 @@ async function CarList() {
               <CategorySelect id={c.id} value={c.category} />
               <StatusSelect id={c.id} value={c.status} />
             </span>
-            <Link href={carPath(c)} className="text-[var(--gold-deep)] underline underline-offset-4">
+            <Link href={carPath(c)} className="text-[var(--accent-text)] underline underline-offset-4">
               Lihat di web
             </Link>
             <a href={c.olx.url} target="_blank" rel="noopener" className="text-steel underline underline-offset-4">

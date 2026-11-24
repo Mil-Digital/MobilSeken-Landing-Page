@@ -35,7 +35,7 @@ export function Showroom() {
           </dl>
 
           <div className="flow-reveal mt-8 flex gap-3">
-            <PressLink href={waLink("Halo MS Garage, saya ingin datang ke showroom.")} className="flex-1 md:flex-none">
+            <PressLink variant="wa" href={waLink("Halo MS Garage, saya ingin datang ke showroom.")} className="flex-1 md:flex-none">
               <IconWhatsApp width={20} height={20} />
               Tanya via WhatsApp
             </PressLink>
