@@ -13,6 +13,8 @@ const nextConfig: NextConfig = {
   images: {
     formats: ["image/avif", "image/webp"],
     qualities: [75, 85],
+    // Foto mobil hasil impor disimpan di Vercel Blob.
+    remotePatterns: [{ protocol: "https", hostname: "*.public.blob.vercel-storage.com" }],
   },
   turbopack: {
     rules: {

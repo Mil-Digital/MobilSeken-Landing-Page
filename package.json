@@ -11,6 +11,8 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^1.2.1",
+    "@vercel/blob": "^2.9.0",
     "embla-carousel-autoplay": "^8.6.0",
     "embla-carousel-react": "^8.6.0",
     "motion": "^14.14.0",

@@ -3,7 +3,7 @@ import "server-only";
 import { createHash } from "node:crypto";
 import sharp from "sharp";
 import { allKnownIds, carPath, type CarImage, type CarStatus } from "@/lib/cars";
-import { putMedia, readStoredCars, writeStoredCars, type StoredCar } from "@/lib/store/local";
+import { putMedia, readStoredCars, saveCar, type StoredCar } from "@/lib/store/local";
 import type { OlxListing } from "./parse";
 
 const IMG_TIMEOUT = 15_000;
@@ -50,7 +50,7 @@ async function processImages(carId: string, listing: OlxListing): Promise<CarIma
     const base = sharp(buf).rotate(); // perbaiki orientasi EXIF
     // Satu ukuran sumber (1080px); next/image membuat ukuran lain sesuai layar.
     const large = await base.clone().resize({ width: 1080, withoutEnlargement: true }).webp({ quality: 88 }).toBuffer({ resolveWithObject: true });
-    const src = putMedia(`${carId}/${hash}-1080.webp`, large.data);
+    const src = await putMedia(`${carId}/${hash}-1080.webp`, large.data);
     const blur = await base.clone().resize(20).webp({ quality: 40 }).toBuffer();
     images.push({
       src,
@@ -63,10 +63,10 @@ async function processImages(carId: string, listing: OlxListing): Promise<CarIma
 }
 
 /** Kode unit berikutnya: tidak pernah memakai ulang kode yang pernah ada. */
-async function nextId(stored: StoredCar[]): Promise<string> {
+async function nextId(stored: StoredCar[], bump = 0): Promise<string> {
   const used = new Set([...(await allKnownIds()), ...stored.map((c) => c.id)]);
   const max = Math.max(0, ...[...used].map((id) => Number(id.replace(/\D/g, "")) || 0));
-  return `MS-${String(max + 1).padStart(4, "0")}`;
+  return `MS-${String(max + 1 + bump).padStart(4, "0")}`;
 }
 
 export type ImportResult = { id: string; path: string; created: boolean; photos: number };
@@ -76,9 +76,9 @@ export type ImportResult = { id: string; path: string; created: boolean; photos:
  * Iklan yang sama (ID iklan OLX) selalu memperbarui kode unit yang sama.
  */
 export async function importListing(listing: OlxListing, status: CarStatus): Promise<ImportResult> {
-  const stored = readStoredCars();
+  const stored = await readStoredCars();
   const existing = stored.find((c) => c.olx.listingId === listing.listingId);
-  const id = existing?.id ?? (await nextId(stored));
+  let id = existing?.id ?? (await nextId(stored));
   const images = await processImages(id, listing);
   if (images.length === 0) throw new Error("Tidak ada foto yang berhasil diproses.");
 
@@ -118,8 +118,16 @@ export async function importListing(listing: OlxListing, status: CarStatus): Pro
     },
   };
 
-  // Baca ulang sebelum menulis (meminimalkan tabrakan bila dua impor berjalan berdekatan).
-  const fresh = readStoredCars().filter((c) => c.id !== id);
-  writeStoredCars([car, ...fresh]);
+  if (existing) {
+    await saveCar(car);
+  } else {
+    // Mobil baru: jangan pernah menimpa kode unit yang baru saja dipakai impor lain.
+    let attempt = 0;
+    while (!(await saveCar({ ...car, id }, true))) {
+      if (++attempt > 5) throw new Error("Kode unit bentrok terus, coba lagi.");
+      id = await nextId(await readStoredCars(), attempt);
+    }
+    car.id = id;
+  }
   return { id, path: carPath(car), created: !existing, photos: images.length };
 }

@@ -27,7 +27,7 @@ export default function AdminHome() {
 
 async function CarList() {
   await connection(); // selalu baca data terbaru
-  const cars = readStoredCars();
+  const cars = await readStoredCars();
   if (cars.length === 0) {
     return (
       <div className="mt-8 rounded-[18px] border border-dashed border-hairline bg-cabin p-6 text-body text-steel">

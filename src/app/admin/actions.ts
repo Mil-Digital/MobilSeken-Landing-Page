@@ -13,7 +13,7 @@ export async function setCarStatus(id: string, status: CarStatus): Promise<{ ok:
   if (!["ready", "booking", "sold"].includes(status)) return { ok: false, error: "Status tidak dikenal." };
   if (!/^MS-\d{4}$/.test(id)) return { ok: false, error: "Kode unit tidak valid." };
   if (!storageWritable()) return { ok: false, error: "Penyimpanan belum tersambung." };
-  if (!updateStoredCar(id, { status })) return { ok: false, error: "Mobil tidak ditemukan." };
+  if (!(await updateStoredCar(id, { status }))) return { ok: false, error: "Mobil tidak ditemukan." };
   updateTag("cars");
   return { ok: true };
 }
