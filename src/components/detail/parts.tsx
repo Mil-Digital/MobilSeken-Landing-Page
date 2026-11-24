@@ -60,23 +60,25 @@ export function SimilarRow({ cars }: { cars: CardCar[] }) {
   return (
     <div className="flow-reveal no-scrollbar -mx-5 flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-px-5 px-5 pb-2 md:mx-0 md:grid md:grid-cols-4 md:px-0">
       {cars.map((c) => (
-        <Link key={c.id} href={c.path} className="flow-x press block w-[72%] max-w-[300px] shrink-0 snap-start md:w-auto">
-          <div className="relative aspect-[4/3] overflow-hidden rounded-[12px]">
+        <Link key={c.id} href={c.path} className="flow-x press ticket-shadow block w-[72%] max-w-[300px] shrink-0 snap-start md:w-auto">
+          <div className="ticket ticket-sm">
+          <div className="p-2">
+          <div className="relative aspect-[4/3] overflow-hidden rounded-[12px] bg-panel">
             <CarPhoto image={c.images[0]} alt={`${c.brand} ${c.model}`} sizes="(min-width: 768px) 280px, 72vw" />
             {c.status === "booking" && (
-              <span className="absolute top-2.5 left-2.5 rounded-full bg-signal px-2.5 py-0.5 text-micro font-semibold text-night">
+              <span className="flag flag-signal absolute top-2.5 left-0">
                 Booking
               </span>
             )}
           </div>
-          <p className="wide mt-3 truncate text-lead text-platinum">
-            {c.brand} {c.model}
-          </p>
-          <p className="tnum mt-0.5 text-body text-steel">
-            {c.year}
-            <span className="mx-2 inline-block h-3 w-px translate-y-[1px] bg-hairline" />
-            {priceShort(c.price)}
-          </p>
+          <p className="mt-3 px-1.5 text-micro text-steel">{c.brand}</p>
+          <p className="wide truncate px-1.5 pb-3 text-lead text-platinum">{c.model}</p>
+          </div>
+          <div className="ticket-stub">
+            <p className="price-tag tnum">{priceShort(c.price)}</p>
+            <span className="tnum text-body text-steel">{c.year}</span>
+          </div>
+          </div>
         </Link>
       ))}
     </div>

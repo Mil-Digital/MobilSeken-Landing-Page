@@ -42,3 +42,9 @@ next-env.d.ts
 
 # screenshot review desain (lokal saja)
 /screenshots/
+
+# data & foto hasil impor lokal (sebelum Neon/Blob tersambung)
+/.data/
+# halaman OLX yang disimpan manual dari browser (fixture parser ada di tests/fixtures/olx)
+/*_files/
+/* - Mobil Bekas - *.html

@@ -2,6 +2,8 @@
 // foto milik showroom diunduh dari website lama dan disimpan lokal (bukan hotlink).
 // Fase 2 menggantikan modul ini dengan query Neon Postgres; bentuk tipe `Car` sengaja mengikuti skema di brief.
 
+import { cacheTag } from "next/cache";
+import { readStoredCars } from "./store/local";
 import photos from "./dummy-photos.json";
 import { slugify } from "./format";
 
@@ -199,7 +201,13 @@ const RAW: Omit<Car, "images">[] = [
   },
 ];
 
-const CARS: Car[] = RAW.map((c) => ({ ...c, images: img(c.id as keyof typeof photos) }));
+const DUMMY: Car[] = RAW.map((c) => ({ ...c, images: img(c.id as keyof typeof photos) }));
+
+/** Semua mobil: katalog asli hasil impor OLX. Data contoh hanya dipakai bila katalog masih kosong. */
+function allCars(): Car[] {
+  const stored = readStoredCars();
+  return stored.length > 0 ? stored : DUMMY;
+}
 
 export const carName = (c: Pick<Car, "brand" | "model">) => `${c.brand} ${c.model}`;
 export const carTitle = (c: Pick<Car, "brand" | "model" | "variant" | "year">) =>
@@ -207,22 +215,36 @@ export const carTitle = (c: Pick<Car, "brand" | "model" | "variant" | "year">) =
 export const carSlug = (c: Car) => slugify(`${c.brand} ${c.model} ${c.variant} ${c.year}`);
 export const carPath = (c: Car) => `/mobil/${c.id}-${carSlug(c)}`;
 
-/** Mobil yang tampil di landing page (ready + booking). */
+/** Mobil yang tampil di landing page (ready + booking). Di-cache; impor baru memanggil updateTag("cars"). */
 export async function listCars(): Promise<Car[]> {
-  return CARS.filter((c) => c.status !== "sold").sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  "use cache";
+  cacheTag("cars");
+  return allCars()
+    .filter((c) => c.status !== "sold")
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
 }
 
 export async function getCar(id: string): Promise<Car | null> {
-  return CARS.find((c) => c.id === id) ?? null;
+  "use cache";
+  cacheTag("cars");
+  return allCars().find((c) => c.id === id) ?? null;
 }
 
+/** Dipakai proxy (redirect slug): baca langsung, tanpa cache. */
 export async function canonicalPathById(id: string): Promise<string | null> {
-  const car = CARS.find((c) => c.id === id);
+  const car = allCars().find((c) => c.id === id);
   return car ? carPath(car) : null;
 }
 
 export async function allCarIds() {
-  return CARS.map((c) => ({ id: c.id, path: carPath(c) }));
+  "use cache";
+  cacheTag("cars");
+  return allCars().map((c) => ({ id: c.id, path: carPath(c) }));
+}
+
+/** Semua kode unit yang pernah dipakai (untuk membuat kode baru tanpa memakai ulang). */
+export async function allKnownIds(): Promise<string[]> {
+  return [...readStoredCars().map((c) => c.id), ...DUMMY.map((c) => c.id)];
 }
 
 export async function similarCars(car: Car, limit = 4): Promise<Car[]> {

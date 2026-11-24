@@ -94,7 +94,7 @@ export function Gallery({
             </div>
           </div>
 
-          <div className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-night/65 to-transparent" />
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-black/40 to-transparent" />
         </div>
       </ViewTransition>
 
@@ -107,12 +107,12 @@ export function Gallery({
           type="button"
           onClick={back}
           aria-label="Kembali"
-          className="press grid size-11 place-items-center rounded-full bg-night/45 text-platinum backdrop-blur-md md:mt-3"
+          className="press grid size-11 place-items-center rounded-full bg-black/35 text-white backdrop-blur-md md:mt-3"
         >
           <IconBack />
         </button>
         {!dim && shown.length > 1 && (
-          <span className="tnum rounded-full bg-night/45 px-3 py-1.5 text-micro font-medium text-platinum backdrop-blur-md md:mt-3">
+          <span className="tnum rounded-full bg-black/35 px-3 py-1.5 text-micro font-medium text-white backdrop-blur-md md:mt-3">
             {index + 1}/{shown.length}
           </span>
         )}
@@ -127,7 +127,7 @@ export function Gallery({
                 type="button"
                 onClick={() => api?.scrollPrev()}
                 aria-label="Foto sebelumnya"
-                className="press pointer-events-auto absolute top-1/2 left-2 grid size-10 -translate-y-1/2 place-items-center rounded-full bg-night/55 text-platinum md:left-4 md:size-12"
+                className="press pointer-events-auto absolute top-1/2 left-2 grid size-10 -translate-y-1/2 place-items-center rounded-full bg-black/40 text-white md:left-4 md:size-12"
               >
                 <IconBack width={20} height={20} />
               </button>
@@ -137,7 +137,7 @@ export function Gallery({
                 type="button"
                 onClick={() => api?.scrollNext()}
                 aria-label="Foto berikutnya"
-                className="press pointer-events-auto absolute top-1/2 right-2 grid size-10 -translate-y-1/2 place-items-center rounded-full bg-night/55 text-platinum md:right-4 md:size-12"
+                className="press pointer-events-auto absolute top-1/2 right-2 grid size-10 -translate-y-1/2 place-items-center rounded-full bg-black/40 text-white md:right-4 md:size-12"
               >
                 <IconBack width={20} height={20} className="rotate-180" />
               </button>

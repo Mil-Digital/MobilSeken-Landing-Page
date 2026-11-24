@@ -9,12 +9,14 @@ import { CarPhoto } from "@/components/car-photo";
 import { IconBack, IconWhatsApp } from "@/components/icons";
 import { Odometer } from "@/components/odometer";
 import { PressLink, runSweep } from "@/components/press";
+import { RollText } from "@/components/roll-text";
 import type { CarImage, CarStatus } from "@/lib/cars";
 import { clamp, finePointer, lerp, reducedMotion, settleLoop } from "@/lib/fx";
-import { kmCompact, priceShort, transmissionShort } from "@/lib/format";
+import { kmCompact, priceShort } from "@/lib/format";
 import { markHeroReady, onIntroReveal } from "@/lib/intro";
 import { SITE, waLink } from "@/lib/site";
-import { StageLight, StudioBackdrop } from "./studio-backdrop";
+import mapImg from "../../../public/img/peta-showroom-terang.webp";
+import { StageLight, StudioBackdrop, type BackdropFx } from "./studio-backdrop";
 
 export type LineupCar = {
   id: string;
@@ -52,7 +54,9 @@ export function Hero({ cars, total }: { cars: LineupCar[]; total: number }) {
   const shades = useRef<(HTMLSpanElement | null)[]>([]);
   const slides = useRef<(HTMLLIElement | null)[]>([]);
   const glints = useRef<(HTMLSpanElement | null)[]>([]);
+  const fx = useRef<BackdropFx | null>(null);
   const [selected, setSelected] = useState(0);
+  const [switches, setSwitches] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [emblaRef, embla] = useEmblaCarousel({ loop: true, align: "center", duration: 32 }, [
     Autoplay({ playOnInit: false, delay: ADVANCE_MS, stopOnInteraction: false, stopOnMouseEnter: true, stopOnFocusIn: true }),
@@ -85,7 +89,7 @@ export function Hero({ cars, total }: { cars: LineupCar[]; total: number }) {
         const photo = photos.current[i];
         if (photo) photo.style.transform = `translate3d(${(-12 * d).toFixed(2)}%,0,0)`;
         const shade = shades.current[i];
-        if (shade) shade.style.opacity = (ad * 0.62).toFixed(3);
+        if (shade) shade.style.opacity = (ad * 0.42).toFixed(3);
         const slide = slides.current[i];
         if (slide) {
           const z = String(10 - Math.round(ad * 9));
@@ -100,7 +104,9 @@ export function Hero({ cars, total }: { cars: LineupCar[]; total: number }) {
     const sel = () => {
       const i = embla.selectedScrollSnap();
       setSelected(i);
+      setSwitches((n) => n + 1);
       runSweep(glints.current[i]);
+      fx.current?.boost();
     };
     const play = () => setPlaying(true);
     const stop = () => setPlaying(false);
@@ -202,9 +208,9 @@ export function Hero({ cars, total }: { cars: LineupCar[]; total: number }) {
     <section
       ref={ref}
       id="top"
-      className="hero-stage relative isolate overflow-hidden bg-night pt-[calc(var(--header-h)+env(safe-area-inset-top))] lg:flex lg:min-h-[100svh] lg:items-center"
+      className="hero-stage hero-sky relative isolate overflow-hidden pt-[calc(var(--header-h)+env(safe-area-inset-top))] lg:flex lg:min-h-[100svh] lg:items-center"
     >
-      <StudioBackdrop />
+      <StudioBackdrop fxRef={fx} anchorRef={tiltRef} />
 
       <div className="hero-grid relative mx-auto w-full max-w-[1280px] lg:px-10 lg:pb-10">
         {/* Judul */}
@@ -229,6 +235,23 @@ export function Hero({ cars, total }: { cars: LineupCar[]; total: number }) {
         <div className="hero-lineup relative [grid-area:stage] mt-5 lg:mt-0">
           <StageLight lightRef={lightRef} />
           <div ref={tiltRef} className="stage-tilt relative">
+            {/* Garis kecepatan sesaat setiap kali mobil berganti */}
+            {switches > 0 && (
+              <span key={switches} aria-hidden className="whoosh">
+                {[4, 9, 24, 47, 71, 90, 95].map((top, k) => (
+                  <span
+                    key={k}
+                    style={
+                      {
+                        top: `${top}%`,
+                        width: `${34 + ((k * 23) % 40)}%`,
+                        animationDelay: `${(k % 3) * 45}ms`,
+                      } as React.CSSProperties
+                    }
+                  />
+                ))}
+              </span>
+            )}
             <div ref={emblaRef} className="stage-viewport overflow-hidden" aria-roledescription="carousel" aria-label="Stok di showroom">
               <ul className="flex touch-pan-y pt-8 pb-12 lg:pt-12 lg:pb-16">
                 {cars.map((c, i) => (
@@ -237,7 +260,9 @@ export function Hero({ cars, total }: { cars: LineupCar[]; total: number }) {
                     ref={(el) => {
                       slides.current[i] = el;
                     }}
-                    className="relative min-w-0 shrink-0 grow-0 basis-[74%] px-[5px] sm:basis-[46%] md:basis-[38%] lg:basis-[60%] xl:basis-[56%]"
+                    className={`relative min-w-0 shrink-0 grow-0 basis-[74%] px-[5px] sm:basis-[46%] md:basis-[38%] lg:basis-[60%] xl:basis-[56%] ${
+                      i === selected ? "is-lit" : ""
+                    }`}
                     aria-roledescription="slide"
                     aria-label={`${i + 1} dari ${cars.length}`}
                   >
@@ -283,27 +308,24 @@ export function Hero({ cars, total }: { cars: LineupCar[]; total: number }) {
                           }}
                           className="coverflow-shade pointer-events-none absolute inset-0 bg-night"
                         />
-                        {c.status === "booking" && (
-                          <span className="absolute top-3 left-3 rounded-full bg-signal px-3 py-1 text-micro font-semibold text-night">
-                            Booking
-                          </span>
-                        )}
-                      </Link>
-                      {/* HUD: hanya untuk mobil aktif, muncul bertahap saat naik panggung */}
-                      {i === selected && (
-                        <>
-                          <span aria-hidden className="hud hud-a tnum">
-                            <span className="hud-dot" />
+                        {/* Bendera keterangan: rapi bertumpuk di kiri atas, "berkibar" masuk saat mobil naik panggung */}
+                        <span aria-hidden className="flags">
+                          {c.status === "booking" && (
+                            <span className="flag flag-signal" style={{ "--k": 0 } as React.CSSProperties}>
+                              Booking
+                            </span>
+                          )}
+                          <span className="flag flag-accent tnum" style={{ "--k": 1 } as React.CSSProperties}>
                             {c.year}
                           </span>
-                          <span aria-hidden className="hud hud-b tnum">
+                          <span className="flag flag-light tnum" style={{ "--k": 2 } as React.CSSProperties}>
                             {kmCompact(c.mileageKm)} km
                           </span>
-                          <span aria-hidden className="hud hud-c">
-                            {transmissionShort(c.transmission)}
+                          <span className="flag flag-ink" style={{ "--k": 3 } as React.CSSProperties}>
+                            {c.transmission === "Manual" ? "Manual" : "Otomatis"}
                           </span>
-                        </>
-                      )}
+                        </span>
+                      </Link>
                     </div>
                   </li>
                 ))}
@@ -334,10 +356,17 @@ export function Hero({ cars, total }: { cars: LineupCar[]; total: number }) {
               <IconBack className="rotate-180" />
             </button>
           </div>
+
+          {/* Nama model dicat di aspal, berganti bersama mobil (desktop) */}
+          <div aria-hidden className="floor-name">
+            <span key={car.id} style={{ "--len": car.model.length } as React.CSSProperties}>
+              {car.model}
+            </span>
+          </div>
         </div>
 
         {/* Info mobil yang sedang tersorot */}
-        <div className="hero-info [grid-area:info] px-5 lg:mt-12 lg:px-0" aria-live="polite">
+        <div className="hero-info [grid-area:info] px-5 lg:mt-9 lg:px-0" aria-live="polite">
           <div className="flex items-end justify-between gap-4">
             <div key={car.id} className="roll-in min-w-0">
               <p className="text-micro text-steel lg:text-body">{car.brand}</p>
@@ -366,7 +395,7 @@ export function Hero({ cars, total }: { cars: LineupCar[]; total: number }) {
           </div>
 
           {/* Rail thumbnail (desktop): lompat langsung ke mobil mana pun */}
-          <div className="mt-8 hidden items-center gap-2.5 lg:flex" role="tablist" aria-label="Pilih mobil">
+          <div className="mt-6 hidden items-center gap-2.5 lg:flex" role="tablist" aria-label="Pilih mobil">
             {cars.map((c, i) => (
               <button
                 key={c.id}
@@ -386,7 +415,7 @@ export function Hero({ cars, total }: { cars: LineupCar[]; total: number }) {
           </div>
         </div>
 
-        <div className="hero-cta [grid-area:cta] mt-6 flex gap-3 px-5 pb-[max(22px,env(safe-area-inset-bottom))] lg:mt-8 lg:px-0 lg:pb-0">
+        <div className="hero-cta [grid-area:cta] mt-6 flex gap-3 px-5 pb-[max(22px,env(safe-area-inset-bottom))] lg:mt-7 lg:px-0 lg:pb-0">
           <StockLink />
           <PressLink
             href={waLink("Halo MS Garage, saya ingin tanya stok mobil.")}
@@ -398,10 +427,51 @@ export function Hero({ cars, total }: { cars: LineupCar[]; total: number }) {
         </div>
       </div>
 
+      <RouteCard />
+
       <div data-header-sentinel className="absolute inset-x-0 bottom-0 h-px" />
     </section>
   );
 }
+
+/** Kartu navigasi ke showroom: potongan peta, rute, dan mobil kecil yang berjalan di rute (desktop). */
+function RouteCard() {
+  return (
+    <a
+      href={SITE.mapsUrl}
+      target="_blank"
+      rel="noopener"
+      data-magnetic=""
+      className="route-card press group"
+      aria-label={`Navigasi ke showroom, ${SITE.address.street}, buka ${SITE.hoursShort}`}
+    >
+      <span className="route-map relative block">
+        <Image src={mapImg} alt="" fill sizes="120px" className="object-cover opacity-80" />
+        <svg viewBox="0 0 120 72" className="route-svg" aria-hidden>
+          <path className="route-line" d={ROUTE} />
+          <path className="route-run" d={ROUTE} pathLength={1} />
+        </svg>
+        <span className="route-car" aria-hidden>
+          <svg viewBox="0 0 16 9" width="16" height="9">
+            <rect x="0.5" y="0.5" width="15" height="8" rx="2.6" fill="#e6eaf0" />
+            <rect x="9.2" y="1.5" width="3.2" height="6" rx="1" fill="#0b1a28" opacity="0.8" />
+            <rect x="2.6" y="1.8" width="2.2" height="5.4" rx="0.8" fill="#0b1a28" opacity="0.55" />
+          </svg>
+        </span>
+        <span className="route-pin" aria-hidden />
+      </span>
+      <span className="flex min-w-0 flex-col leading-tight">
+        <span className="text-micro text-steel">Navigasi ke showroom</span>
+        <span className="mt-1 truncate text-body font-medium text-platinum">
+          <RollText>{SITE.address.street}</RollText>
+        </span>
+        <span className="tnum mt-1 text-micro text-steel">Bandung · buka {SITE.hoursShort}</span>
+      </span>
+    </a>
+  );
+}
+
+const ROUTE = "M8 62 C 26 62, 26 40, 46 40 S 70 54, 84 34 S 100 12, 112 12";
 
 function Progress({ run, k }: { run: boolean; k: number }) {
   return (
@@ -431,7 +501,7 @@ function StockLink() {
         target.scrollIntoView({ behavior: reducedMotion() ? "auto" : "smooth" });
       }}
     >
-      Lihat semua stok
+      <RollText>Lihat semua stok</RollText>
     </a>
   );
 }

@@ -58,7 +58,7 @@ export function FilterSheet({
       {open && (
         <div className="fixed inset-0 z-50" role="dialog" aria-modal="true" aria-labelledby="filter-title">
           <m.div
-            className="absolute inset-0 bg-night/55 backdrop-blur-[6px]"
+            className="absolute inset-0 bg-[rgb(var(--platinum-rgb)/0.32)] backdrop-blur-[6px]"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}

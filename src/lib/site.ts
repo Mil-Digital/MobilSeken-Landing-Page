@@ -30,6 +30,12 @@ export function waLink(text?: string) {
   return text ? `${base}?text=${encodeURIComponent(text)}` : base;
 }
 
+/** "6282121356565" / "+6282121356565" → "0821-2135-6565" */
+export function phoneDisplay(n: string) {
+  const d = n.replace(/\D/g, "").replace(/^62/, "0");
+  return d.replace(/^(\d{4})(\d{4})(\d+)$/, "$1-$2-$3");
+}
+
 export function telLink() {
   return `tel:${SITE.phoneNumber.replace(/[^+\d]/g, "")}`;
 }

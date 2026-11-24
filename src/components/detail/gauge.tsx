@@ -89,8 +89,8 @@ export function KmGauge({ km, label }: { km: number; label: string }) {
       <svg viewBox="0 0 200 200" className="block w-full overflow-visible" aria-hidden>
         <defs>
           <linearGradient id="gauge-fill" x1="0" x2="1" y1="0" y2="0">
-            <stop offset="0" stopColor="#5f8fb8" />
-            <stop offset="1" stopColor="var(--xenon)" />
+            <stop offset="0" style={{ stopColor: "rgb(var(--xenon-rgb) / 0.45)" }} />
+            <stop offset="1" style={{ stopColor: "var(--xenon)" }} />
           </linearGradient>
           <filter id="gauge-glow" x="-30%" y="-30%" width="160%" height="160%">
             <feGaussianBlur stdDeviation="3" />
@@ -98,7 +98,7 @@ export function KmGauge({ km, label }: { km: number; label: string }) {
         </defs>
 
         {/* Lintasan */}
-        <path d={arcPath(START, START + SWEEP)} fill="none" stroke="rgb(142 153 168 / 0.16)" strokeWidth="7" strokeLinecap="round" />
+        <path d={arcPath(START, START + SWEEP)} fill="none" style={{ stroke: "rgb(var(--platinum-rgb) / 0.1)" }} strokeWidth="7" strokeLinecap="round" />
         {/* Isi dengan pendar xenon */}
         <path
           ref={fill}
@@ -109,7 +109,7 @@ export function KmGauge({ km, label }: { km: number; label: string }) {
           strokeLinecap="round"
           strokeDasharray={ARC_LEN}
           strokeDashoffset={ARC_LEN}
-          style={{ filter: "drop-shadow(0 0 5px rgb(168 216 255 / 0.55))" }}
+          style={{ filter: "drop-shadow(0 0 5px rgb(var(--xenon-rgb) / 0.35))" }}
         />
 
         {/* Garis skala */}
@@ -125,7 +125,7 @@ export function KmGauge({ km, label }: { km: number; label: string }) {
               y1={y1}
               x2={x2}
               y2={y2}
-              stroke={major ? "rgb(230 234 240 / 0.7)" : "rgb(142 153 168 / 0.35)"}
+              style={{ stroke: major ? "rgb(var(--platinum-rgb) / 0.7)" : "rgb(var(--platinum-rgb) / 0.25)" }}
               strokeWidth={major ? 1.6 : 1}
               strokeLinecap="round"
             />
@@ -140,9 +140,8 @@ export function KmGauge({ km, label }: { km: number; label: string }) {
               y={y}
               textAnchor="middle"
               dominantBaseline="middle"
-              fill="rgb(142 153 168)"
               fontSize="9.5"
-              style={{ fontVariantNumeric: "tabular-nums" }}
+              style={{ fontVariantNumeric: "tabular-nums", fill: "var(--steel)" }}
             >
               {Math.round((max * t) / 1000)}
             </text>
@@ -164,7 +163,7 @@ export function KmGauge({ km, label }: { km: number; label: string }) {
             opacity="0.8"
           />
         </g>
-        <circle cx={CX} cy={CY} r="7" fill="var(--cabin)" stroke="rgb(230 234 240 / 0.5)" strokeWidth="1.5" />
+        <circle cx={CX} cy={CY} r="7" strokeWidth="1.5" style={{ fill: "var(--cabin)", stroke: "rgb(var(--platinum-rgb) / 0.35)" }} />
         <circle cx={CX} cy={CY} r="2.5" fill="var(--xenon)" />
       </svg>
 

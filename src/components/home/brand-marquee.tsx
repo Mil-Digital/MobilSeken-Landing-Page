@@ -15,7 +15,7 @@ export function BrandMarquee({ brands }: { brands: { name: string; count: number
     const el = track.current;
     if (!el || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const anim = el.animate([{ transform: "translateX(0)" }, { transform: "translateX(-50%)" }], {
-      duration: 9000 + brands.length * 3500,
+      duration: 9000 + Math.max(8, brands.length) * 3500,
       iterations: Infinity,
     });
 
@@ -62,12 +62,15 @@ export function BrandMarquee({ brands }: { brands: { name: string; count: number
   };
 
   // Dua salinan supaya putaran mulus; salinan kedua disembunyikan dari pembaca layar.
+  // Dengan sedikit merek, daftar diulang supaya satu putaran tetap lebih lebar dari layar terlebar.
+  const reps = Math.max(1, Math.ceil(8 / Math.max(1, brands.length)));
+  const items = Array.from({ length: reps }, () => brands).flat();
   const row = (copy: number) =>
-    brands.map((b, i) => (
-      <li key={`${copy}-${b.name}`} className="flex shrink-0 items-center" aria-hidden={copy ? true : undefined}>
+    items.map((b, i) => (
+      <li key={`${copy}-${i}`} className="flex shrink-0 items-center" aria-hidden={copy || i >= brands.length ? true : undefined}>
         <button
           type="button"
-          tabIndex={copy ? -1 : undefined}
+          tabIndex={copy || i >= brands.length ? -1 : undefined}
           onClick={() => pick(b.name)}
           className={`marquee-word wide px-5 text-[44px] leading-none md:text-[72px] ${
             i % 2 ? "marquee-outline" : "text-platinum"

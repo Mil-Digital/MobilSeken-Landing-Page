@@ -1,0 +1,395 @@
+[
+ {
+  "id": "MS-0009",
+  "status": "ready",
+  "featured": true,
+  "brand": "Toyota",
+  "model": "Avanza",
+  "variant": "1.5 Veloz Q Bensin-AT",
+  "year": 2023,
+  "price": 211000000,
+  "mileageKm": 70000,
+  "transmission": "Otomatis",
+  "fuel": "Bensin",
+  "color": "Silver",
+  "bodyType": "MPV",
+  "location": "Bandung",
+  "description": "**Harga diatas khusus kredit dgn leasing rekanan\n**Harga cash beda\n\nBebas banjir & tabrakan\nTipe Q non TSS\n1 tgn dr baru\nFull servis record \nCat full original\nKamera 360\nBan baru\nShock dpn baru \n\n(BCA) \nOTR 211jt\nTDP 16jt\n6.220jt x 47\n\nTDP 14jt\n5.350jt x 59\n\nBunga Spesial 0% (N) \nTDP 167jt\n7.467jt x 11\n\nMS Garage\nJl. Sriwijaya no 29\nBandung",
+  "specs": [
+   {
+    "label": "Kapasitas mesin",
+    "value": ">1.000 - 1.500 cc"
+   },
+   {
+    "label": "Jarak tempuh (OLX)",
+    "value": "65.000-70.000 km"
+   },
+   {
+    "label": "Kode iklan OLX",
+    "value": "949539558"
+   }
+  ],
+  "images": [
+   {
+    "src": "/catalog/MS-0009/abe85bfd209e7b09-1080.webp",
+    "width": 1080,
+    "height": 719,
+    "blurDataURL": "data:image/webp;base64,UklGRoAAAABXRUJQVlA4IHQAAADwAwCdASoUAA0APu1iqU2ppaOiMAgBMB2JZwAAYejdIR52pCmPE94AAP7wSik3/nyJ6wrJQQZ23iK4Z//JGXfiL6ViYv+saNSFApCDrF7iz1i6SK2xlH3UwADXbp0Lp7GtU6KvUDUW4Do7ceD5UH8dh5AAAA=="
+   },
+   {
+    "src": "/catalog/MS-0009/e6c802bd84b4958c-1080.webp",
+    "width": 1080,
+    "height": 719,
+    "blurDataURL": "data:image/webp;base64,UklGRo4AAABXRUJQVlA4IIIAAADwAwCdASoUAA0APu1iqk2ppaQiMAgBMB2JZwDKABQWv2etW+DmowkAAP7dujbumYnNPhbaGCJDzqMfF2tyGzsNssN/bbFIpdOBOk8Qnk3sRKn11HnGbWKJEgjuCGZjmh32D2f/MdLvAtLct8pecgJ2F6ELNHqeDme3yOweZrOnEkAA"
+   },
+   {
+    "src": "/catalog/MS-0009/d16c0e04732bb8f5-1080.webp",
+    "width": 1080,
+    "height": 719,
+    "blurDataURL": "data:image/webp;base64,UklGRooAAABXRUJQVlA4IH4AAAAQBACdASoUAA0APu1iqU2ppaQiMAgBMB2JZwDG9B8m/5ubF5OgxFFOoADOLB3735qhpiw97yll6aAszC1MFfEu6wCKQnGKrxXwq8bmhY1dPSZGCxRizNXMipSgrtPDsSGpuv8PYVtKKYYyYXIxKNou2itP8S8t+YBw/DI6gAA="
+   },
+   {
+    "src": "/catalog/MS-0009/5987f8236f76e052-1080.webp",
+    "width": 1080,
+    "height": 719,
+    "blurDataURL": "data:image/webp;base64,UklGRogAAABXRUJQVlA4IHwAAADQAwCdASoUAA0APu1iqU2ppaOiMAgBMB2JZwDKACHiBn+u/5FWkAAA4gasGmdGzCaoBZI8G4GecJzVnk6yEZrutN91goOsue7OwY2Vhw8s+xuSbtO8YcfD7Uf27bjjEebFtsSjUwH1Jvdi7gHMOI6TOJZX9pPgD1q+qAAA"
+   },
+   {
+    "src": "/catalog/MS-0009/9dc3ab2bbfd14d07-1080.webp",
+    "width": 1080,
+    "height": 719,
+    "blurDataURL": "data:image/webp;base64,UklGRn4AAABXRUJQVlA4IHIAAAAwBACdASoUAA0APu1iqU2ppaQiMAgBMB2JaQAAWnS3UUO/b5TFAKhZgAAA/nkYVGS8EEfsjBDNe07K871ACcRGkhlCgdCvm/W1KrhSBMDuBBmGfRJA+TLZds7enH9nJUoLkUTmqjdOsBI1NMMrvh5AAAA="
+   },
+   {
+    "src": "/catalog/MS-0009/fd40686ad1973bdb-1080.webp",
+    "width": 1080,
+    "height": 719,
+    "blurDataURL": "data:image/webp;base64,UklGRowAAABXRUJQVlA4IIAAAADQAwCdASoUAA0APu1iqU2ppaOiMAgBMB2JQBdgBDXXtvd0Dsr5OQAA/qNc3yLH41TgY4oP6whi89L4qzX0O7sz/U/m9U+fw/AUTDpT3sT1RCuDUxydkAL7o34Jrg2ml2CgTBJY0OnHaHLcGOoBDj4vIf0XVB0AsOK793rJTcAAAA=="
+   },
+   {
+    "src": "/catalog/MS-0009/130f8a77b0942701-1080.webp",
+    "width": 1080,
+    "height": 719,
+    "blurDataURL": "data:image/webp;base64,UklGRoIAAABXRUJQVlA4IHYAAACwAwCdASoUAA0APu1iqU2ppaQiMAgBMB2JZwDLLCPeXmDEymqcQAD+qg3WH8XgI6aVVoVn27Eq9r3BKtZFsuOvE1jGCLQjdUD9A4Cg9Yl0/g/IUz1Ao8PUu7J0w43SGddmyDwj5XNN457epDVT0mvtfJeiY0AA"
+   },
+   {
+    "src": "/catalog/MS-0009/3c4cae95828d20c2-1080.webp",
+    "width": 1080,
+    "height": 719,
+    "blurDataURL": "data:image/webp;base64,UklGRoAAAABXRUJQVlA4IHQAAADwAwCdASoUAA0APu1kqU4ppaOiMAgBMB2JZQAAUTV+6sEPUPlO2p5wAP7SBNXC14bia5GN5V8NkSPC47huyjEha5+8dkP8iuQ/qoOhQ8T/1h4XcEk5vmV3eIvp77UeabgMv8CL6TmH5HG7Vcm+9C5TEQsAAA=="
+   },
+   {
+    "src": "/catalog/MS-0009/216acaddef60ef08-1080.webp",
+    "width": 1080,
+    "height": 719,
+    "blurDataURL": "data:image/webp;base64,UklGRpoAAABXRUJQVlA4II4AAABwBACdASoUAA0APu1iqU2ppaOiMAgBMB2JYwCdG1btv8B48P5GhzsL0g2fwAD+eT7rKZwgFLX6Gq8rofb7/CGUCcYW9gDhnHIVQBlZcFWMXbOPa1m6AQRJ31Y7CQRJm5qJQLdpv/jg8vgvL+dsUbDqRbVBkCnZlkcbEyLljkEqrFu9T6HeJARiXaengAAA"
+   },
+   {
+    "src": "/catalog/MS-0009/7407b5b319a3e642-1080.webp",
+    "width": 1080,
+    "height": 719,
+    "blurDataURL": "data:image/webp;base64,UklGRqgAAABXRUJQVlA4IJwAAAAwBACdASoUAA0APu1iqU2ppaOiMAgBMB2JZwDCgYs2tSWnqPjXJWFdDAAA4kkKpVZHl6YBvjUajfQJkoZfQYNAAyofrIVbQapod0YutKTf9NjuLIwywFLTpad/B3Lg9RcDlzoxUJAP5UIOd9XZZgLnUnTm1wubv97yf5oV61GMgKPUy2h0pverLAWvbvv0gjbbk3uyjvFQ+qDmAAA="
+   },
+   {
+    "src": "/catalog/MS-0009/412f56e3d412131c-1080.webp",
+    "width": 1080,
+    "height": 719,
+    "blurDataURL": "data:image/webp;base64,UklGRpAAAABXRUJQVlA4IIQAAAAQBACdASoUAA0APu1iqU2ppaQiMAgBMB2JQAAKVWnhJ+S85VWsObJxtAD+5B9K5TW/ZkQhQKHzCrTRiJdigZ7VjBgT+20mls8hXLekeo6s8ilIJMAh3ge8I1F2792Y7iLwBJdV3SIJyTMUdZnZiD32v8LQNgj4d6Z7Wv9EXa0PBJoAAAA="
+   },
+   {
+    "src": "/catalog/MS-0009/e79df3dee400c890-1080.webp",
+    "width": 1080,
+    "height": 719,
+    "blurDataURL": "data:image/webp;base64,UklGRowAAABXRUJQVlA4IIAAAACwAwCdASoUAA0APu1iqU2ppaQiMAgBMB2JZwAAW+LSNjc8/Jc2AADicRdhYA4lvOvXmSL9EvO5jrANsP9J43kO4IxG0Ftx/v423iR48crIrzV24D0j7sEHy64eHkkcHjojkS+Gijot/WC/30R6uBozzsVu+lZKzthUQ2SEwgQAAA=="
+   },
+   {
+    "src": "/catalog/MS-0009/924aeff0c9c59ad8-1080.webp",
+    "width": 1080,
+    "height": 719,
+    "blurDataURL": "data:image/webp;base64,UklGRpoAAABXRUJQVlA4II4AAAAQBACdASoUAA0APu1iqU2ppaOiMAgBMB2JYwC7ACHrVMI0P51idiyxQAD+yT/ueSCVoOn3AlTqMmP4tBf4OFoUVlkaH+aTex2r3b3+hCM+Lo/q5ravSw1p3o/qXtIuFXH8L733x4WHGqOzcFShw+G25JhMj0Ny+q1jUewPl22VIPovy5RTxBwc2KcDgAAA"
+   },
+   {
+    "src": "/catalog/MS-0009/c5e32b8489f374da-1080.webp",
+    "width": 1080,
+    "height": 719,
+    "blurDataURL": "data:image/webp;base64,UklGRoYAAABXRUJQVlA4IHoAAAAQBACdASoUAA0APu1iqU2ppaOiMAgBMB2JaQDMHCFsGDXwSFi+PXfsUAD+9DCEj/tzE8CKlWu7QIvVWdn0EeZK+ftCUpu1XNfHonXumfkHx6/8FD/GPDXW2HmBP2k5GwRVVdtI/sR9z/gf+ZX8Jf+JXWfp92cnlnEAAA=="
+   },
+   {
+    "src": "/catalog/MS-0009/708549cd1f89fc58-1080.webp",
+    "width": 1080,
+    "height": 719,
+    "blurDataURL": "data:image/webp;base64,UklGRoIAAABXRUJQVlA4IHYAAADQAwCdASoUAA0APu1iqU2ppaOiMAgBMB2JZwAAXk9gJrZwlISX4gAA/uocA5jXAlejHJ9cPtBf8vm6ZwXNlN3X5kO0yK7pdWSz26CHGiqN5+j8n1z1qr3jcu3TIr+jNaxWDj+Bqh7SN+XElDPQl8oi8MTusAAA"
+   },
+   {
+    "src": "/catalog/MS-0009/8dffbb2990d3ec56-1080.webp",
+    "width": 1080,
+    "height": 719,
+    "blurDataURL": "data:image/webp;base64,UklGRpoAAABXRUJQVlA4II4AAABwBACdASoUAA0APu1iqU2ppaOiMAgBMB2JZwC7AYvzIrGSvb5naL9+kcKQAAD+vE24qOruxmbT9Bpnu09x/3VTuOR+TStgIjUnxa/ttrTZg9ip8CORiWs/v2WHtL2RgOlmv+IVtbfAChur14WaakaQmE0mGHjUHmz/DzeyVDP1r0eiqrtCTGM2y6JBJAAA"
+   },
+   {
+    "src": "/catalog/MS-0009/f7ef814d098c5173-1080.webp",
+    "width": 1080,
+    "height": 719,
+    "blurDataURL": "data:image/webp;base64,UklGRoQAAABXRUJQVlA4IHgAAABQBACdASoUAA0APu1iqU2ppaQiMAgBMB2JZwDG9CB/zvrgyZxVaRSjrWsAAP7xaml/hxVDBOqAUfd7hjRK5bMa8pAM5Zl/8n5Z6v68MA2bXV7OjXtxy7scP9NqtG49q0MAJYrICi5uDTwwGWsIqPfJwUaP43EwAAA="
+   },
+   {
+    "src": "/catalog/MS-0009/8c14243471789c3e-1080.webp",
+    "width": 1080,
+    "height": 719,
+    "blurDataURL": "data:image/webp;base64,UklGRpYAAABXRUJQVlA4IIoAAACQAwCdASoUAA0APu1iqU2ppaOiMAgBMB2JZwDImB4W3jxN9txgAPik8ZAEzbDNmXzTx36ZxXBCIEeUFJFN3pDfZn1ApXzLeHPviVq26IA1snSLg7K1QfSgdEh9eIzEcM9dt1Jdf/9KLiB+Jy+INz4EXzu0z33aAMldyRreThKamXTcVRvGlDQAAAA="
+   }
+  ],
+  "createdAt": "2026-11-24",
+  "source": "olx",
+  "olx": {
+   "listingId": "949539558",
+   "url": "https://www.olx.co.id/item/toyota-avanza-veloz-q-20232024-d-iid-949539558",
+   "sellerId": "44649495",
+   "status": "active",
+   "syncedAt": "2026-11-24T13:50:07.404Z",
+   "title": "Toyota Avanza Veloz Q 2023/2024 (D)"
+  }
+ },
+ {
+  "id": "MS-0008",
+  "status": "ready",
+  "featured": true,
+  "brand": "Wuling",
+  "model": "Cloud EV",
+  "variant": "Pro Listrik-AT",
+  "year": 2024,
+  "price": 235000000,
+  "mileageKm": 45000,
+  "transmission": "Otomatis",
+  "fuel": "Listrik",
+  "color": "Lainnya",
+  "bodyType": "SUV",
+  "location": "Bandung",
+  "description": "**Harga diatas khusus kredit dgn leasing rekanan \n**Harga cash beda\n\nBebas Laka Banjir\nGaransi Batt Seumur Hidup, klo plat D enaknya akan terus bisa perpjg, jd garansi batt seumur hidupnya akan terus berjalan. Beda dg Area Lain spt Jakarta\nWall Ch\nPortable Ch\nPlat D pajak panjang\n\nOTR 235jt (Mits) \nTDP 68jt\n5.753jt x 47\n\nTDP 66jt\n5.401jt x 59\n\nMS Garage\nJl. Sriwijaya 29\nBandung",
+  "specs": [
+   {
+    "label": "Kapasitas mesin",
+    "value": "<1.000 cc"
+   },
+   {
+    "label": "Jarak tempuh (OLX)",
+    "value": "40.000-45.000 km"
+   },
+   {
+    "label": "Kode iklan OLX",
+    "value": "949566460"
+   }
+  ],
+  "images": [
+   {
+    "src": "/catalog/MS-0008/2574a8a6b4b4cf26-1080.webp",
+    "width": 1080,
+    "height": 719,
+    "blurDataURL": "data:image/webp;base64,UklGRooAAABXRUJQVlA4IH4AAACwAwCdASoUAA0APu1iqU2ppaQiMAgBMB2JZwDLLBY3zffQ38DdAAD+6gGvqE90VPetiUTEAWfZ32TbUH/Z5rJiyB5jWZlK4rOVQvVOzOZ8wruoZJ5IN/sy7a/Jf3zvpYwYDeaLkrM8hhXOU+h2z3plQcOaTC2nDBSTaHoAAAA="
+   },
+   {
+    "src": "/catalog/MS-0008/69ab4d5205cf285b-1080.webp",
+    "width": 1080,
+    "height": 719,
+    "blurDataURL": "data:image/webp;base64,UklGRoYAAABXRUJQVlA4IHoAAADwAwCdASoUAA0APu1iqU2ppaQiMAgBMB2JZQC06CHur1dRRmFePD9AAP4ZO56SH4BIEO1INdSk0vN9+ATDY271VtZKKV+EZJSH0Ky+HbhCzzuWPJc+ukxxUTy8aMStQ+WHOFATwDGF+0hqvD+V9y4Nxgc8LEdHDkAAAA=="
+   },
+   {
+    "src": "/catalog/MS-0008/b17e3ab05f728c01-1080.webp",
+    "width": 1080,
+    "height": 719,
+    "blurDataURL": "data:image/webp;base64,UklGRpgAAABXRUJQVlA4IIwAAAAQBACdASoUAA0APu1iqU2ppaOiMAgBMB2JZwCzgCKRif0ax5ugMS2yAAD+2G97aNfsM8dw4aGqbSTI6Et19gt+WVwlsU3qumbyz7TRad/9eWYLON8Wd8ktbJalMj13Z6MdSRZUZsVVgxgY6tFWHUOnoe63fOJRwagb53G1EYO0+l1QwxcPebmy8ILgAA=="
+   },
+   {
+    "src": "/catalog/MS-0008/97962e6a3222beb5-1080.webp",
+    "width": 1080,
+    "height": 719,
+    "blurDataURL": "data:image/webp;base64,UklGRngAAABXRUJQVlA4IGwAAACwAwCdASoUAA0APu1iqU2ppaOiMAgBMB2JZwAAW9xMWG2zvcOJAAD+6V8OG41XgIyC7B30m2BwIynvI03f+wL3FOI7ji4XtUBOpxNzqYWNgePTpKN84gnaLlBabeLyroZPm6NltD/PJ7XYAAA="
+   },
+   {
+    "src": "/catalog/MS-0008/98eff945af0a26e5-1080.webp",
+    "width": 1080,
+    "height": 719,
+    "blurDataURL": "data:image/webp;base64,UklGRowAAABXRUJQVlA4IIAAAADQAwCdASoUAA0APu1iqU2ppaQiMAgBMB2JZwAAYXWTuShnUi53tIAA/ubPn6IYQGcGVQ1a2DryANmewDbOOEtb+7atZAXIebdZ5lBN8lmKhyEXiiMm2tzaeYGPs553/ox2RbBtw5gtcdEXLzfU/00P7mNhYtBGEdBTHGdDLK4AAA=="
+   },
+   {
+    "src": "/catalog/MS-0008/6ed017386574de66-1080.webp",
+    "width": 1080,
+    "height": 719,
+    "blurDataURL": "data:image/webp;base64,UklGRogAAABXRUJQVlA4IHwAAAAQBACdASoUAA0APu1iqU2ppaOiMAgBMB2JZQCAAAfRkjSwtUoHr1iwAAD+s/7y99YvhS5zXEnc31UzjEXqVW73iOHeKxLj44XBs1iLX9bXBFzQ3PauyrwKw9S3/BYH+tomh7/2cg4czqN0ZCa756V7NVHPPB89qXPEgAAA"
+   },
+   {
+    "src": "/catalog/MS-0008/4bff86a684e3c189-1080.webp",
+    "width": 1080,
+    "height": 719,
+    "blurDataURL": "data:image/webp;base64,UklGRogAAABXRUJQVlA4IHwAAADQAwCdASoUAA0APu1iqU2ppaOiMAgBMB2JZwAAYctfWr83PPstFWAA/tvppKj09eVdo2g9fH1WUiZfeFzzLI6Qocb4cBPda4KZyE2GXXucgDEkJnq6Chwmb2tnrjYg1gOIE4BpN16rbrGiyb76uSh6XAGe9g2Tyv42AAAA"
+   },
+   {
+    "src": "/catalog/MS-0008/ba22698eb320d08b-1080.webp",
+    "width": 1080,
+    "height": 719,
+    "blurDataURL": "data:image/webp;base64,UklGRoQAAABXRUJQVlA4IHgAAACwAwCdASoUAA0APu1iqU2ppaQiMAgBMB2JZwAAW9XQDwAcFcKTEAD+vJ1+MvG9LsqejofWvMvr6MDPMi5oC0A8rxNGkW94gUgj8pV/MlJd3EW0UOlnN5f/hW01oSH4UsBD9x3QbzUGu2ZpvN4gsmhRl0hiC9AgAAA="
+   },
+   {
+    "src": "/catalog/MS-0008/6fcafbde4e6eadea-1080.webp",
+    "width": 1080,
+    "height": 719,
+    "blurDataURL": "data:image/webp;base64,UklGRo4AAABXRUJQVlA4IIIAAAAwBACdASoUAA0APu1iqU2ppaOiMAgBMB2JZQAML+DfM0TtMR/OIM2o6AAA+U3/knJYLxdADk5Cj8kVIu+VOKOyThU8H/vzu9BfrmCiVugfXoWcFGi7/QCPh7pYKA4t3PSYm55qkFAvJiifX6nP/NB3C1GuT5tlv73cv67FCxrVAAAA"
+   },
+   {
+    "src": "/catalog/MS-0008/7337044ffb4ceb86-1080.webp",
+    "width": 1080,
+    "height": 719,
+    "blurDataURL": "data:image/webp;base64,UklGRnYAAABXRUJQVlA4IGoAAADwAwCdASoUAA0APu1iqU2ppaOiMAgBMB2JZwDImBuTd9au3wz8wVXAAP7lOuxCpD7K5ofYtvdbgYdmw6IYGp6VaO3yz3UFN1zPaZ+4zH++VGVeMWy9hsqd6GtY4LFa72Jk/ChoPYEELkgA"
+   },
+   {
+    "src": "/catalog/MS-0008/1d06626e01421752-1080.webp",
+    "width": 1080,
+    "height": 719,
+    "blurDataURL": "data:image/webp;base64,UklGRpgAAABXRUJQVlA4IIwAAADwAwCdASoUAA0APu1iqU2ppaOiMAgBMB2JZQAD46lin+Adq0ksQZqAAMxQUv7+pkfm5wMW7vJBm0EAJ9PGYeB6PH9N1016g2Zao7YVNPzM8sa5XikOdo4KX0XaNjZPlDLJbfZsbG1bO17XpvhtDebiYtmZnAY/qCjD6gfZAhF+TnS6OxmESLFXuBQAAA=="
+   }
+  ],
+  "createdAt": "2026-11-24",
+  "source": "olx",
+  "olx": {
+   "listingId": "949566460",
+   "url": "https://www.olx.co.id/item/wuling-cloud-ev-pro-20242025-d-460km-listrik-iid-949566460",
+   "sellerId": "44649495",
+   "status": "active",
+   "syncedAt": "2026-11-24T13:47:02.705Z",
+   "title": "Wuling Cloud EV Pro 2024/2025 (D) 460km Listrik"
+  }
+ },
+ {
+  "id": "MS-0007",
+  "status": "ready",
+  "featured": true,
+  "brand": "Jeep",
+  "model": "Sahara",
+  "variant": "JK asli 3.8 Rubicon Wrangler Facelift",
+  "year": 2011,
+  "price": 654000000,
+  "mileageKm": 55000,
+  "transmission": "Otomatis",
+  "fuel": "Bensin",
+  "color": "Putih",
+  "bodyType": "Jeep",
+  "location": "Bandung",
+  "description": "**Harga diatas khusus kredit dgn leasing rekanan\n**Hrga cash beda\n\nBebas Laka Banjir\nSahara asli\nHeater Jok\nModif Hedon\nLift Kit\nBan 35 MT\nShock Bilstein Reservoir update depan belakang\nLampu tembak atas bawah\nBemper besi RSE\nKnalpot HKS\nTenaga dan posisi kaki gas enak banget dibanding Rubicon dan Wrangler\nAndroid\nVekg Black Rhino\n\nNiaga\nOTR 654jt\nTDP 189jt\n15.301jt x 47\n\nTDP 189jt \n18.601jt x 35\n\nBunga Spesial 0%\nTDP 192jt\n20jt x 11\n\nMS Garage\nJl. Sriwijaya 29\nBandung",
+  "specs": [
+   {
+    "label": "Kapasitas mesin",
+    "value": ">3.000 cc"
+   },
+   {
+    "label": "Jarak tempuh (OLX)",
+    "value": "50.000-55.000 km"
+   },
+   {
+    "label": "Kode iklan OLX",
+    "value": "949414596"
+   }
+  ],
+  "images": [
+   {
+    "src": "/catalog/MS-0007/435aadf4fd7bff47-1080.webp",
+    "width": 1080,
+    "height": 659,
+    "blurDataURL": "data:image/webp;base64,UklGRmoAAABXRUJQVlA4IF4AAADQAwCdASoUAAwAPu1iqU2ppaQiMAgBMB2JYwDCgB6GtqEVw+ltPAAA/o8JIICTYv/BD9rLZh4RMBoO9LgMfk3ieb02PX+qCje+AfEGbWqpfmvyEWK8GKjegYhpkAAA"
+   },
+   {
+    "src": "/catalog/MS-0007/5cc7a7a89e2f390b-1080.webp",
+    "width": 1080,
+    "height": 606,
+    "blurDataURL": "data:image/webp;base64,UklGRnQAAABXRUJQVlA4IGgAAADQAwCdASoUAAsAPu1iqU2ppaQiMAgBMB2JZQC/OCIfhjyme3jol6AA/Nb66n137W4RRv3pEw4btDvakue7o8aEcZY6Nyxjo6IqI/HreFLgK9eHFQi7C6HU0Bgxfa4DLa3+TOWRWoAAAA=="
+   },
+   {
+    "src": "/catalog/MS-0007/df8a1df25d33c350-1080.webp",
+    "width": 1080,
+    "height": 1080,
+    "blurDataURL": "data:image/webp;base64,UklGRpIAAABXRUJQVlA4IIYAAADwBACdASoUABQAPu1srVIppaQiqAgBMB2JZwDKABEuGNEm35u2QhIIojjVwHi5c2AA/tQO+4RQrXTmWa/nWeBkCst3gvyPDJYOQOR9zkddal9bbQ/6L2OX7max19UAD5B2bcvyxFi1Q2kHN55m3ofhW/jKNMBfdRCArRyhE0kfTaGWsAAAAA=="
+   },
+   {
+    "src": "/catalog/MS-0007/5cf32487c3efb92c-1080.webp",
+    "width": 607,
+    "height": 1080,
+    "blurDataURL": "data:image/webp;base64,UklGRu4AAABXRUJQVlA4IOIAAABwBQCdASoUACQAPu1mq04ppaQyKqwCQB2JYwDFyYxsmDDAlDHa4BoaE8ix43dAGj68GTugAPdPVv9khaI0NtrfMlqWQxy5RX+unRVQnYEvJeh/dvSj7cdXnDcZ61BU4K8VrH7y0DP0OME3FuWI6EO6ShscjO1KKV1TeUrXCjES2RbPxgNt3tQyiCx5rFiZAaKoNlCZ/2n1+e1cnDoYFrpp/6PN7gt+rbmBERzXQwND2YluSe9JM/ImFzs01+7bv7WAC4vtsJqn66RZbevRzkDzx978xjbN6WPcyNnvxNASoAAA"
+   },
+   {
+    "src": "/catalog/MS-0007/f77d944ef16aa632-1080.webp",
+    "width": 1080,
+    "height": 606,
+    "blurDataURL": "data:image/webp;base64,UklGRmwAAABXRUJQVlA4IGAAAADwAwCdASoUAAsAPu1iqU2ppaOiMAgBMB2JZQC/UuAAV7uPfCEuaFWAAP6wkei1Gc3KzzrxJ/McINgJ5oBuZZynRnkQw8NLmQrHn3ryRsIwRn0nPIFJECDg4sdhAXerAAA="
+   },
+   {
+    "src": "/catalog/MS-0007/39ac45065136d331-1080.webp",
+    "width": 1080,
+    "height": 606,
+    "blurDataURL": "data:image/webp;base64,UklGRoIAAABXRUJQVlA4IHYAAABwAwCdASoUAAsAPu1iqU2ppaQiMAgBMB2JZQAARMdi+0LAMAAA/DgU6znHz+9x5G/GBT03rx0qmEDpvxqW2Sdlua/fOBXX7FDjq8xg+FCb5WXFse8I8l0PW8APhrrcTxnwI7kA3z0QJ/+JOn7k/S9GExgIAAAA"
+   },
+   {
+    "src": "/catalog/MS-0007/2d604e6eb3882246-1080.webp",
+    "width": 606,
+    "height": 1080,
+    "blurDataURL": "data:image/webp;base64,UklGRrQAAABXRUJQVlA4IKgAAACwBQCdASoUACQAPu1iqlCppKOiqrgMATAdiWUAxkAir1zSqdT7eHnZ7s+SjPipljLiYmhzAgAA/skFn8TKEEI8fYJrn1Djd396xDNjYrYITy0WVt9EGBg5acfS74HVSyXIpcKVBTdviCPpmjZPZ3mDWS62Gbmzsi4O3dg0oHuLkESyf49PKHTRgScssXvXfR8fIlUqld1RlyXq6J4axSHayJ4V0ORogAA="
+   },
+   {
+    "src": "/catalog/MS-0007/4ec3fd7b7e02ae73-1080.webp",
+    "width": 1080,
+    "height": 606,
+    "blurDataURL": "data:image/webp;base64,UklGRm4AAABXRUJQVlA4IGIAAACwAwCdASoUAAsAPu1kq04ppaQiMAgBMB2JZwDKACHgZqO0Vm00AAD+wNbq5PNNkTn1htOWRVQyPix8POnO50lAIAfS8u9YnN5Agyc8DCZwfIzvBy/QnpIcah8Qe+LmU+AAAA=="
+   },
+   {
+    "src": "/catalog/MS-0007/a3d4dced0ee2d72b-1080.webp",
+    "width": 1080,
+    "height": 606,
+    "blurDataURL": "data:image/webp;base64,UklGRpAAAABXRUJQVlA4IIQAAACQAwCdASoUAAsAPu1iqU2ppaOiMAgBMB2JYwAAI78+tHmEWAwAAOJ5husV/lrhcu18o0cSVxj308/iAm8e+YCt2lGqKsanLA0zeUb1frycHDTTADPlKqJmwtGXT5OB0eGNV7RTW3Bxbe4+2gY6UeHiYWqXdhF9sysKoQomDBTgNDZAAAA="
+   },
+   {
+    "src": "/catalog/MS-0007/e86648054107b92d-1080.webp",
+    "width": 1080,
+    "height": 606,
+    "blurDataURL": "data:image/webp;base64,UklGRngAAABXRUJQVlA4IGwAAADQAwCdASoUAAsAPu1iqU2ppaQiMAgBMB2JZwAATvjxc9qK7PiKvmAA+XARP+A8UlN1AS/edWJ6MKOi2yX8ximA8DVsqsqwc8gym3aiNeqdIKvwxeWAHlbt7rvux56K3beaCehrm099fFmAAAA="
+   },
+   {
+    "src": "/catalog/MS-0007/4b3e7a0b34a3c638-1080.webp",
+    "width": 1080,
+    "height": 606,
+    "blurDataURL": "data:image/webp;base64,UklGRogAAABXRUJQVlA4IHwAAAAQBACdASoUAAsAPu1iqU2ppaOiMAgBMB2JQAB8mTiNZ+0GBvaXSg80qAD+pYrmmCjeaODBkCsXfQELFcbIy4cuyRjGTN+eozxQmCyeHPOKqO9Wf54nchzFFJ7XppnkO9n/Kjs9VKyhA0vnXZP7uqXXWU3SfTQuEAwCSCAA"
+   },
+   {
+    "src": "/catalog/MS-0007/0c02cf677b773430-1080.webp",
+    "width": 1080,
+    "height": 606,
+    "blurDataURL": "data:image/webp;base64,UklGRnYAAABXRUJQVlA4IGoAAADwAwCdASoUAAsAPu1iqU2ppaQiMAgBMB2JZwDE2YtytZGOdJXY41EuAMtL8C5Pvd9dp8kcyKkFsT+dsGOT0qLr7pmuRwE1CTIxQPhSarF9cPiPMnq3HifwJ3KXkZpSf+Za0oJqZ19z8DAA"
+   },
+   {
+    "src": "/catalog/MS-0007/49a2cff2b0fe95b6-1080.webp",
+    "width": 1080,
+    "height": 607,
+    "blurDataURL": "data:image/webp;base64,UklGRngAAABXRUJQVlA4IGwAAABwAwCdASoUAAsAPu1iqU2ppaQiMAgBMB2JZwAAYcUcxJbLB4AA/u0WyDs/VzUvLYTSTZdki8OpUIJigBQyNVvVZTxGaGgspVWLI1d3FzK5mUhy4DZvAGXqHMSHulJQqwDcPCEp5XlqTjQgAAA="
+   },
+   {
+    "src": "/catalog/MS-0007/cb6915c2851d42e2-1080.webp",
+    "width": 1080,
+    "height": 607,
+    "blurDataURL": "data:image/webp;base64,UklGRlQAAABXRUJQVlA4IEgAAABQAwCdASoUAAsAPu1iqU2ppaQiMAgBMB2JZwAAW8BD3PsaaAD+6gGOfrKcBraHvuG9OL3GcNywqR6rUd6hSoCpm4kSfdgAAAA="
+   },
+   {
+    "src": "/catalog/MS-0007/6b7809810a2cc2d8-1080.webp",
+    "width": 607,
+    "height": 1080,
+    "blurDataURL": "data:image/webp;base64,UklGRp4AAABXRUJQVlA4IJIAAACQBQCdASoUACQAPu1ep02ppKOiNVgIATAdiWcAzjgT/iZmg8/eWN8TrcT1jURLCUHdwHRQAAD9c/HWL7XLSJ5rU3QO72KjlI3mczpRLlf3sDmmgFyxZjwxGRgsr/tEjVME5NSCfBTnN0UHaUeOiFEqdcet4Fx2ANVg2jTu2bSqsOzwhT1fbm2W1iU2cRqDl4AAAA=="
+   }
+  ],
+  "createdAt": "2026-11-24",
+  "source": "olx",
+  "olx": {
+   "listingId": "949414596",
+   "url": "https://www.olx.co.id/item/jeep-jk-sahara-asli-38-rubicon-wrangler-20112012-facelift-iid-949414596",
+   "sellerId": "44649495",
+   "status": "active",
+   "syncedAt": "2026-11-24T13:44:58.159Z",
+   "title": "Jeep JK Sahara asli 3.8 Rubicon Wrangler 2011/2012 Facelift"
+  }
+ }
+]

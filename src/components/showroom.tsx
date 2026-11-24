@@ -4,7 +4,7 @@ import { Emblem } from "@/components/emblem";
 import { IconPhone, IconPin, IconWhatsApp } from "@/components/icons";
 import { PressLink } from "@/components/press";
 import { SITE, telLink, waLink } from "@/lib/site";
-import map from "../../public/img/peta-showroom.webp";
+import map from "../../public/img/peta-showroom-terang.webp";
 
 export function Showroom() {
   return (

@@ -100,7 +100,7 @@ export function CarBrowser({ cars }: { cars: CardCar[] }) {
         </div>
 
         {shown.length > 0 ? (
-          <div className="grid gap-x-6 gap-y-14 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-x-5 gap-y-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-y-8">
             <AnimatePresence mode="popLayout" initial={false}>
               {shown.map((car, i) => (
                 <m.div

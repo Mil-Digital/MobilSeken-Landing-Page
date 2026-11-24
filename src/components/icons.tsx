@@ -57,3 +57,30 @@ export const IconExpand = (p: P) => (
     <path d="M14 4h6v6M10 20H4v-6M20 4l-6.5 6.5M4 20l6.5-6.5" />
   </svg>
 );
+
+/* Ikon kecil untuk spesifikasi di kartu mobil */
+export const IconCalendar = (p: P) => (
+  <svg {...base} {...p}>
+    <rect x="4" y="5.5" width="16" height="14.5" rx="2.5" />
+    <path d="M4 10h16M8.5 3.5v4M15.5 3.5v4" />
+  </svg>
+);
+
+export const IconGauge = (p: P) => (
+  <svg {...base} {...p}>
+    <path d="M4.2 17.5a8.5 8.5 0 1 1 15.6 0" />
+    <path d="M12 13.5 15.8 9" />
+    <circle cx="12" cy="13.8" r="1.4" />
+  </svg>
+);
+
+export const IconGear = (p: P) => (
+  <svg {...base} {...p}>
+    <circle cx="6" cy="5.5" r="1.6" />
+    <circle cx="12" cy="5.5" r="1.6" />
+    <circle cx="18" cy="5.5" r="1.6" />
+    <circle cx="6" cy="18.5" r="1.6" />
+    <circle cx="12" cy="18.5" r="1.6" />
+    <path d="M6 7.1v9.8M12 7.1v9.8M18 7.1V12H6" />
+  </svg>
+);

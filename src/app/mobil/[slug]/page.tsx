@@ -105,7 +105,7 @@ export default async function CarPage({ params }: PageProps<"/mobil/[slug]">) {
                 <Odometer value={priceFull(car.price)} delay={250} stagger={45} />
               </p>
               {car.status === "booking" && (
-                <span className="rounded-full bg-signal px-3 py-1 text-micro font-semibold text-night">Booking</span>
+                <span className="rounded-full bg-signal px-3 py-1 text-micro font-semibold text-[var(--signal-ink)]">Booking</span>
               )}
             </div>
           </header>
@@ -177,7 +177,7 @@ function SoldView({ car, similar }: { car: Car; similar: CardCar[] }) {
       <div className="relative">
         <Gallery id={car.id} images={car.images} alt={name} dim />
         <div className="pointer-events-none absolute inset-x-0 bottom-0 mx-auto max-w-[1200px] px-5 pb-6 md:px-14">
-          <span className="inline-flex items-center gap-2 rounded-full border border-sold/50 bg-night/60 px-3 py-1 text-micro font-semibold text-platinum backdrop-blur">
+          <span className="inline-flex items-center gap-2 rounded-full border border-sold/60 bg-black/55 px-3 py-1 text-micro font-semibold text-white backdrop-blur">
             <span className="size-1.5 rounded-full bg-sold" />
             Terjual
           </span>

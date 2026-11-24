@@ -43,6 +43,14 @@ export default async function Home() {
       };
     });
 
+  const menuCars = lineup.slice(0, 4).map((c) => ({
+    id: c.id,
+    path: c.path,
+    name: `${c.brand} ${c.model}`,
+    image: c.image,
+    focus: c.focus,
+  }));
+
   const brands = [...new Set(cars.map((c) => c.brand))]
     .sort((a, b) => a.localeCompare(b))
     .map((name) => ({ name, count: cars.filter((c) => c.brand === name).length }));
@@ -65,7 +73,7 @@ export default async function Home() {
   return (
     <>
       <Intro />
-      <SiteHeader />
+      <SiteHeader cars={menuCars} total={cars.length} />
       <PageFlow>
       <main>
         <Hero cars={lineup} total={cars.length} />
