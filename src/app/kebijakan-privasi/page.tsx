@@ -37,7 +37,8 @@ export default function Privacy() {
           <section className="flow-reveal">
             <h2>Cookie dan Meta Pixel</h2>
             <p>
-              Kami memakai cookie pihak pertama untuk mengingat sumber kunjungan selama 30 hari, serta Meta Pixel dan
+              Kami memakai penyimpanan peramban pihak pertama (cookie/local storage) berisi kode acak untuk menghitung
+              kunjungan dan mengingat sumber kunjungan, serta Meta Pixel dan
               Conversions API untuk mengukur hasil iklan dan menampilkan iklan yang relevan di Facebook dan Instagram.
               Data dikirim ke Meta Platforms dalam bentuk teknis dan tidak berisi nama atau nomor telepon kamu.
             </p>

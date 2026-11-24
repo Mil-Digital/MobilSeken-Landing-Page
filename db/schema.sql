@@ -49,3 +49,13 @@ create table if not exists events (
 create index if not exists events_ts_idx on events (ts desc);
 create index if not exists events_type_ts_idx on events (type, ts desc);
 create index if not exists events_car_idx on events (car_id) where car_id is not null;
+
+-- Analytics: atribusi iklan (Meta/Google) dan pengunjung unik.
+alter table events add column if not exists visitor text;       -- id anonim per browser (localStorage)
+alter table events add column if not exists utm_content text;   -- nama iklan (Meta: {{ad.name}})
+alter table events add column if not exists utm_term text;      -- nama ad set (Meta: {{adset.name}})
+alter table events add column if not exists click_id text;      -- 'fbclid' | 'gclid' | 'ttclid' (ada/tidaknya saja, bukan nilainya)
+alter table events add column if not exists channel text;       -- meta_ads | meta_organic | google_ads | google | tiktok | direct | other
+alter table events add column if not exists platform text;      -- facebook | instagram | messenger | audience_network | …
+create index if not exists events_session_idx on events (session);
+create index if not exists events_channel_ts_idx on events (channel, ts desc);

@@ -2154,3 +2154,96 @@ html[data-intro="reveal"] .studio {
     display: none;
   }
 }
+
+/* ───────────── Admin: tema gelap netral + kartu dashboard ───────────── */
+.admin-dark {
+  --night: #0d0e11;
+  --cabin: #17181c;
+  --panel: #212328;
+  --platinum: #f1f1ef;
+  --steel: #a0a1a8;
+  --hairline: rgb(255 255 255 / 0.08);
+  --night-rgb: 13 14 17;
+  --cabin-rgb: 23 24 28;
+  --panel-rgb: 33 35 40;
+  --platinum-rgb: 241 241 239;
+  --xenon: #f1f1ef;
+  --xenon-ink: #0d0e11;
+  --xenon-rgb: 241 241 239;
+  --accent-text: #9ec5f4;
+  /* warna seri grafik (divalidasi untuk latar gelap) */
+  --viz-1: #3987e5;
+  --viz-2: #d95926;
+  --viz-3: #199e70;
+  --viz-4: #c98500;
+  --viz-5: #9085e9;
+  --viz-6: #d55181;
+  --viz-muted: #6b6e76;
+  --good: #3ecf8e;
+  --bad: #f2777a;
+  color-scheme: dark;
+  background:
+    radial-gradient(rgb(255 255 255 / 0.05) 1px, transparent 1.2px) 0 0 / 22px 22px,
+    var(--night);
+  color: var(--platinum);
+}
+.dash-card {
+  position: relative;
+  border-radius: 28px;
+  background: var(--cabin);
+  border: 1px solid var(--hairline);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.04);
+  padding: 22px;
+}
+@media (min-width: 768px) {
+  .dash-card {
+    padding: 28px;
+  }
+}
+.dash-inset {
+  border-radius: 20px;
+  border: 1px solid var(--hairline);
+  background: rgb(255 255 255 / 0.015);
+}
+.dash-num {
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  line-height: 0.95;
+  font-feature-settings: "tnum";
+}
+.dash-label {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--steel);
+}
+.dash-badge {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 8px;
+  border-radius: 8px;
+  background: rgb(13 14 17 / 0.82);
+  color: #f1f1ef;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11.5px;
+  font-weight: 600;
+}
+.dash-tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  border-radius: 20px;
+  padding: 14px 16px;
+  min-height: 0;
+}
+.dash-tile-name {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}

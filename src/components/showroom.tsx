@@ -8,7 +8,7 @@ import map from "../../public/img/peta-showroom-terang.webp";
 
 export function Showroom() {
   return (
-    <section id="showroom" aria-labelledby="showroom-title" className="flow-divider scroll-mt-[var(--header-h)] border-t border-hairline">
+    <section id="showroom" data-track-area="showroom" aria-labelledby="showroom-title" className="flow-divider scroll-mt-[var(--header-h)] border-t border-hairline">
       <div className="mx-auto grid max-w-[1200px] gap-10 px-5 py-16 md:grid-cols-2 md:items-center md:px-10 md:py-24">
         <div>
           <h2 id="showroom-title" className="flow-mask wide-section text-title text-platinum md:text-display">
@@ -83,7 +83,7 @@ export function Showroom() {
 
 export function SiteFooter() {
   return (
-    <footer className="flow-divider border-t border-hairline">
+    <footer data-track-area="footer" className="flow-divider border-t border-hairline">
       <div className="flow-reveal mx-auto flex max-w-[1200px] flex-col gap-6 px-5 pt-10 pb-[max(40px,env(safe-area-inset-bottom))] md:flex-row md:items-center md:justify-between md:px-10">
         <div className="flex items-center gap-4">
           <Emblem className="w-12 text-platinum/80" />

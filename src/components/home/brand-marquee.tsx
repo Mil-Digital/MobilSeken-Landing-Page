@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { track as trackEvent } from "@/lib/track";
 
 export const BRAND_EVENT = "ms-brand";
 
@@ -72,6 +73,7 @@ export function BrandMarquee({ brands }: { brands: { name: string; count: number
   }, [brands.length]);
 
   const pick = (name: string) => {
+    trackEvent("brand", { label: name });
     window.dispatchEvent(new CustomEvent(BRAND_EVENT, { detail: name }));
     const target = document.getElementById("stok");
     target?.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });

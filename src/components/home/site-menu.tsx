@@ -76,6 +76,7 @@ export function SiteMenu({
   return createPortal(
     <div
       id="site-menu"
+      data-track-area="menu"
       role="dialog"
       aria-modal="true"
       aria-label="Menu"
@@ -96,6 +97,7 @@ export function SiteMenu({
                     onClick={go(l.id)}
                     tabIndex={open ? undefined : -1}
                     aria-current={active === l.id ? "location" : undefined}
+                    data-track="nav"
                     className="menu-link group"
                   >
                     <span className="menu-index tnum">{String(i + 1).padStart(2, "0")}</span>
@@ -123,7 +125,8 @@ export function SiteMenu({
                   target="_blank"
                   rel="noopener"
                   tabIndex={open ? undefined : -1}
-                  className="menu-link group"
+                  data-track="nav"
+                    className="menu-link group"
                 >
                   <span className="menu-index tnum">04</span>
                   <span className="menu-mask">

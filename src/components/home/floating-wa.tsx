@@ -45,6 +45,7 @@ export function FloatingWa() {
 
   return (
     <a
+      data-track-area="tombol-melayang"
       href={waLink("Halo MS Garage, saya ingin tanya stok mobil.")}
       aria-hidden={!show}
       tabIndex={show ? undefined : -1}

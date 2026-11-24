@@ -99,6 +99,7 @@ export function SiteHeader({ cars = [], total }: { cars?: MenuCar[]; total?: num
   return (
     <>
       <header
+        data-track-area="header"
         className={`ink hdr-dark fixed inset-x-0 top-0 z-40 ${solid && !open ? "is-solid" : ""}`}
         style={{ paddingTop: "env(safe-area-inset-top)", viewTransitionName: "site-header" }}
       >
@@ -149,6 +150,7 @@ export function SiteHeader({ cars = [], total }: { cars?: MenuCar[]; total?: num
                       scrollToSection(id);
                     }}
                     aria-current={active === id ? "location" : undefined}
+                    data-track="nav"
                     className="nav-link relative flex h-11 items-center gap-2 rounded-[10px] px-3.5 text-body text-platinum/80 transition-colors hover:text-platinum"
                   >
                     <span aria-hidden className={`nav-dot ${active === id ? "is-on" : ""}`} />

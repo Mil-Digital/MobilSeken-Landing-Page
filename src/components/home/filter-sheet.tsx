@@ -7,6 +7,7 @@ import { IconClose } from "@/components/icons";
 import { PressButton } from "@/components/press";
 import { priceShort } from "@/lib/format";
 import { defaultFilters, priceStep, type Bounds, type Filters, type Sort, type Trans } from "@/lib/filters";
+import { track } from "@/lib/track";
 
 const sheetSpring = { type: "spring", stiffness: 420, damping: 40, mass: 0.9 } as const;
 
@@ -161,6 +162,13 @@ export function FilterSheet({
                 className="tnum flex-1"
                 disabled={count === 0}
                 onClick={() => {
+                  const used = [
+                    (draft.price[0] > bounds.price[0] || draft.price[1] < bounds.price[1]) && "harga",
+                    (draft.year[0] > bounds.year[0] || draft.year[1] < bounds.year[1]) && "tahun",
+                    draft.trans !== "all" && "transmisi",
+                    draft.sort !== "newest" && "urutan",
+                  ].filter(Boolean);
+                  track("filter", { label: used.join(", ") || "tanpa perubahan" });
                   onChange(draft);
                   onClose();
                 }}

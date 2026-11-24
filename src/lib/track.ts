@@ -1,0 +1,111 @@
+// Tracker pengunjung (sisi browser). Mengirim event ke /api/track lewat sendBeacon (tidak menunda klik).
+// - Asal kunjungan (UTM, fbclid/gclid, referrer) dicatat sekali di awal sesi lalu ikut di setiap event,
+//   jadi lead dihitung ke iklan/kampanye yang membawa pengunjung masuk.
+// - Tidak berjalan di /admin, di browser otomatis, atau bila pemilik menekan "Abaikan kunjungan saya".
+
+import type { EventType } from "@/lib/analytics/events";
+
+type Attr = { src?: string; med?: string; cmp?: string; cnt?: string; trm?: string; cid?: string; ref?: string };
+
+const rid = () => Math.random().toString(36).slice(2, 12) + Math.random().toString(36).slice(2, 8);
+
+function store(kind: "local" | "session", key: string, make: () => string): string {
+  try {
+    const s = kind === "local" ? localStorage : sessionStorage;
+    let v = s.getItem(key);
+    if (!v) {
+      v = make();
+      s.setItem(key, v);
+    }
+    return v;
+  } catch {
+    return make();
+  }
+}
+
+export const IGNORE_KEY = "ms_notrack";
+
+export function trackingDisabled(): boolean {
+  if (location.pathname.startsWith("/admin")) return true;
+  try {
+    if (localStorage.getItem(IGNORE_KEY) === "1") return true;
+    const test = localStorage.getItem("ms_track_test") === "1";
+    if (navigator.webdriver && !test) return true;
+    // Jangan catat dari laptop (localhost / jaringan lokal) supaya laporan hanya berisi pengunjung asli.
+    if (!test && /^(localhost|127\.|10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.)/.test(location.hostname)) return true;
+  } catch {
+    /* penyimpanan diblokir: tetap lacak */
+  }
+  return false;
+}
+
+let attrCache: Attr | null = null;
+function attribution(): Attr {
+  if (attrCache) return attrCache;
+  const raw = store("session", "ms_a", () => {
+    const q = new URLSearchParams(location.search);
+    const g = (k: string) => q.get(k)?.slice(0, 200) || undefined;
+    let ref: string | undefined;
+    try {
+      if (document.referrer && new URL(document.referrer).host !== location.host) ref = document.referrer.slice(0, 300);
+    } catch {
+      /* referrer tidak valid */
+    }
+    const cid = q.has("fbclid") ? "fbclid" : q.has("gclid") ? "gclid" : q.has("ttclid") ? "ttclid" : undefined;
+    const a: Attr = { src: g("utm_source"), med: g("utm_medium"), cmp: g("utm_campaign"), cnt: g("utm_content"), trm: g("utm_term"), cid, ref };
+    return JSON.stringify(a);
+  });
+  try {
+    attrCache = JSON.parse(raw) as Attr;
+  } catch {
+    attrCache = {};
+  }
+  return attrCache!;
+}
+
+/** Kode unit dari URL detail mobil (/mobil/MS-0007-…). */
+export const carFromPath = (path: string) => path.match(/^\/mobil\/(MS-\d{4})/)?.[1] ?? null;
+
+export function track(type: EventType, opts: { label?: string | null; car?: string | null; path?: string } = {}) {
+  if (typeof window === "undefined" || trackingDisabled()) return;
+  const path = opts.path ?? location.pathname;
+  const body = JSON.stringify({
+    type,
+    path,
+    car: opts.car ?? carFromPath(path),
+    label: opts.label ?? null,
+    s: store("session", "ms_s", rid),
+    v: store("local", "ms_v", rid),
+    a: attribution(),
+  });
+  try {
+    if (navigator.sendBeacon?.("/api/track", new Blob([body], { type: "application/json" }))) return;
+  } catch {
+    /* jatuh ke fetch */
+  }
+  fetch("/api/track", { method: "POST", body, keepalive: true, headers: { "content-type": "application/json" } }).catch(() => {});
+}
+
+/** Area tombol yang diklik, dari [data-track-area] terdekat (mis. "header", "hero", "stok"). */
+const areaOf = (el: Element) => el.closest<HTMLElement>("[data-track-area]")?.dataset.trackArea ?? "lainnya";
+
+/** Satu pendengar klik untuk seluruh halaman: WhatsApp, telepon, peta, kartu mobil, dan [data-track]. */
+export function installClickTracking() {
+  document.addEventListener(
+    "click",
+    (e) => {
+      const el = (e.target as Element | null)?.closest?.("a,button");
+      if (!el) return;
+      const href = el.getAttribute("href") ?? "";
+      const area = areaOf(el);
+      if (/^https:\/\/(wa\.me|api\.whatsapp\.com)\//.test(href)) return track("wa_click", { label: area });
+      if (href.startsWith("tel:")) return track("tel_click", { label: area });
+      if (/google\.[a-z.]+\/maps|maps\.app\.goo\.gl|goo\.gl\/maps|share\.google/.test(href)) return track("maps_click", { label: area });
+      const car = carFromPath(href);
+      if (car && car !== carFromPath(location.pathname)) return track("card_click", { car, label: area });
+      const t = (el as HTMLElement).dataset.track as EventType | undefined;
+      if (t) track(t, { label: (el as HTMLElement).dataset.trackLabel ?? el.textContent?.trim().slice(0, 60) ?? null });
+    },
+    { capture: true, passive: true },
+  );
+}

@@ -216,6 +216,7 @@ export function Hero({ cars, total }: { cars: LineupCar[]; total: number }) {
     <section
       ref={ref}
       id="top"
+      data-track-area="hero"
       className="hero-stage hero-sky relative isolate overflow-hidden pt-[calc(var(--header-h)+env(safe-area-inset-top))] lg:flex lg:min-h-[100svh] lg:items-center"
     >
       <StudioBackdrop fxRef={fx} anchorRef={tiltRef} />

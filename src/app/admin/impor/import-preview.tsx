@@ -87,7 +87,7 @@ export function ImportPreview({ sellers }: { sellers: string[] }) {
           <Link href={result.path} className="press inline-flex h-12 items-center rounded-full bg-xenon px-6 text-body font-semibold text-xenon-ink">
             Lihat di web
           </Link>
-          <Link href="/admin" className="press inline-flex h-12 items-center rounded-full border border-hairline px-6 text-body text-platinum">
+          <Link href="/admin/katalog" className="press inline-flex h-12 items-center rounded-full border border-hairline px-6 text-body text-platinum">
             Daftar mobil
           </Link>
         </div>
@@ -312,7 +312,7 @@ function BulkImport({ items, sellers }: { items: BulkItem[]; sellers: string[] }
       <div className="sticky bottom-0 -mx-4 mt-6 border-t border-hairline bg-cabin/95 px-4 pt-3 pb-[max(12px,env(safe-area-inset-bottom))] backdrop-blur-xl">
         {finished ? (
           <div className="flex gap-2">
-            <Link href="/admin" className="press inline-flex h-12 flex-1 items-center justify-center rounded-full bg-xenon px-5 text-body font-semibold text-xenon-ink">
+            <Link href="/admin/katalog" className="press inline-flex h-12 flex-1 items-center justify-center rounded-full bg-xenon px-5 text-body font-semibold text-xenon-ink">
               Lihat daftar mobil
             </Link>
             <Link href="/" className="press inline-flex h-12 items-center rounded-full border border-hairline px-5 text-body text-platinum">

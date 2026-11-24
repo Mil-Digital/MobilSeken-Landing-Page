@@ -4,9 +4,11 @@ import { readFileSync } from "node:fs";
 
 if (!process.env.DATABASE_URL) throw new Error("DATABASE_URL kosong (isi di .env.local)");
 const sql = neon(process.env.DATABASE_URL);
+// Buang komentar dulu (komentar boleh ada di belakang ";"), baru pecah per pernyataan.
 const ddl = readFileSync(new URL("../db/schema.sql", import.meta.url), "utf8")
+  .replace(/--.*$/gm, "")
   .split(/;\s*\n/)
-  .map((s) => s.replace(/--.*$/gm, "").trim())
+  .map((s) => s.trim().replace(/;$/, ""))
   .filter(Boolean);
 for (const stmt of ddl) await sql.query(stmt);
 const tables = await sql`select table_name from information_schema.tables where table_schema = 'public' order by 1`;

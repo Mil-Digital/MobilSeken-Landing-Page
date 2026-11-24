@@ -8,6 +8,7 @@ import Image from "next/image";
 import { CarPhoto } from "@/components/car-photo";
 import { IconBack } from "@/components/icons";
 import type { CarImage } from "@/lib/cars";
+import { track } from "@/lib/track";
 
 const Viewer = dynamic(() => import("./viewer").then((m) => m.Viewer), { ssr: false });
 
@@ -80,6 +81,7 @@ export function Gallery({
                   onClick={() => {
                     setViewerLoaded(true);
                     setOpen(i);
+                    track("photo_open", { label: "galeri" });
                   }}
                 >
                   <CarPhoto

@@ -100,7 +100,7 @@ export default async function CarPage({ params }: PageProps<"/mobil/[slug]">) {
           <Gallery id={car.id} images={car.images} alt={title} />
         </div>
 
-        <aside className="px-5 md:px-10 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:self-start lg:px-0 lg:sticky lg:top-8">
+        <aside data-track-area="detail" className="px-5 md:px-10 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:self-start lg:px-0 lg:sticky lg:top-8">
           <header className="pt-7 lg:pt-0">
             <p className="text-lead text-steel">{car.brand}</p>
             <h1 className="hero-rise wide mt-1 text-display text-platinum md:text-hero">{car.model}</h1>
@@ -174,7 +174,7 @@ export default async function CarPage({ params }: PageProps<"/mobil/[slug]">) {
 
         <div className="mx-auto max-w-[1200px] px-5 md:px-10">
           {similar.length > 0 && (
-            <section className="mt-14 mb-14" aria-labelledby="similar-title">
+            <section data-track-area="mobil-serupa" className="mt-14 mb-14" aria-labelledby="similar-title">
               <h2 id="similar-title" className="flow-mask wide-section mb-5 text-title text-platinum">
                 Mobil serupa
               </h2>
@@ -207,7 +207,7 @@ function SoldView({ car, similar }: { car: Car; similar: CardCar[] }) {
       </div>
 
       <div className="mx-auto max-w-[1200px] px-5 md:px-10">
-        <header className="pt-8">
+        <header data-track-area="terjual" className="pt-8">
           <p className="text-body text-steel">{name}</p>
           <h1 className="wide-section mt-2 text-display text-platinum">Mobil ini sudah terjual</h1>
           <p className="mt-4 max-w-[46ch] text-body text-steel">
@@ -223,7 +223,7 @@ function SoldView({ car, similar }: { car: Car; similar: CardCar[] }) {
         </header>
 
         {similar.length > 0 && (
-          <section className="mt-14 mb-16" aria-labelledby="similar-title">
+          <section data-track-area="mobil-serupa" className="mt-14 mb-16" aria-labelledby="similar-title">
             <h2 id="similar-title" className="flow-mask wide-section mb-5 text-title text-platinum">
               Masih tersedia
             </h2>

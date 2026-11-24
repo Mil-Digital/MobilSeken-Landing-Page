@@ -11,6 +11,7 @@ import { CATEGORIES } from "@/lib/category";
 import { PressButton, PressLink } from "@/components/press";
 import { advancedCount, applyFilters, boundsOf, defaultFilters, type CardCar, type Filters } from "@/lib/filters";
 import { waLink } from "@/lib/site";
+import { track } from "@/lib/track";
 
 // Bottom sheet berat dimuat hanya saat dibuka.
 const FilterSheet = dynamic(() => import("./filter-sheet").then((x) => x.FilterSheet), { ssr: false });
@@ -49,7 +50,7 @@ export function CarBrowser({ cars }: { cars: CardCar[] }) {
   };
 
   return (
-    <section id="stok" aria-labelledby="stok-title" className="relative scroll-mt-[var(--header-h)]">
+    <section id="stok" data-track-area="stok" aria-labelledby="stok-title" className="relative scroll-mt-[var(--header-h)]">
       {/* Konsol jenis mobil: kartu gelap mengambang, lengket di bawah header */}
       <div className="intro-follow pointer-events-none sticky top-[calc(var(--header-h)+env(safe-area-inset-top)+10px)] z-30 px-3 pt-6 md:px-6 md:pt-8">
         <div className="pointer-events-auto mx-auto flex max-w-[760px] items-stretch gap-2">
@@ -57,7 +58,10 @@ export function CarBrowser({ cars }: { cars: CardCar[] }) {
             <div className="ink cat-console grid min-w-0 flex-1 grid-cols-4" role="tablist" aria-label="Jenis mobil">
               <Segment
                 active={filters.category === null && filters.brand === null}
-                onClick={() => setFilters((f) => ({ ...f, category: null, brand: null }))}
+                onClick={() => {
+                  track("category", { label: "Semua" });
+                  setFilters((f) => ({ ...f, category: null, brand: null }));
+                }}
                 icon={<IconAllCars />}
                 label="Semua"
                 count={cars.length}
@@ -69,7 +73,10 @@ export function CarBrowser({ cars }: { cars: CardCar[] }) {
                     key={group}
                     active={filters.category === group}
                     disabled={count === 0 && filters.category !== group}
-                    onClick={() => setFilters((f) => ({ ...f, brand: null, category: f.category === group ? null : group }))}
+                    onClick={() => {
+                      if (filters.category !== group) track("category", { label: group });
+                      setFilters((f) => ({ ...f, brand: null, category: f.category === group ? null : group }));
+                    }}
                     icon={<Icon />}
                     label={group}
                     count={count}
