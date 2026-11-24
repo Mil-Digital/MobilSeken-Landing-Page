@@ -19,37 +19,53 @@ export function BrandMarquee({ brands }: { brands: { name: string; count: number
       iterations: Infinity,
     });
 
+    // Loop rAF hanya hidup selama halaman discroll; begitu laju kembali normal, loop berhenti
+    // (animasi pita sendiri berjalan di compositor, tidak membebani thread utama).
     let raf = 0;
     let lastY = window.scrollY;
-    let lastT = performance.now();
+    let lastT = 0;
     let rate = 1;
     let visible = false;
 
     const loop = (t: number) => {
       const y = window.scrollY;
-      const dt = Math.max(1, t - lastT);
+      const dt = lastT ? Math.max(1, t - lastT) : 16;
       const v = (y - lastY) / dt; // px per ms
       lastY = y;
       lastT = t;
       const dir = v < -0.05 ? -1 : 1;
       const target = dir * (1 + Math.min(6, Math.abs(v) * 4));
       rate += (target - rate) * 0.08;
+      if (Math.abs(rate - 1) < 0.01 && Math.abs(v) < 0.01) {
+        rate = 1;
+        anim.playbackRate = 1;
+        raf = 0;
+        return;
+      }
       anim.playbackRate = rate;
+      raf = requestAnimationFrame(loop);
+    };
+    const kick = () => {
+      if (!visible || raf) return;
+      lastT = 0;
       raf = requestAnimationFrame(loop);
     };
     const io = new IntersectionObserver(([e]) => {
       visible = e.isIntersecting;
-      cancelAnimationFrame(raf);
       if (visible) {
         anim.play();
         lastY = window.scrollY;
-        lastT = performance.now();
-        raf = requestAnimationFrame(loop);
-      } else anim.pause();
+      } else {
+        anim.pause();
+        cancelAnimationFrame(raf);
+        raf = 0;
+      }
     });
     io.observe(el);
+    window.addEventListener("scroll", kick, { passive: true });
     return () => {
       io.disconnect();
+      window.removeEventListener("scroll", kick);
       cancelAnimationFrame(raf);
       anim.cancel();
     };

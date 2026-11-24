@@ -19,12 +19,16 @@ const LINEUP_PICK: Record<string, { image: number; focus: string }> = {
   "MS-0005": { image: 0, focus: "40% 64%" },
 };
 
+const HERO_MAX = 10;
+
 export default async function Home() {
   const cars = await listCars();
 
-  // Unggulan di depan, sisanya mengikuti urutan terbaru.
+  // Unggulan di depan, sisanya mengikuti urutan terbaru. Panggung hero dibatasi 10 mobil supaya ringan
+  // (tiap kartu = lapisan 3D sendiri); daftar lengkap ada di "Stok tersedia".
   const lineup: LineupCar[] = [...cars]
     .sort((a, b) => Number(b.featured) - Number(a.featured))
+    .slice(0, HERO_MAX)
     .map((c) => {
       const pick = LINEUP_PICK[c.id] ?? { image: 0, focus: "50% 60%" };
       return {

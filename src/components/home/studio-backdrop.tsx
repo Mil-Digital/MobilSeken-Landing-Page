@@ -43,6 +43,9 @@ export function StudioBackdrop({
     let hzGrad: CanvasGradient | null = null;
     let hazeGrad: CanvasGradient | null = null;
     let roadGrad: CanvasGradient | null = null;
+    // Lapisan diam (kabut cakrawala + permukaan & tepi jalan) digambar sekali per ukuran, lalu ditempel tiap frame.
+    const base = document.createElement("canvas");
+    const bctx = base.getContext("2d")!;
     // Warna dari token tema (globals.css), format "r,g,b"
     const C = { horizon: "", haze: "", edge: "", paint: "", road: "", roadA: 0.1, head: "", tail: "", dust: "" };
     const readColors = () => {
@@ -86,7 +89,40 @@ export function StudioBackdrop({
       roadGrad = ctx.createLinearGradient(0, hz, 0, h);
       roadGrad.addColorStop(0, `rgba(${C.road},0)`);
       roadGrad.addColorStop(1, `rgba(${C.road},${C.roadA})`);
+      paintBase();
     };
+
+    function paintBase() {
+      base.width = cv!.width;
+      base.height = cv!.height;
+      bctx.clearRect(0, 0, w, h);
+      bctx.fillStyle = hazeGrad!;
+      bctx.fillRect(0, hz - 70, w, 140);
+      const fh = h - hz;
+      if (fh <= 0) return;
+      const hw = w * (desk ? 0.62 : 1.05);
+      const at = (k: number, y: number) => vpX + k * hw * ((y - hz) / fh);
+      bctx.fillStyle = roadGrad!;
+      bctx.beginPath();
+      bctx.moveTo(vpX, hz);
+      bctx.lineTo(at(-1, h), h);
+      bctx.lineTo(at(1, h), h);
+      bctx.closePath();
+      bctx.fill();
+      for (const k of [-1, 1, -1.18, 1.18]) {
+        const g = bctx.createLinearGradient(0, hz, 0, h);
+        const edge = Math.abs(k) === 1;
+        g.addColorStop(0, `rgba(${C.edge},0)`);
+        g.addColorStop(0.35, edge ? `rgba(${C.edge},0.2)` : `rgba(${C.edge},0.08)`);
+        g.addColorStop(1, edge ? `rgba(${C.edge},0.08)` : `rgba(${C.edge},0.03)`);
+        bctx.strokeStyle = g;
+        bctx.lineWidth = edge ? 1.4 : 1;
+        bctx.beginPath();
+        bctx.moveTo(vpX, hz);
+        bctx.lineTo(at(k, h), h);
+        bctx.stroke();
+      }
+    }
     measure();
 
     // ── Jejak lampu ──
@@ -121,36 +157,13 @@ export function StudioBackdrop({
     let speed = still ? 0 : 0; // mulai diam, "menyala" saat hero terbuka
     let target = still ? 0 : 0;
 
+    // Hanya marka jalan yang bergerak (desktop); permukaan & tepi jalan ada di lapisan diam.
     const drawRoad = () => {
+      if (!desk) return;
       const fh = h - hz;
       if (fh <= 0) return;
       const hw = w * (desk ? 0.62 : 1.05); // setengah lebar jalan di tepi bawah layar
       const at = (k: number, y: number) => vpX + k * hw * ((y - hz) / fh);
-
-      // permukaan aspal sedikit lebih gelap
-      ctx.globalAlpha = 1;
-      ctx.fillStyle = roadGrad!;
-      ctx.beginPath();
-      ctx.moveTo(vpX, hz);
-      ctx.lineTo(at(-1, h), h);
-      ctx.lineTo(at(1, h), h);
-      ctx.closePath();
-      ctx.fill();
-
-      // tepi jalan (garis utuh) + bahu jalan
-      for (const k of [-1, 1, -1.18, 1.18]) {
-        const g = ctx.createLinearGradient(0, hz, 0, h);
-        const edge = Math.abs(k) === 1;
-        g.addColorStop(0, `rgba(${C.edge},0)`);
-        g.addColorStop(0.35, edge ? `rgba(${C.edge},0.2)` : `rgba(${C.edge},0.08)`);
-        g.addColorStop(1, edge ? `rgba(${C.edge},0.08)` : `rgba(${C.edge},0.03)`);
-        ctx.strokeStyle = g;
-        ctx.lineWidth = edge ? 1.4 : 1;
-        ctx.beginPath();
-        ctx.moveTo(vpX, hz);
-        ctx.lineTo(at(k, h), h);
-        ctx.stroke();
-      }
 
       // marka putus-putus: kedalaman z → layar y = hz + fh / z
       // Di HP area jalan ada di belakang teks info & tombol, jadi marka tidak digambar.
@@ -183,8 +196,7 @@ export function StudioBackdrop({
 
     const drawHorizon = (t: number) => {
       ctx.globalAlpha = 1;
-      ctx.fillStyle = hazeGrad!;
-      ctx.fillRect(0, hz - 70, w, 140);
+      ctx.drawImage(base, 0, 0);
       ctx.globalAlpha = 0.75 + 0.25 * Math.sin(t / 1400);
       ctx.fillStyle = hzGrad!;
       ctx.fillRect(0, Math.round(hz), w, 1);
@@ -235,6 +247,7 @@ export function StudioBackdrop({
       ctx.globalAlpha = 1;
     };
 
+    const frameMs = desk ? 32 : 41;
     let raf = 0;
     let last = 0;
     let running = false;
@@ -255,7 +268,7 @@ export function StudioBackdrop({
 
     const loop = (t: number) => {
       raf = requestAnimationFrame(loop);
-      if (t - last < 32) return; // ±30 fps
+      if (t - last < frameMs) return; // ±30 fps (desktop) / ±24 fps (HP)
       const dt = last ? Math.min(3, (t - last) / 33.3) : 1;
       last = t;
       frame(t, dt);

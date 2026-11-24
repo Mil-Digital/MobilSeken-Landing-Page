@@ -42,7 +42,7 @@ export function Description({ text }: { text: string }) {
 /** Bar aksi lengket di bawah layar, memperhitungkan safe area iPhone. */
 export function ActionBar({ waHref, telHref }: { waHref: string; telHref: string }) {
   return (
-    <div className="fixed inset-x-0 bottom-0 z-40 border-t border-hairline bg-night/85 backdrop-blur-xl lg:hidden">
+    <div className="fixed inset-x-0 bottom-0 z-40 border-t border-hairline bg-night/[0.97] lg:hidden">
       <div className="mx-auto flex max-w-[640px] items-center gap-3 px-4 pt-3 pb-safe">
         <PressLink variant="wa" href={waHref} className="flex-1">
           <IconWhatsApp width={20} height={20} />

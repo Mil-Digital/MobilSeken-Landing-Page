@@ -49,7 +49,7 @@ export function FloatingWa() {
       aria-hidden={!show}
       tabIndex={show ? undefined : -1}
       data-show={show ? "" : undefined}
-      className="floating-wa press fixed right-4 bottom-[max(16px,env(safe-area-inset-bottom))] z-30 inline-flex h-[52px] items-center gap-2.5 rounded-full border border-hairline bg-cabin/85 pr-5 pl-4 text-body font-semibold text-platinum shadow-[0_12px_32px_-12px_rgb(0_0_0/0.7)] backdrop-blur-xl"
+      className="floating-wa press fixed right-4 bottom-[max(16px,env(safe-area-inset-bottom))] z-30 inline-flex h-[52px] items-center gap-2.5 rounded-full border border-hairline bg-cabin pr-5 pl-4 text-body font-semibold text-platinum shadow-[0_12px_32px_-14px_rgb(13_27_46/0.45)]"
     >
       <span className="wa-chip grid size-8 place-items-center rounded-full">
         <IconWhatsApp width={18} height={18} />

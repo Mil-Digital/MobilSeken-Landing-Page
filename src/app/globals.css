@@ -734,7 +734,7 @@ html[data-intro="reveal"] .hero-cta {
   outline-color: rgb(var(--xenon-rgb) / 0.7);
 }
 .roll-in {
-  animation: roll-in 560ms var(--ease-out) both;
+  animation: roll-in 560ms var(--ease-out) backwards; /* tidak menyisakan filter setelah selesai */
 }
 @keyframes roll-in {
   from {
@@ -772,7 +772,7 @@ html[data-intro="reveal"] .hero-cta {
   display: flex;
   flex-direction: column;
   transform: translateY(calc(var(--to) * -1.2em));
-  animation: odo-roll 1500ms cubic-bezier(0.16, 0.8, 0.14, 1) both;
+  animation: odo-roll 1500ms cubic-bezier(0.16, 0.8, 0.14, 1) backwards;
 }
 .odo-col > span {
   height: 1.2em;
@@ -832,13 +832,14 @@ html[data-intro="reveal"] .hero-cta {
     animation-range: exit 0% exit 100%;
   }
 }
+/* Hanya transform + opacity (dikerjakan compositor), bukan clip-path yang digambar ulang tiap frame. */
 @keyframes reveal-clip {
   from {
-    clip-path: inset(9% 7% 0 7% round 14px);
+    transform: scale(0.9) translateY(4%);
     opacity: 0.4;
   }
   to {
-    clip-path: inset(0 0 0 0 round 14px);
+    transform: none;
     opacity: 1;
   }
 }
@@ -1085,9 +1086,26 @@ html:not([data-intro]) .is-lit .flags > .flag {
 }
 
 /* ───────────── Kartu mobil bergaya tiket ───────────── */
-/* Bayangan di pembungkus supaya mengikuti bentuk potongan (mask) di dalamnya */
+/* Bayangan kartu di lapisan terpisah (box-shadow, bukan filter drop-shadow): jauh lebih ringan saat
+   scroll karena tidak perlu menggambar ulang filter tiap frame. Takik tiket tetap bolong karena
+   box-shadow hanya digambar di luar kotak. */
 .ticket-shadow {
-  filter: drop-shadow(0 14px 22px rgb(var(--shadow-rgb) / 0.1)) drop-shadow(0 1px 2px rgb(var(--shadow-rgb) / 0.1));
+  position: relative;
+  isolation: isolate;
+}
+.ticket-shadow::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: 22px;
+  box-shadow:
+    0 14px 24px -6px rgb(var(--shadow-rgb) / 0.12),
+    0 1px 2px rgb(var(--shadow-rgb) / 0.1);
+  pointer-events: none;
+}
+.ticket-shadow:has(.ticket-sm)::before {
+  border-radius: 18px;
 }
 .ticket {
   --notch: 11px;
@@ -1338,7 +1356,6 @@ html[data-intro="reveal"] .route-card {
   stroke: var(--xenon);
   stroke-width: 2;
   stroke-dasharray: 0.22 1;
-  filter: drop-shadow(0 0 3px rgb(var(--xenon-rgb) / 0.9));
   animation: route-run 4.2s var(--ease-swift) infinite;
 }
 @keyframes route-run {
@@ -1359,7 +1376,6 @@ html[data-intro="reveal"] .route-card {
   offset-path: path("M8 62 C 26 62, 26 40, 46 40 S 70 54, 84 34 S 100 12, 112 12");
   offset-rotate: auto;
   animation: route-car 4.2s var(--ease-swift) infinite;
-  filter: drop-shadow(0 1px 2px rgb(var(--shadow-rgb) / 0.27));
 }
 @keyframes route-car {
   from {
@@ -1719,7 +1735,6 @@ html[data-intro="reveal"] .hdr-in {
   stroke: var(--xenon);
   stroke-width: 2.2;
   stroke-linecap: round;
-  filter: drop-shadow(0 0 6px rgb(var(--xenon-rgb) / 0.7));
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
   transition: stroke-dashoffset 300ms ease;
