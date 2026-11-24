@@ -59,6 +59,7 @@ export default async function Home() {
     id: c.id,
     path: carPath(c),
     brand: c.brand,
+    category: c.category,
     model: c.model,
     variant: c.variant,
     year: c.year,

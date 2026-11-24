@@ -1,14 +1,16 @@
 import type { Car } from "./cars";
+import type { Category } from "./category";
 
 export type Sort = "newest" | "price-asc" | "price-desc";
 export type Trans = "all" | "Otomatis" | "Manual";
 
 export type CardCar = Pick<
   Car,
-  "id" | "brand" | "model" | "variant" | "year" | "price" | "mileageKm" | "transmission" | "status" | "createdAt"
+  "id" | "brand" | "category" | "model" | "variant" | "year" | "price" | "mileageKm" | "transmission" | "status" | "createdAt"
 > & { path: string; images: Car["images"] };
 
 export type Filters = {
+  category: Category | null;
   brand: string | null;
   price: [number, number];
   year: [number, number];
@@ -35,7 +37,7 @@ export function boundsOf(cars: CardCar[]): Bounds {
 export const priceStep = STEP_PRICE;
 
 export function defaultFilters(b: Bounds): Filters {
-  return { brand: null, price: [...b.price], year: [...b.year], trans: "all", sort: "newest" };
+  return { category: null, brand: null, price: [...b.price], year: [...b.year], trans: "all", sort: "newest" };
 }
 
 /** Jumlah filter lanjutan yang aktif (untuk penanda di tombol filter). */
@@ -48,10 +50,11 @@ export function advancedCount(f: Filters, b: Bounds) {
   return n;
 }
 
-export function applyFilters(cars: CardCar[], f: Filters, opts: { ignoreBrand?: boolean } = {}) {
+export function applyFilters(cars: CardCar[], f: Filters, opts: { ignoreCategory?: boolean } = {}) {
   const out = cars.filter(
     (c) =>
-      (opts.ignoreBrand || !f.brand || c.brand === f.brand) &&
+      (opts.ignoreCategory || !f.category || c.category === f.category) &&
+      (!f.brand || c.brand === f.brand) &&
       c.price >= f.price[0] &&
       c.price <= f.price[1] &&
       c.year >= f.year[0] &&

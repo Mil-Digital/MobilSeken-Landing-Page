@@ -153,7 +153,7 @@ export function FilterSheet({
               <PressButton
                 variant="ghost"
                 className="px-5"
-                onClick={() => setDraft({ ...defaultFilters(bounds), brand: draft.brand })}
+                onClick={() => setDraft({ ...defaultFilters(bounds), category: draft.category, brand: draft.brand })}
               >
                 Reset
               </PressButton>

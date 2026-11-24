@@ -7,6 +7,7 @@ import { useEffect, useMemo, useState } from "react";
 import { BRAND_EVENT } from "./brand-marquee";
 import { CarCard } from "@/components/car-card";
 import { IconFilter, IconWhatsApp } from "@/components/icons";
+import { CATEGORIES } from "@/lib/category";
 import { PressButton, PressLink } from "@/components/press";
 import { advancedCount, applyFilters, boundsOf, defaultFilters, type CardCar, type Filters } from "@/lib/filters";
 import { waLink } from "@/lib/site";
@@ -22,15 +23,18 @@ export function CarBrowser({ cars }: { cars: CardCar[] }) {
   const [sheetOpen, setSheetOpen] = useState(false);
   const [sheetLoaded, setSheetLoaded] = useState(false);
 
-  const brands = useMemo(() => {
-    const pool = applyFilters(cars, filters, { ignoreBrand: true });
-    const all = [...new Set(cars.map((c) => c.brand))].sort((a, b) => a.localeCompare(b));
-    return all.map((b) => ({ brand: b, count: pool.filter((c) => c.brand === b).length }));
+  // Kelompok yang punya stok saja yang tampil (mis. belum ada MPV = chip MPV tidak muncul).
+  const groups = useMemo(() => {
+    const pool = applyFilters(cars, filters, { ignoreCategory: true });
+    return CATEGORIES.filter((g) => cars.some((c) => c.category === g)).map((g) => ({
+      group: g,
+      count: pool.filter((c) => c.category === g).length,
+    }));
   }, [cars, filters]);
 
-  // Ketukan di pita merek (di atas) memilih merek di sini.
+  // Ketukan di pita merek (di atas) memilih merek di sini; tampil sebagai chip yang bisa dilepas.
   useEffect(() => {
-    const on = (e: Event) => setFilters((f) => ({ ...f, brand: (e as CustomEvent<string>).detail }));
+    const on = (e: Event) => setFilters((f) => ({ ...f, category: null, brand: (e as CustomEvent<string>).detail }));
     window.addEventListener(BRAND_EVENT, on);
     return () => window.removeEventListener(BRAND_EVENT, on);
   }, []);
@@ -46,29 +50,39 @@ export function CarBrowser({ cars }: { cars: CardCar[] }) {
 
   return (
     <section id="stok" aria-labelledby="stok-title" className="relative scroll-mt-[var(--header-h)]">
-      {/* Bar merek lengket */}
-      <div className="intro-follow sticky top-[calc(var(--header-h)+env(safe-area-inset-top))] z-30 border-b border-hairline bg-night/85 backdrop-blur-xl">
+      {/* Bar kelompok mobil, lengket di bawah header */}
+      <div className="ink intro-follow sticky top-[calc(var(--header-h)+env(safe-area-inset-top))] z-30 border-b border-hairline bg-night/[0.97] backdrop-blur-xl">
         <div className="mx-auto flex h-[var(--chips-h)] max-w-[1200px] items-center md:px-6">
           <LayoutGroup id="brand-chips">
             <div
-              className="no-scrollbar flex min-w-0 flex-1 items-center gap-1 overflow-x-auto px-4 md:px-0"
+              className="no-scrollbar flex min-w-0 flex-1 items-center gap-0.5 overflow-x-auto px-3 md:gap-1 md:px-0"
               style={{ maskImage: "linear-gradient(to right, #000 calc(100% - 28px), transparent)" }}
               role="tablist"
-              aria-label="Merek"
+              aria-label="Jenis mobil"
             >
-              <Chip active={filters.brand === null} onClick={() => setFilters((f) => ({ ...f, brand: null }))}>
+              <Chip
+                active={filters.category === null && filters.brand === null}
+                onClick={() => setFilters((f) => ({ ...f, category: null, brand: null }))}
+              >
                 Semua
               </Chip>
-              {brands.map(({ brand, count }) => (
+              {groups.map(({ group, count }) => (
                 <Chip
-                  key={brand}
-                  active={filters.brand === brand}
-                  disabled={count === 0 && filters.brand !== brand}
-                  onClick={() => setFilters((f) => ({ ...f, brand: f.brand === brand ? null : brand }))}
+                  key={group}
+                  active={filters.category === group}
+                  disabled={count === 0 && filters.category !== group}
+                  onClick={() => setFilters((f) => ({ ...f, brand: null, category: f.category === group ? null : group }))}
                 >
-                  {brand}
+                  {group}
+                  <span className="tnum ml-1.5 text-micro opacity-60">{count}</span>
                 </Chip>
               ))}
+              {filters.brand && (
+                <Chip active onClick={() => setFilters((f) => ({ ...f, brand: null }))} label={`Hapus filter merek ${filters.brand}`}>
+                  {filters.brand}
+                  <span aria-hidden className="ml-1.5 text-micro opacity-70">✕</span>
+                </Chip>
+              )}
               <span className="w-6 shrink-0" />
             </div>
           </LayoutGroup>
@@ -139,11 +153,13 @@ function Chip({
   active,
   disabled,
   onClick,
+  label,
   children,
 }: {
   active: boolean;
   disabled?: boolean;
   onClick: () => void;
+  label?: string;
   children: React.ReactNode;
 }) {
   return (
@@ -153,7 +169,8 @@ function Chip({
       aria-selected={active}
       disabled={disabled}
       onClick={onClick}
-      className="press relative flex h-11 shrink-0 items-center px-4 text-body font-medium whitespace-nowrap disabled:opacity-35"
+      aria-label={label}
+      className="press relative flex h-11 shrink-0 items-center px-3.5 text-body md:px-4 font-medium whitespace-nowrap disabled:opacity-35"
     >
       {active && (
         <m.span
@@ -162,7 +179,7 @@ function Chip({
           transition={{ type: "spring", stiffness: 520, damping: 40 }}
         />
       )}
-      <span className={`relative transition-colors duration-200 ${active ? "text-night" : "text-platinum/85"}`}>
+      <span className={`relative flex items-baseline transition-colors duration-200 ${active ? "text-night" : "text-platinum/85"}`}>
         {children}
       </span>
     </button>

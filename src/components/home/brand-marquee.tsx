@@ -83,10 +83,12 @@ export function BrandMarquee({ brands }: { brands: { name: string; count: number
     ));
 
   return (
-    <nav aria-label="Merek di showroom" className="marquee overflow-hidden border-y border-hairline py-6 md:py-9">
-      <div ref={track} className="flex w-max will-change-transform">
-        <ul className="flex">{row(0)}</ul>
-        <ul className="flex">{row(1)}</ul>
+    <nav aria-label="Merek di showroom" className="ink marquee-band border-t border-hairline py-6 md:py-9">
+      <div className="marquee overflow-hidden">
+        <div ref={track} className="flex w-max will-change-transform">
+          <ul className="flex">{row(0)}</ul>
+          <ul className="flex">{row(1)}</ul>
+        </div>
       </div>
     </nav>
   );

@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import { carPath } from "@/lib/cars";
 import { priceShort } from "@/lib/format";
 import { readStoredCars } from "@/lib/store/local";
+import { CategorySelect } from "./category-select";
 import { RefreshButton } from "./refresh-button";
 import { StatusSelect } from "./status-select";
 
@@ -62,7 +63,10 @@ async function CarList() {
             </p>
           </div>
           <div className="flex shrink-0 flex-col items-end gap-1 text-micro">
-            <StatusSelect id={c.id} value={c.status} />
+            <span className="flex gap-1.5">
+              <CategorySelect id={c.id} value={c.category} />
+              <StatusSelect id={c.id} value={c.status} />
+            </span>
             <Link href={carPath(c)} className="text-xenon underline underline-offset-4">
               Lihat di web
             </Link>

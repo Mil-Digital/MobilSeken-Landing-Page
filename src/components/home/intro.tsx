@@ -46,7 +46,7 @@ export function Intro() {
         const dy = b.top + b.height / 2 - (a.top + a.height / 2);
         await animate(
           mark,
-          { x: dx, y: dy, scale: b.width / a.width },
+          { x: dx, y: dy, scale: b.width / a.width, color: getComputedStyle(target).color },
           { type: "spring", stiffness: 170, damping: 24, mass: 0.9 },
         );
       } else {

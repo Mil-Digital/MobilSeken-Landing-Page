@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState, useTransition } from "react";
 import { IconCalendar, IconGauge, IconGear } from "@/components/icons";
 import type { CarStatus } from "@/lib/cars";
+import { CATEGORIES, suggestCategory, type Category } from "@/lib/category";
 import { priceFull } from "@/lib/format";
 import { decodePayload } from "@/lib/olx/bookmarklet";
 import { normalizeOlx, type OlxListing } from "@/lib/olx/parse";
@@ -18,6 +19,8 @@ type Loaded =
 export function ImportPreview({ sellers }: { sellers: string[] }) {
   const [data, setData] = useState<Loaded>(null);
   const [status, setStatus] = useState<CarStatus>("ready");
+  // null = pakai saran otomatis (atau kategori lama bila mobil sudah ada di web)
+  const [category, setCategory] = useState<Category | null>(null);
   const [result, setResult] = useState<ImportState | null>(null);
   const [pending, start] = useTransition();
 
@@ -68,6 +71,7 @@ export function ImportPreview({ sellers }: { sellers: string[] }) {
   if ("bulk" in data) return <BulkImport items={data.bulk} sellers={sellers} />;
 
   const { listing, payload } = data;
+  const suggested = suggestCategory(listing);
   const own = listing.sellerId != null && sellers.includes(listing.sellerId);
 
   if (result?.ok) {
@@ -144,6 +148,31 @@ export function ImportPreview({ sellers }: { sellers: string[] }) {
         ))}
       </dl>
 
+      <div className="mt-5 rounded-[14px] border border-hairline bg-cabin p-4">
+        <p className="text-body font-medium text-platinum">Kategori di web</p>
+        <p className="mt-0.5 text-micro text-steel">
+          Saran otomatis: <strong className="text-platinum">{suggested}</strong>. Hatchback, coupe, dan city car masuk Sedan.
+          Bisa diubah lagi kapan saja di daftar mobil.
+        </p>
+        <div className="mt-3 inline-flex rounded-full bg-panel p-1 text-body" role="radiogroup" aria-label="Kategori">
+          {CATEGORIES.map((c) => {
+            const on = (category ?? suggested) === c;
+            return (
+              <button
+                key={c}
+                type="button"
+                role="radio"
+                aria-checked={on}
+                onClick={() => setCategory(c === suggested ? null : c)}
+                className={`rounded-full px-4 py-2 transition-colors ${on ? "bg-platinum text-night" : "text-platinum/75"}`}
+              >
+                {c}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
       <details className="mt-5 rounded-[14px] border border-hairline bg-cabin p-4" open>
         <summary className="cursor-pointer text-body font-medium text-platinum">Deskripsi dari OLX</summary>
         <p className="mt-3 text-body whitespace-pre-line text-platinum/85">{listing.description}</p>
@@ -171,7 +200,7 @@ export function ImportPreview({ sellers }: { sellers: string[] }) {
             disabled={!own || pending}
             onClick={() =>
               start(async () => {
-                const r = await importFromOlx(payload, status);
+                const r = await importFromOlx(payload, status, category ?? undefined);
                 setResult(r);
                 if (r.ok) history.replaceState(null, "", location.pathname);
               })
@@ -266,7 +295,7 @@ function BulkImport({ items, sellers }: { items: BulkItem[]; sellers: string[] }
                   {l ? `${l.brand} ${l.model} ${l.year}` : "Iklan tidak lengkap"}
                 </p>
                 <p className="tnum mt-0.5 truncate text-micro text-steel">
-                  {l ? `${priceFull(l.price)} · ${l.images.length} foto` : item.error}
+                  {l ? `${priceFull(l.price)} · ${l.images.length} foto · ${suggestCategory(l)}` : item.error}
                 </p>
                 {r?.note && (
                   <p className={`mt-0.5 truncate text-micro ${r.state === "failed" ? "text-sold" : "text-xenon"}`}>{r.note}</p>

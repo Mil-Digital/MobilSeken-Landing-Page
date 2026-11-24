@@ -4,6 +4,7 @@ import { createHash } from "node:crypto";
 import sharp from "sharp";
 import { allKnownIds, carPath, type CarImage, type CarStatus } from "@/lib/cars";
 import { putMedia, readStoredCars, saveCar, type StoredCar } from "@/lib/store/local";
+import { suggestCategory, type Category } from "@/lib/category";
 import type { OlxListing } from "./parse";
 
 const IMG_TIMEOUT = 15_000;
@@ -75,7 +76,7 @@ export type ImportResult = { id: string; path: string; created: boolean; photos:
  * Simpan/perbarui satu iklan OLX sebagai mobil di landing page.
  * Iklan yang sama (ID iklan OLX) selalu memperbarui kode unit yang sama.
  */
-export async function importListing(listing: OlxListing, status: CarStatus): Promise<ImportResult> {
+export async function importListing(listing: OlxListing, status: CarStatus, category?: Category): Promise<ImportResult> {
   const stored = await readStoredCars();
   const existing = stored.find((c) => c.olx.listingId === listing.listingId);
   let id = existing?.id ?? (await nextId(stored));
@@ -102,6 +103,8 @@ export async function importListing(listing: OlxListing, status: CarStatus): Pro
     fuel: listing.fuel,
     color: listing.color,
     bodyType: listing.bodyType,
+    // Pilihan admin di layar impor > kategori yang sudah ada > saran otomatis.
+    category: category ?? existing?.category ?? suggestCategory(listing),
     location: "Bandung",
     description: listing.description,
     specs,

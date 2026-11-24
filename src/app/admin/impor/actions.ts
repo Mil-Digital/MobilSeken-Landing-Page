@@ -3,6 +3,7 @@
 import { updateTag } from "next/cache";
 import { headers } from "next/headers";
 import { checkAdmin } from "@/lib/admin-auth";
+import { isCategory, type Category } from "@/lib/category";
 import type { CarStatus } from "@/lib/cars";
 import { importListing } from "@/lib/olx/import";
 import { normalizeOlx, OlxParseError } from "@/lib/olx/parse";
@@ -15,10 +16,11 @@ export type ImportState =
 /** Akun OLX yang boleh diimpor (iklan milik showroom sendiri). */
 const sellerIds = () => (process.env.OLX_SELLER_IDS ?? "44649495").split(",").map((s) => s.trim()).filter(Boolean);
 
-export async function importFromOlx(payload: unknown, status: CarStatus): Promise<ImportState> {
+export async function importFromOlx(payload: unknown, status: CarStatus, category?: Category): Promise<ImportState> {
   const gate = checkAdmin((await headers()).get("authorization"));
   if (gate !== "ok" && gate !== "open") return { ok: false, error: "Sesi admin tidak valid. Muat ulang halaman lalu login." };
   if (status !== "ready" && status !== "booking") return { ok: false, error: "Status tidak dikenal." };
+  if (category !== undefined && !isCategory(category)) return { ok: false, error: "Kategori tidak dikenal." };
 
   let listing;
   try {
@@ -36,7 +38,7 @@ export async function importFromOlx(payload: unknown, status: CarStatus): Promis
     };
   }
   try {
-    const res = await importListing(listing, status);
+    const res = await importListing(listing, status, category);
     updateTag("cars");
     return { ok: true, ...res };
   } catch (e) {

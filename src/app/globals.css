@@ -55,6 +55,46 @@
   }
 }
 
+/* Permukaan gelap (header, pita merek, bar jenis mobil): token yang sama dengan nilai gelap,
+   jadi semua utilitas (text-platinum, bg-night, border-hairline…) otomatis terbalik di dalamnya. */
+.ink {
+  --night: #0c1627;
+  --cabin: #14223a;
+  --panel: #1c2c47;
+  --platinum: #f3f6fb;
+  --steel: #98a6bc;
+  --hairline: rgb(255 255 255 / 0.1);
+  --night-rgb: 12 22 39;
+  --cabin-rgb: 20 34 58;
+  --panel-rgb: 28 44 71;
+  --platinum-rgb: 243 246 251;
+  color-scheme: dark;
+}
+/* Header: biru malam pekat dengan cahaya lampu samar dari atas dan garis kaca di bawah. */
+.hdr-dark {
+  background:
+    radial-gradient(60% 160% at 50% -60%, rgb(var(--xenon-rgb) / 0.22), transparent 70%),
+    linear-gradient(180deg, #08111f 0%, #0d192c 100%);
+  transition: box-shadow 500ms ease;
+}
+.hdr-dark::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 -1px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.14) 20%, rgb(var(--xenon-rgb) / 0.55) 50%, rgb(255 255 255 / 0.14) 80%, transparent);
+  pointer-events: none;
+}
+.hdr-dark.is-solid {
+  box-shadow: 0 14px 34px -18px rgb(8 17 31 / 0.55);
+}
+/* Pita merek gelap: sorot lampu tipis di tengah supaya tidak datar. */
+.marquee-band {
+  background:
+    radial-gradient(50% 120% at 50% 0%, rgb(var(--xenon-rgb) / 0.16), transparent 70%),
+    linear-gradient(180deg, #0d192c, var(--night));
+}
+
 @theme inline {
   --color-night: var(--night);
   --color-cabin: var(--cabin);

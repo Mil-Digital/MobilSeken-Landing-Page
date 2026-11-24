@@ -6,6 +6,7 @@ import { cacheLife, cacheTag } from "next/cache";
 import { readStoredCars } from "./store/local";
 import photos from "./dummy-photos.json";
 import { slugify } from "./format";
+import { suggestCategory, type Category } from "./category";
 
 export type CarStatus = "ready" | "booking" | "sold";
 
@@ -30,6 +31,8 @@ export type Car = {
   fuel: string;
   color: string;
   bodyType: string;
+  /** Kelompok di navigasi stok: SUV / MPV / Sedan. */
+  category: Category;
   location: string;
   description: string;
   specs: { label: string; value: string }[];
@@ -39,7 +42,7 @@ export type Car = {
 
 const img = (id: keyof typeof photos) => photos[id] as CarImage[];
 
-const RAW: Omit<Car, "images">[] = [
+const RAW: Omit<Car, "images" | "category">[] = [
   {
     id: "MS-0001",
     status: "ready",
@@ -201,7 +204,7 @@ const RAW: Omit<Car, "images">[] = [
   },
 ];
 
-const DUMMY: Car[] = RAW.map((c) => ({ ...c, images: img(c.id as keyof typeof photos) }));
+const DUMMY: Car[] = RAW.map((c) => ({ ...c, category: suggestCategory(c), images: img(c.id as keyof typeof photos) }));
 
 /** Semua mobil: katalog asli hasil impor OLX. Data contoh hanya dipakai bila katalog masih kosong. */
 async function allCars(): Promise<Car[]> {

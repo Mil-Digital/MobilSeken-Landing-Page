@@ -28,6 +28,9 @@ create table if not exists cars (
   updated_at      timestamptz not null default now()
 );
 
+-- Kelompok navigasi stok (SUV / MPV / Sedan). Disarankan saat impor, bisa diubah di admin.
+alter table cars add column if not exists category text check (category in ('SUV', 'MPV', 'Sedan'));
+
 -- Peristiwa pengunjung untuk dashboard: klik kartu, klik WhatsApp/telepon (leads), dll.
 create table if not exists events (
   id            bigserial primary key,

@@ -8,6 +8,7 @@ import { put } from "@vercel/blob";
 import { mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { dirname, join, normalize, sep } from "node:path";
 import type { Car, CarImage, CarStatus } from "@/lib/cars";
+import { isCategory, suggestCategory } from "@/lib/category";
 
 const CATALOG_FILE = join(process.cwd(), "content", "catalog", "cars.json");
 const MEDIA_ROOT = join(process.cwd(), "public", "catalog");
@@ -39,6 +40,7 @@ type Row = {
   fuel: string;
   color: string;
   body_type: string;
+  category: string | null;
   location: string;
   description: string;
   specs: { label: string; value: string }[];
@@ -66,6 +68,7 @@ const fromRow = (r: Row): StoredCar => ({
   fuel: r.fuel,
   color: r.color,
   bodyType: r.body_type,
+  category: isCategory(r.category) ? r.category : suggestCategory({ model: r.model, variant: r.variant, bodyType: r.body_type }),
   location: r.location,
   description: r.description,
   specs: r.specs ?? [],
@@ -84,7 +87,8 @@ const fromRow = (r: Row): StoredCar => ({
 
 function readFileCars(): StoredCar[] {
   try {
-    return JSON.parse(readFileSync(CATALOG_FILE, "utf8")) as StoredCar[];
+    const cars = JSON.parse(readFileSync(CATALOG_FILE, "utf8")) as StoredCar[];
+    return cars.map((c) => (isCategory(c.category) ? c : { ...c, category: suggestCategory(c) }));
   } catch {
     return [];
   }
@@ -123,12 +127,12 @@ export async function saveCar(car: StoredCar, insertOnly = false): Promise<boole
     car.id, car.status, car.featured, car.brand, car.model, car.variant, car.year, car.price, car.mileageKm,
     car.transmission, car.fuel, car.color, car.bodyType, car.location, car.description, JSON.stringify(car.specs),
     JSON.stringify(car.images), car.createdAt, car.olx.listingId, car.olx.url, car.olx.sellerId, car.olx.status,
-    car.olx.title, car.olx.syncedAt,
+    car.olx.title, car.olx.syncedAt, car.category,
   ];
   const insert = `insert into cars (id, status, featured, brand, model, variant, year, price, mileage_km, transmission,
       fuel, color, body_type, location, description, specs, images, created_at, olx_listing_id, olx_url, olx_seller_id,
-      olx_status, olx_title, synced_at)
-    values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16::jsonb,$17::jsonb,$18,$19,$20,$21,$22,$23,$24)`;
+      olx_status, olx_title, synced_at, category)
+    values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16::jsonb,$17::jsonb,$18,$19,$20,$21,$22,$23,$24,$25)`;
   if (insertOnly) {
     const rows = await sql.query(`${insert} on conflict (id) do nothing returning id`, values);
     return (rows as unknown[]).length > 0;
@@ -140,14 +144,15 @@ export async function saveCar(car: StoredCar, insertOnly = false): Promise<boole
       transmission = excluded.transmission, fuel = excluded.fuel, color = excluded.color, body_type = excluded.body_type,
       location = excluded.location, description = excluded.description, specs = excluded.specs, images = excluded.images,
       olx_listing_id = excluded.olx_listing_id, olx_url = excluded.olx_url, olx_seller_id = excluded.olx_seller_id,
-      olx_status = excluded.olx_status, olx_title = excluded.olx_title, synced_at = excluded.synced_at, updated_at = now()`,
+      olx_status = excluded.olx_status, olx_title = excluded.olx_title, synced_at = excluded.synced_at,
+      category = excluded.category, updated_at = now()`,
     values,
   );
   return true;
 }
 
 /** Ubah sebagian data satu mobil (mis. status). Data mobil tidak pernah dihapus. */
-export async function updateStoredCar(id: string, patch: Partial<Pick<StoredCar, "status" | "featured">>): Promise<boolean> {
+export async function updateStoredCar(id: string, patch: Partial<Pick<StoredCar, "status" | "featured" | "category">>): Promise<boolean> {
   const sql = db();
   if (!sql) {
     const cars = readFileCars();
@@ -161,6 +166,7 @@ export async function updateStoredCar(id: string, patch: Partial<Pick<StoredCar,
     update cars set
       status = coalesce(${patch.status ?? null}, status),
       featured = coalesce(${patch.featured ?? null}, featured),
+      category = coalesce(${patch.category ?? null}, category),
       updated_at = now()
     where id = ${id}
     returning id`;

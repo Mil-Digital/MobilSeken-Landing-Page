@@ -25,7 +25,7 @@ export function scrollToSection(id: string) {
 
 /**
  * Header: kiri emblem + wordmark, tengah navigasi (desktop), kanan kartu "Hubungi kami" + tombol menu.
- * Transparan di puncak halaman, solid dengan blur halus begitu halaman discroll.
+ * Selalu gelap (biru malam) supaya terasa padat; bayangan muncul begitu halaman discroll.
  */
 export function SiteHeader({ cars = [], total }: { cars?: MenuCar[]; total?: number }) {
   const [solid, setSolid] = useState(false);
@@ -99,9 +99,7 @@ export function SiteHeader({ cars = [], total }: { cars?: MenuCar[]; total?: num
   return (
     <>
       <header
-        className={`fixed inset-x-0 top-0 z-40 transition-[background-color,border-color,backdrop-filter] duration-500 ${
-          solid && !open ? "border-b border-hairline bg-night/80 backdrop-blur-xl" : "border-b border-transparent"
-        }`}
+        className={`ink hdr-dark fixed inset-x-0 top-0 z-40 ${solid && !open ? "is-solid" : ""}`}
         style={{ paddingTop: "env(safe-area-inset-top)", viewTransitionName: "site-header" }}
       >
         {/* Garis progres scroll tipis: seperti jarum instrumen */}
