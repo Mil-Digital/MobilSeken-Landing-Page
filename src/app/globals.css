@@ -855,13 +855,15 @@ html[data-intro="reveal"] .hero-cta {
   }
 }
 /* Hanya transform + opacity (dikerjakan compositor), bukan clip-path yang digambar ulang tiap frame. */
+/* clip-path, bukan transform: transform di sini bertumpuk dengan card-rise (3D) dan reveal-zoom, semuanya
+   digerakkan scroll — Safari iPhone crash ("A problem repeatedly occurred") dengan 29 kartu seperti itu. */
 @keyframes reveal-clip {
   from {
-    transform: scale(0.9) translateY(4%);
+    clip-path: inset(9% 7% 0 7% round 14px);
     opacity: 0.4;
   }
   to {
-    transform: none;
+    clip-path: inset(0 0 0 0 round 14px);
     opacity: 1;
   }
 }
@@ -2279,6 +2281,11 @@ html[data-intro="reveal"] .studio {
 :is([data-uji~="semua"], [data-uji~="showroom"]) #showroom,
 :is([data-uji~="semua"], [data-uji~="efek"]) :is(.cursor-light, .route-runner) {
   display: none !important;
+}
+[data-uji~="kartu"] .card-3d,
+[data-uji~="zoom"] .reveal-zoom,
+[data-uji~="klip"] .reveal-card {
+  animation: none !important;
 }
 [data-uji~="gerak"] *,
 [data-uji~="gerak"] *::before,
