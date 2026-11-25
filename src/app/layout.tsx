@@ -43,15 +43,11 @@ const vtAbortScript = `(function(){function q(r){return r&&r.name==='InvalidStat
 
 const introScript = `try{var s=sessionStorage,d=document.documentElement;if(s.getItem('ms-intro'))d.dataset.intro='skip';else s.setItem('ms-intro','1')}catch(e){document.documentElement.dataset.intro='skip'}`;
 
-// SEMENTARA: mode uji untuk mencari penyebab crash di iPhone. /?uji=hero,pita menyembunyikan bagian itu.
-const ujiScript = `try{var u=new URLSearchParams(location.search).get('uji');if(u)document.documentElement.setAttribute('data-uji',u.replace(/[,+]/g,' '))}catch(e){}`;
-
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="id" className={`${anybody.variable} ${instrument.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: introScript }} />
-        <script dangerouslySetInnerHTML={{ __html: ujiScript }} />
         {/* Browser membatalkan view transition bila viewport berubah di tengah jalan (mis. address bar HP
             mengecil). Itu bukan error aplikasi; halaman tetap tampil normal, jadi jangan dilempar ke konsol. */}
         <script dangerouslySetInnerHTML={{ __html: vtAbortScript }} />

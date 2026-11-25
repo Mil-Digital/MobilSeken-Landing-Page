@@ -31,6 +31,8 @@ export function StudioBackdrop({
   useEffect(() => {
     const cv = canvas.current;
     if (!cv) return;
+    // HP & tablet: latar jalan tidak ditampilkan (hero HP berlatar solid), jadi tidak perlu digambar sama sekali.
+    if (!matchMedia("(min-width: 1024px)").matches) return;
     const ctx = cv.getContext("2d", { alpha: true });
     if (!ctx) return;
     const still = reducedMotion();

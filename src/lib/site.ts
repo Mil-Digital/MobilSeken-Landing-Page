@@ -22,7 +22,13 @@ export const SITE = {
   hours: [{ days: "Jam buka", time: "08.00 – 17.00 WIB" }],
   // TODO_INSTAGRAM
   instagram: null as string | null,
-  siteUrl: process.env.PUBLIC_HOST ? `https://${process.env.PUBLIC_HOST}` : "http://localhost:3000",
+  // Alamat publik untuk link di pesan WhatsApp, canonical, dan OG. Urutan: PUBLIC_HOST (domain sendiri nanti)
+  // → domain produksi dari Vercel → domain vercel.app proyek ini. localhost hanya saat di laptop.
+  siteUrl: `https://${
+    process.env.PUBLIC_HOST ||
+    process.env.VERCEL_PROJECT_PRODUCTION_URL ||
+    (process.env.VERCEL ? "mobil-seken-landing-page.vercel.app" : "")
+  }`.replace(/^https:\/\/$/, "http://localhost:3000"),
 } as const;
 
 export function waLink(text?: string) {

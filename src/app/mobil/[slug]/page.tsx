@@ -9,7 +9,7 @@ import { IconPhone, IconWhatsApp } from "@/components/icons";
 import { PressLink } from "@/components/press";
 import { SiteFooter } from "@/components/showroom";
 import { allCarIds, carPath, carTitle, getCar, similarCars, type Car } from "@/lib/cars";
-import { km, priceFull } from "@/lib/format";
+import { km, priceFull, priceShort } from "@/lib/format";
 import type { CardCar } from "@/lib/filters";
 import { SITE, telLink, waLink } from "@/lib/site";
 
@@ -70,11 +70,10 @@ export default async function CarPage({ params }: PageProps<"/mobil/[slug]">) {
 
   const similar = (await similarCars(car)).map(toCard);
   const title = carTitle(car);
-  const url = `${SITE.siteUrl}${canonical}`;
 
   if (car.status === "sold") return <SoldView car={car} similar={similar} />;
 
-  const waText = `Halo, saya tertarik dengan ${car.brand} ${car.model} ${car.year} (${car.id}). ${url}`;
+  const waText = carWaText(car);
 
   const instruments = [
     { label: "Tahun", value: String(car.year), roll: true, full: undefined },
@@ -214,7 +213,7 @@ function SoldView({ car, similar }: { car: Car; similar: CardCar[] }) {
             Unit ini sudah menemukan pemilik barunya. Masih ada pilihan serupa di bawah, atau ceritakan mobil yang kamu cari ke tim kami.
           </p>
           <PressLink variant="wa"
-            href={waLink(`Halo, saya lihat ${name} (${car.id}) sudah terjual. Ada unit serupa?`)}
+            href={waLink(`Halo MS Garage, saya lihat ${name} (${car.id}) sudah terjual. Apakah ada unit serupa?`)}
             className="mt-7 w-full md:w-auto"
           >
             <IconWhatsApp width={20} height={20} />
@@ -235,4 +234,23 @@ function SoldView({ car, similar }: { car: Car; similar: CardCar[] }) {
     </main>
     </PageFlow>
   );
+}
+
+/**
+ * Isi chat WhatsApp dari halaman mobil: rapi per baris, dengan link pendek (/mobil/MS-0033 diarahkan ke
+ * halaman lengkap). Tanda *...* = tebal di WhatsApp.
+ */
+function carWaText(car: Car) {
+  return [
+    "Halo MS Garage, saya tertarik dengan mobil ini:",
+    "",
+    `*${car.brand} ${car.model} (${car.year})*`,
+    car.variant.trim() || null,
+    `Kode unit: ${car.id} · ${priceShort(car.price)}`,
+    "",
+    "Apakah unitnya masih tersedia?",
+    `${SITE.siteUrl}/mobil/${car.id}`,
+  ]
+    .filter((line) => line !== null)
+    .join("\n");
 }

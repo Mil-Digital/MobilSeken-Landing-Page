@@ -14,7 +14,7 @@
   --xenon: #24344f;
   --xenon-ink: #ffffff;
   --accent-text: #2f4566; /* teks/tautan aksen di atas latar terang */
-  --metal: linear-gradient(135deg, #ffffff 0%, #e8ecf1 38%, #bcc5d2 70%, #f3f5f8 100%); /* perak */
+  --metal: #e6eaf0; /* perak solid (tanpa gradasi) */
   /* WhatsApp: hijau seperti umumnya */
   --wa: #25d366;
   --wa-deep: #1a9e4c;
@@ -82,9 +82,7 @@
 }
 /* Header: biru malam pekat dengan cahaya lampu samar dari atas dan garis kaca di bawah. */
 .hdr-dark {
-  background:
-    radial-gradient(60% 160% at 50% -60%, rgb(var(--xenon-rgb) / 0.22), transparent 70%),
-    linear-gradient(180deg, #08111f 0%, #0d192c 100%);
+  background: #0b1626;
   transition: box-shadow 500ms ease;
 }
 .hdr-dark::after {
@@ -92,7 +90,7 @@
   position: absolute;
   inset: auto 0 -1px;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.14) 20%, rgb(var(--xenon-rgb) / 0.55) 50%, rgb(255 255 255 / 0.14) 80%, transparent);
+  background: rgb(255 255 255 / 0.1);
   pointer-events: none;
 }
 .hdr-dark.is-solid {
@@ -100,7 +98,7 @@
 }
 /* Tombol utama: biru malam pekat dengan tepi kaca tipis. */
 .btn-lux {
-  background: linear-gradient(180deg, #1b2b46 0%, #0b1526 100%);
+  background: #13213a;
   color: #f7f1e6;
   box-shadow:
     inset 0 1px 0 rgb(255 255 255 / 0.14),
@@ -143,9 +141,7 @@
 .cat-console {
   border-radius: 22px;
   padding: 5px;
-  background:
-    radial-gradient(70% 120% at 50% -30%, rgb(var(--xenon-rgb) / 0.14), transparent 70%),
-    linear-gradient(180deg, #16243c 0%, #0a1322 100%);
+  background: #0f1b2f;
   border: 1px solid rgb(255 255 255 / 0.07);
   box-shadow:
     inset 0 1px 0 rgb(255 255 255 / 0.08),
@@ -183,7 +179,7 @@
     0 10px 22px -12px rgb(var(--xenon-rgb) / 0.9);
 }
 .cat-seg-icon,
-.cat-seg-text {
+.cat-seg-label {
   position: relative;
 }
 .cat-seg-icon svg {
@@ -191,21 +187,42 @@
   width: 30px;
   height: 15px;
 }
-.cat-seg-text {
-  display: flex;
-  align-items: baseline;
-  gap: 4px;
-  font-size: 11px;
+.cat-seg-label {
+  font-size: 10.5px;
   font-weight: 600;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   line-height: 1;
 }
+/* HP: jumlah unit sebagai angka kecil di pojok kanan atas tombol, supaya label tidak mepet ke tepi. */
 .cat-seg-count {
-  font-size: 10px;
-  font-weight: 500;
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  min-width: 17px;
+  padding: 0 4px;
+  border-radius: 99px;
+  font-size: 9.5px;
+  font-weight: 600;
   letter-spacing: 0;
-  opacity: 0.6;
+  line-height: 15px;
+  text-align: center;
+  color: rgb(var(--platinum-rgb) / 0.75);
+  background: rgb(255 255 255 / 0.08);
+}
+.cat-seg.is-active .cat-seg-count {
+  color: var(--xenon-ink);
+  background: rgb(13 20 34 / 0.1);
+}
+@media (max-width: 359px) {
+  .cat-seg-count {
+    top: 3px;
+    right: 3px;
+    min-width: 15px;
+    padding: 0 3px;
+    font-size: 9px;
+    line-height: 13px;
+  }
 }
 @media (hover: hover) and (pointer: fine) {
   .cat-seg:not(.is-active):not(:disabled):hover {
@@ -227,19 +244,33 @@
     width: 38px;
     height: 19px;
   }
-  .cat-seg-text {
+  .cat-seg-label {
     font-size: 13px;
+    letter-spacing: 0.14em;
   }
   .cat-seg-count {
+    position: relative;
+    top: auto;
+    right: auto;
+    margin-left: -6px;
+    min-width: 0;
+    padding: 0;
     font-size: 11.5px;
+    font-weight: 500;
+    line-height: 1;
+    background: none;
+    color: inherit;
+    opacity: 0.6;
+  }
+  .cat-seg.is-active .cat-seg-count {
+    background: none;
+    color: inherit;
   }
 }
 
 /* Pita merek gelap: sorot lampu tipis di tengah supaya tidak datar. */
 .marquee-band {
-  background:
-    radial-gradient(50% 120% at 50% 0%, rgb(var(--xenon-rgb) / 0.16), transparent 70%),
-    linear-gradient(180deg, #0d192c, var(--night));
+  background: var(--night);
 }
 
 @theme inline {
@@ -2046,19 +2077,13 @@ html[data-intro="reveal"] .studio {
     transform-origin: 50% 100%;
   }
 }
-/* iPhone/iPad (semua browser iOS = WebKit iOS): efek 3D kartu yang digerakkan scroll membuat Safari crash
-   ("A problem repeatedly occurred") — terbukti di iPhone 14 Pro, 25/11. Matikan khusus iOS. */
-@supports (-webkit-touch-callout: none) {
-  .card-3d {
-    animation: none !important;
-  }
-}
-/* SEMENTARA — uji versi 2D (tanpa perspective/rotateX) di iPhone: /?uji=naik */
-@supports (animation-timeline: view()) {
-  html[data-uji~="naik"] .card-3d {
-    animation: card-rise-flat linear both !important;
-    animation-timeline: view() !important;
-    animation-range: entry 0% entry 95% !important;
+/* iPhone/iPad (semua browser iOS = WebKit iOS): versi 3D (perspective + rotateX) yang digerakkan scroll membuat
+   Safari crash ("A problem repeatedly occurred") — terbukti di iPhone 14 Pro, 25/11. iOS memakai versi datar. */
+@supports (-webkit-touch-callout: none) and (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .card-3d {
+      animation-name: card-rise-flat !important;
+    }
   }
 }
 @keyframes card-rise-flat {
@@ -2297,24 +2322,64 @@ html[data-intro="reveal"] .studio {
   text-transform: uppercase;
 }
 
-/* SEMENTARA — mode uji crash iPhone (lihat ujiScript di layout.tsx). Hapus setelah penyebab ketemu. */
-:is([data-uji~="semua"], [data-uji~="intro"]) .intro,
-:is([data-uji~="semua"], [data-uji~="hero"]) .hero-stage,
-:is([data-uji~="semua"], [data-uji~="latar"]) .studio,
-:is([data-uji~="semua"], [data-uji~="pita"]) .marquee-band,
-:is([data-uji~="semua"], [data-uji~="stok"]) #stok,
-:is([data-uji~="semua"], [data-uji~="showroom"]) #showroom,
-:is([data-uji~="semua"], [data-uji~="efek"]) :is(.cursor-light, .route-runner) {
-  display: none !important;
+/* ── Hero di HP (< 1024px): latar solid tanpa gradasi, kartu lanskap, info rapi bergaya panel instrumen ── */
+@media (max-width: 1023px) {
+  .hero-sky {
+    background: var(--night);
+  }
+  .hero-stage .studio,
+  .hero-stage .stage-light,
+  .hero-stage .stage-shadow,
+  .hero-stage .coverflow-top,
+  .hero-stage .flags {
+    display: none;
+  }
+  .coverflow-face {
+    box-shadow:
+      0 18px 30px -22px rgb(var(--shadow-rgb) / 0.45),
+      0 0 0 1px rgb(var(--platinum-rgb) / 0.08);
+  }
 }
-[data-uji~="kartu"] .card-3d,
-[data-uji~="zoom"] .reveal-zoom,
-[data-uji~="klip"] .reveal-card {
-  animation: none !important;
+/* Sudut bingkai tipis di sekitar panggung (HP) */
+.hud-frame {
+  position: absolute;
+  inset: 6px 14px 0;
+  pointer-events: none;
 }
-[data-uji~="gerak"] *,
-[data-uji~="gerak"] *::before,
-[data-uji~="gerak"] *::after {
-  animation: none !important;
-  transition: none !important;
+.hud-frame > span {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-color: rgb(var(--platinum-rgb) / 0.28);
+  border-style: solid;
+  border-width: 0;
+}
+.hud-frame > span:nth-child(1) { top: 0; left: 0; border-top-width: 1.5px; border-left-width: 1.5px; }
+.hud-frame > span:nth-child(2) { top: 0; right: 0; border-top-width: 1.5px; border-right-width: 1.5px; }
+.hud-frame > span:nth-child(3) { bottom: 0; left: 0; border-bottom-width: 1.5px; border-left-width: 1.5px; }
+.hud-frame > span:nth-child(4) { bottom: 0; right: 0; border-bottom-width: 1.5px; border-right-width: 1.5px; }
+/* Indikator posisi bersegmen (HP): satu segmen per mobil, segmen aktif terisi sesuai waktu putar */
+.hero-segs {
+  display: flex;
+  gap: 4px;
+}
+.hero-seg {
+  position: relative;
+  flex: 1;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  -webkit-tap-highlight-color: transparent;
+}
+.hero-seg > span {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 3px;
+  border-radius: 2px;
+  overflow: hidden;
+  background: rgb(var(--platinum-rgb) / 0.14);
+}
+.hero-seg.is-done > span {
+  background: rgb(var(--platinum-rgb) / 0.42);
 }

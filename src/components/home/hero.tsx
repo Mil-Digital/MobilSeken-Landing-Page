@@ -224,7 +224,7 @@ export function Hero({ cars, total }: { cars: LineupCar[]; total: number }) {
       <div className="hero-grid relative mx-auto w-full max-w-[1280px] lg:px-10 lg:pb-10">
         {/* Judul */}
         <div className="hero-copy [grid-area:copy] px-5 pt-7 lg:px-0 lg:pt-0">
-          <h1 className="hero-title font-display text-[clamp(26px,7.2vw,30px)] leading-[1.12] font-[520] text-platinum lg:text-[44px] xl:text-[48px]">
+          <h1 className="hero-title font-display text-[clamp(23px,6.3vw,27px)] leading-[1.14] font-[520] text-platinum lg:text-[44px] xl:text-[48px]">
             <span className="hero-line">
               <span>Mobil seken pilihan</span>
             </span>
@@ -232,7 +232,7 @@ export function Hero({ cars, total }: { cars: LineupCar[]; total: number }) {
               <span>di Bandung.</span>
             </span>
           </h1>
-          <p className="hero-meta tnum mt-4 flex text-body text-steel lg:mt-6 lg:text-lead">
+          <p className="hero-meta tnum mt-3 flex text-micro text-steel sm:text-body lg:mt-6 lg:text-lead">
             <span className="pr-4 text-platinum">
               <Odometer value={String(total)} /> unit tersedia
             </span>
@@ -241,8 +241,15 @@ export function Hero({ cars, total }: { cars: LineupCar[]; total: number }) {
         </div>
 
         {/* Panggung */}
-        <div className="hero-lineup relative [grid-area:stage] mt-5 lg:mt-0">
+        <div className="hero-lineup relative [grid-area:stage] mt-3 lg:mt-0">
           <StageLight lightRef={lightRef} />
+          {/* HP: sudut bingkai tipis, kesan panel instrumen */}
+          <div aria-hidden className="hud-frame lg:hidden">
+            <span />
+            <span />
+            <span />
+            <span />
+          </div>
           <div ref={tiltRef} className="stage-tilt relative">
             {/* Garis kecepatan sesaat setiap kali mobil berganti */}
             {switches > 0 && (
@@ -262,14 +269,14 @@ export function Hero({ cars, total }: { cars: LineupCar[]; total: number }) {
               </span>
             )}
             <div ref={emblaRef} className="stage-viewport overflow-hidden" aria-roledescription="carousel" aria-label="Stok di showroom">
-              <ul className="flex touch-pan-y pt-8 pb-12 lg:pt-12 lg:pb-16">
+              <ul className="flex touch-pan-y pt-5 pb-5 lg:pt-12 lg:pb-16">
                 {cars.map((c, i) => (
                   <li
                     key={c.id}
                     ref={(el) => {
                       slides.current[i] = el;
                     }}
-                    className={`relative min-w-0 shrink-0 grow-0 basis-[74%] px-[5px] sm:basis-[46%] md:basis-[38%] lg:basis-[60%] xl:basis-[56%] ${
+                    className={`relative min-w-0 shrink-0 grow-0 basis-[80%] px-[5px] sm:basis-[52%] md:basis-[38%] lg:basis-[60%] xl:basis-[56%] ${
                       i === selected ? "is-lit" : ""
                     }`}
                     aria-roledescription="slide"
@@ -285,7 +292,7 @@ export function Hero({ cars, total }: { cars: LineupCar[]; total: number }) {
                         href={c.path}
                         draggable={false}
                         onFocus={() => embla?.scrollTo(i)}
-                        className="coverflow-face relative block aspect-[4/5] overflow-hidden rounded-[22px] bg-cabin"
+                        className="coverflow-face relative block aspect-[3/2] overflow-hidden rounded-[18px] bg-cabin lg:aspect-[4/5] lg:rounded-[22px]"
                         aria-label={`${c.brand} ${c.model} ${c.year}, ${priceShort(c.price)}`}
                       >
                         <div
@@ -297,7 +304,7 @@ export function Hero({ cars, total }: { cars: LineupCar[]; total: number }) {
                           <CarPhoto
                             image={c.image}
                             alt=""
-                            sizes="(min-width: 1024px) 420px, (min-width: 768px) 50vw, (min-width: 640px) 60vw, 100vw"
+                            sizes="(min-width: 1024px) 420px, (min-width: 640px) 60vw, 90vw"
                             hero={i === 0}
                             objectPosition={c.focus}
                             onReady={i === 0 ? markHeroReady : undefined}
@@ -376,20 +383,56 @@ export function Hero({ cars, total }: { cars: LineupCar[]; total: number }) {
 
         {/* Info mobil yang sedang tersorot */}
         <div className="hero-info [grid-area:info] px-5 lg:mt-9 lg:px-0" aria-live="polite">
-          <div className="flex items-end justify-between gap-4">
-            <div key={car.id} className="roll-in min-w-0">
-              <p className="text-micro text-steel lg:text-body">{car.brand}</p>
-              <p className="wide truncate text-title leading-tight text-platinum lg:text-[34px]">{car.model}</p>
-              <p className="mt-1 hidden truncate text-body text-steel lg:block">{car.variant}</p>
+          {/* HP: panel instrumen ringkas */}
+          <div className="lg:hidden">
+            <div className="flex items-center justify-between font-mono text-[11px] tracking-[0.16em] text-steel uppercase">
+              <span key={car.id} className="roll-in truncate">{car.brand}</span>
+              <span className="tnum shrink-0 tracking-[0.08em]">
+                <span className="text-platinum">{String(selected + 1).padStart(2, "0")}</span>
+                <span className="mx-1">/</span>
+                {String(cars.length).padStart(2, "0")}
+              </span>
             </div>
-            <p className="tnum shrink-0 pb-0.5 text-body text-steel lg:hidden">
-              <span className="text-platinum">{String(selected + 1).padStart(2, "0")}</span>
-              <span className="mx-1.5">/</span>
-              {String(cars.length).padStart(2, "0")}
+            <div className="mt-1 flex items-baseline justify-between gap-4">
+              <p key={car.id} className="roll-in wide min-w-0 truncate text-title leading-tight text-platinum">
+                {car.model}
+              </p>
+              <p className="tnum shrink-0 text-lead font-semibold text-platinum">
+                <Odometer key={car.id} value={priceShort(car.price)} stagger={40} />
+              </p>
+            </div>
+            <p key={`${car.id}-spec`} className="roll-in tnum mt-1 text-body text-steel" style={{ animationDelay: "60ms" }}>
+              {car.year}
+              <span className="mx-2 text-hairline">/</span>
+              {kmCompact(car.mileageKm)} km
+              <span className="mx-2 text-hairline">/</span>
+              {car.transmission === "Manual" ? "Manual" : "Otomatis"}
             </p>
+            <div className="hero-segs mt-2.5" role="tablist" aria-label="Pilih mobil">
+              {cars.map((c, i) => (
+                <button
+                  key={c.id}
+                  type="button"
+                  role="tab"
+                  aria-selected={i === selected}
+                  aria-label={`${c.brand} ${c.model}`}
+                  onClick={() => embla?.scrollTo(i)}
+                  className={`hero-seg ${i < selected ? "is-done" : ""}`}
+                >
+                  <span>{i === selected && <Progress run={playing} k={selected} />}</span>
+                </button>
+              ))}
+            </div>
           </div>
-          <div className="mt-2 flex items-center justify-between gap-4 lg:mt-5">
-            <p key={car.id} className="roll-in tnum text-body text-steel lg:text-lead" style={{ animationDelay: "60ms" }}>
+
+          {/* Desktop */}
+          <div className="hidden lg:block">
+            <div key={car.id} className="roll-in min-w-0">
+              <p className="text-body text-steel">{car.brand}</p>
+              <p className="wide truncate text-[34px] leading-tight text-platinum">{car.model}</p>
+              <p className="mt-1 truncate text-body text-steel">{car.variant}</p>
+            </div>
+            <p key={`${car.id}-d`} className="roll-in tnum mt-5 text-lead text-steel" style={{ animationDelay: "60ms" }}>
               {car.year}
               <span className="mx-2 text-hairline">|</span>
               {kmCompact(car.mileageKm)} km
@@ -398,13 +441,10 @@ export function Hero({ cars, total }: { cars: LineupCar[]; total: number }) {
                 <Odometer key={car.id} value={priceShort(car.price)} stagger={40} />
               </span>
             </p>
-            <span className="relative block h-[2px] w-16 shrink-0 overflow-hidden rounded-full bg-platinum/15 lg:hidden">
-              <Progress run={playing} k={selected} />
-            </span>
           </div>
 
           {/* Rail thumbnail (desktop): jendela 5 mobil yang bergeser mengikuti mobil tersorot */}
-          <div className="mt-6 hidden items-center gap-2.5 lg:flex" role="tablist" aria-label="Pilih mobil">
+          <div className="mt-6 hidden items-center gap-2.5 lg:flex" role="tablist" aria-label="Pilih mobil di rail">
             {railWindow(cars.length, selected).map((i) => {
               const c = cars[i];
               return (
@@ -434,7 +474,7 @@ export function Hero({ cars, total }: { cars: LineupCar[]; total: number }) {
           </div>
         </div>
 
-        <div className="hero-cta [grid-area:cta] mt-6 flex gap-3 px-5 pb-[max(22px,env(safe-area-inset-bottom))] lg:mt-7 lg:px-0 lg:pb-0">
+        <div className="hero-cta [grid-area:cta] mt-5 flex gap-3 px-5 pb-[max(22px,env(safe-area-inset-bottom))] lg:mt-7 lg:px-0 lg:pb-0">
           <StockLink />
           <PressLink
             href={waLink("Halo MS Garage, saya ingin tanya stok mobil.")}
@@ -511,7 +551,7 @@ function StockLink() {
       ref={ref}
       href="#stok"
       data-magnetic=""
-      className="press sweep sweep-strong inline-flex min-h-[52px] flex-1 items-center justify-center gap-3 rounded-full btn-lux px-7 text-lead font-semibold lg:flex-none"
+      className="press sweep sweep-strong inline-flex min-h-[52px] flex-1 items-center justify-center gap-3 rounded-full btn-lux px-5 text-body font-semibold whitespace-nowrap min-[360px]:px-7 min-[360px]:text-lead lg:flex-none"
       style={{ "--sweep-dur": "650ms" } as React.CSSProperties}
       onPointerDown={() => runSweep(ref.current)}
       onClick={(e) => {

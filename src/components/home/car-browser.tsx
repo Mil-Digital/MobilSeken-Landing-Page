@@ -146,7 +146,7 @@ export function CarBrowser({ cars }: { cars: CardCar[] }) {
         </div>
 
         {shown.length > 0 ? (
-          <div className="grid gap-x-5 gap-y-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-y-8">
+          <div className="grid grid-cols-[minmax(0,1fr)] gap-x-5 gap-y-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-y-8">
             <AnimatePresence mode="popLayout" initial={false}>
               {shown.map((car, i) => (
                 <m.div
@@ -216,10 +216,8 @@ function Segment({
         />
       )}
       <span className="cat-seg-icon">{icon}</span>
-      <span className="cat-seg-text">
-        <span className="cat-seg-label">{label}</span>
-        <span className="cat-seg-count tnum">{count}</span>
-      </span>
+      <span className="cat-seg-label">{label}</span>
+      <span className="cat-seg-count tnum">{count}</span>
     </button>
   );
 }
