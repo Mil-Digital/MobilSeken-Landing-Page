@@ -2,9 +2,13 @@
 // Tidak menyimpan data pribadi: hanya id acak sesi/browser, halaman, tombol, dan asal kunjungan.
 
 import { neon } from "@neondatabase/serverless";
+import { after } from "next/server";
 import { z } from "zod";
 import { classify } from "@/lib/analytics/classify";
 import { EVENT_TYPES } from "@/lib/analytics/events";
+import { getCar } from "@/lib/cars";
+import { capiReady, cookieValue, sendCapi } from "@/lib/meta/capi";
+import { metaEventsFor } from "@/lib/meta/events";
 
 const str = (max: number) => z.string().trim().max(max).optional().nullable();
 
@@ -15,6 +19,10 @@ const Body = z.object({
   label: str(80),
   s: z.string().regex(/^[a-z0-9]{8,32}$/),
   v: z.string().regex(/^[a-z0-9]{8,32}$/),
+  e: z.string().regex(/^[a-z0-9]{8,32}$/).optional(),
+  /** true = pindah halaman di dalam situs (tanpa muat ulang). */
+  nav: z.boolean().optional(),
+  ids: z.array(z.string().regex(/^MS-\d{4}$/)).max(10).optional().catch(undefined),
   a: z
     .object({
       src: str(100),
@@ -24,6 +32,7 @@ const Body = z.object({
       trm: str(200),
       cid: z.enum(["fbclid", "gclid", "ttclid"]).optional().nullable(),
       ref: str(300),
+      fbc: z.string().max(400).regex(/^fb\.1\.\d+\.[\w-]+$/).nullish().catch(null),
     })
     .default({}),
 });
@@ -54,6 +63,28 @@ export async function POST(req: Request) {
   const a = body.a;
   const { channel, platform } = classify({ utmSource: a.src, utmMedium: a.med, utmCampaign: a.cmp, clickId: a.cid, referrer: a.ref });
   const device = /iPad|Tablet/i.test(ua) ? "tablet" : /Mobi|Android|iPhone/i.test(ua) ? "mobile" : "desktop";
+
+  // Conversions API: kirim ke Meta setelah respons selesai (tidak menunda pengunjung).
+  const metaEvents = body.e ? metaEventsFor({ type: body.type, eventId: body.e, car: body.car ?? null, path: body.path, nav: body.nav, label: body.label, ids: body.ids }) : [];
+  if (metaEvents.length && capiReady()) {
+    const cookie = req.headers.get("cookie");
+    const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || req.headers.get("x-real-ip");
+    const url = `${new URL(req.url).origin}${body.path}`;
+    const carId = body.car ?? null;
+    after(async () => {
+      const car = carId ? await getCar(carId).catch(() => null) : null;
+      await sendCapi({
+        events: metaEvents,
+        url,
+        ip: ip ?? null,
+        ua,
+        fbp: cookieValue(cookie, "_fbp"),
+        fbc: cookieValue(cookie, "_fbc") ?? a.fbc ?? null,
+        visitor: body.v,
+        car: car ? { name: `${car.brand} ${car.model} ${car.year}`, price: car.price } : null,
+      });
+    });
+  }
 
   const sql = neon(process.env.DATABASE_URL);
   await sql`

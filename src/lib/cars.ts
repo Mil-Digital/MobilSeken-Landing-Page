@@ -228,6 +228,14 @@ export async function listCars(): Promise<Car[]> {
     .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
 }
 
+/** Semua mobil termasuk yang terjual (feed katalog Meta: terjual → "out of stock" supaya tidak diiklankan lagi). */
+export async function listAllCars(): Promise<Car[]> {
+  "use cache";
+  cacheTag("cars");
+  cacheLife({ stale: 60, revalidate: 60, expire: 86400 });
+  return allCars();
+}
+
 export async function getCar(id: string): Promise<Car | null> {
   "use cache";
   cacheTag("cars");
