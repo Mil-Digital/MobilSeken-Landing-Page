@@ -7,7 +7,8 @@ import { useEffect, useMemo, useState } from "react";
 import { BRAND_EVENT } from "./brand-marquee";
 import { CarCard } from "@/components/car-card";
 import { IconAllCars, IconClose, IconFilter, IconMPV, IconSedan, IconSUV, IconWhatsApp } from "@/components/icons";
-import { CATEGORIES } from "@/lib/category";
+import { CATEGORIES, type Category } from "@/lib/category";
+import { slugify } from "@/lib/format";
 import { PressButton, PressLink } from "@/components/press";
 import { advancedCount, applyFilters, boundsOf, defaultFilters, type CardCar, type Filters } from "@/lib/filters";
 import { waLink } from "@/lib/site";
@@ -38,6 +39,25 @@ export function CarBrowser({ cars }: { cars: CardCar[] }) {
     const on = (e: Event) => setFilters((f) => ({ ...f, category: null, brand: (e as CustomEvent<string>).detail }));
     window.addEventListener(BRAND_EVENT, on);
     return () => window.removeEventListener(BRAND_EVENT, on);
+  }, []);
+
+  // Unit teratas per jenis, dikirim bersama ViewCategory ke Meta (iklan katalog per jenis).
+  const idsIn = (g: Category) => cars.filter((c) => c.category === g).slice(0, 10).map((c) => c.id);
+
+  // Link tujuan iklan: /?jenis=suv, /?merek=toyota, atau keduanya → stok langsung tersaring dan halaman
+  // melompat ke daftar stok. Dibaca di browser supaya beranda tetap halaman statis yang cepat.
+  useEffect(() => {
+    const q = new URLSearchParams(location.search);
+    const jenis = q.get("jenis")?.trim().toLowerCase();
+    const merek = q.get("merek") ? slugify(q.get("merek")!) : null;
+    const category = CATEGORIES.find((g) => g.toLowerCase() === jenis) ?? null;
+    const brand = merek ? (cars.find((c) => slugify(c.brand) === merek)?.brand ?? null) : null;
+    if (!category && !brand) return;
+    setFilters((f) => ({ ...f, category, brand }));
+    if (category) track("category", { label: category, ids: idsIn(category) });
+    requestAnimationFrame(() => document.getElementById("stok")?.scrollIntoView({ block: "start" }));
+    // Sekali saat halaman dibuka.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const shown = useMemo(() => applyFilters(cars, filters), [cars, filters]);
@@ -74,7 +94,7 @@ export function CarBrowser({ cars }: { cars: CardCar[] }) {
                     active={filters.category === group}
                     disabled={count === 0 && filters.category !== group}
                     onClick={() => {
-                      if (filters.category !== group) track("category", { label: group });
+                      if (filters.category !== group) track("category", { label: group, ids: idsIn(group) });
                       setFilters((f) => ({ ...f, brand: null, category: f.category === group ? null : group }));
                     }}
                     icon={<Icon />}
