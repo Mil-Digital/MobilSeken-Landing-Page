@@ -2046,6 +2046,31 @@ html[data-intro="reveal"] .studio {
     transform-origin: 50% 100%;
   }
 }
+/* iPhone/iPad (semua browser iOS = WebKit iOS): efek 3D kartu yang digerakkan scroll membuat Safari crash
+   ("A problem repeatedly occurred") — terbukti di iPhone 14 Pro, 25/11. Matikan khusus iOS. */
+@supports (-webkit-touch-callout: none) {
+  .card-3d {
+    animation: none !important;
+  }
+}
+/* SEMENTARA — uji versi 2D (tanpa perspective/rotateX) di iPhone: /?uji=naik */
+@supports (animation-timeline: view()) {
+  html[data-uji~="naik"] .card-3d {
+    animation: card-rise-flat linear both !important;
+    animation-timeline: view() !important;
+    animation-range: entry 0% entry 95% !important;
+  }
+}
+@keyframes card-rise-flat {
+  from {
+    transform: translateY(40px) scale(0.94);
+    opacity: 0.25;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
 @keyframes card-rise {
   from {
     transform: perspective(900px) rotateX(24deg) translateY(40px) scale(0.92);
