@@ -16,7 +16,7 @@ export function onRouterTransitionStart(url: string) {
     const path = new URL(url, location.origin).pathname;
     if (path === lastPath) return;
     lastPath = path;
-    track("page_view", { path, car: carFromPath(path), nav: true });
+    track("page_view", { path, car: carFromPath(path) });
   } catch {
     /* abaikan */
   }

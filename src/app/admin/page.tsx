@@ -1,13 +1,10 @@
-import { headers } from "next/headers";
 import Link from "next/link";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { demoReport } from "@/lib/analytics/demo";
 import { emptyReport, getReport, RANGES, type Delta, type NamedRow, type Range, type Report } from "@/lib/analytics/report";
 import { LineChart, RadialHours } from "./laporan/charts";
-import { PIXEL_ID } from "@/lib/meta/events";
-import { CATEGORIES } from "@/lib/category";
-import { CopyLinks, CopyParams, CopyRow, IgnoreMe } from "./laporan/widgets";
+import { CopyParams, IgnoreMe } from "./laporan/widgets";
 
 // Laporan pengunjung, leads, dan iklan Meta. Angka dihitung langsung dari tabel events.
 
@@ -86,8 +83,6 @@ async function Dashboard({ searchParams }: { searchParams: Search }) {
   const metaConv = pct(t.metaLeadSessions.now, t.metaSessions.now);
   const metaConvPrev = pct(t.metaLeadSessions.prev, t.metaSessions.prev);
   const q = (x: number) => `?r=${x}${demo ? "&demo=1" : ""}`;
-  const h = await headers();
-  const origin = `${h.get("x-forwarded-proto") ?? "https"}://${h.get("x-forwarded-host") ?? h.get("host")}`;
 
   return (
     <div className="grid grid-cols-[minmax(0,1fr)] gap-4 md:gap-5">
@@ -224,7 +219,6 @@ async function Dashboard({ searchParams }: { searchParams: Search }) {
           <p className="mt-3 text-[11.5px] text-steel">
             Biaya iklan, tayangan, dan biaya per lead bisa ditarik langsung dari Meta setelah akses Marketing API disambungkan.
           </p>
-          <MetaSetup origin={origin} />
         </section>
 
         <section className="dash-card lg:col-span-5" aria-labelledby="hours-title">
@@ -541,64 +535,5 @@ function CarTiles({ cars }: { cars: Report["cars"] }) {
         );
       })}
     </div>
-  );
-}
-
-/** Status Pixel / Conversions API + alamat feed katalog untuk iklan remarketing. */
-function MetaSetup({ origin }: { origin: string }) {
-  const capi = Boolean(process.env.META_CAPI_TOKEN);
-  const test = Boolean(process.env.META_TEST_EVENT_CODE);
-  return (
-    <div className="mt-6 border-t border-hairline pt-5">
-      <h3 className="text-[15px] font-semibold tracking-[-0.01em] text-platinum">Remarketing</h3>
-      <div className="mt-3 flex flex-wrap gap-2">
-        <SetupPill on={Boolean(PIXEL_ID)} label={PIXEL_ID ? `Meta Pixel aktif · ${PIXEL_ID}` : "Meta Pixel belum dipasang"} />
-        <SetupPill on={capi && Boolean(PIXEL_ID)} label={capi && PIXEL_ID ? "Conversions API aktif" : "Conversions API belum aktif"} />
-        {test && <span className="dash-badge bg-[rgb(201_133_0/0.16)] text-platinum">Mode uji Events Manager menyala</span>}
-      </div>
-      <p className="mt-3 text-[12px] text-steel">
-        Event yang dikirim: <span className="text-platinum/85">PageView</span> saat situs dibuka,{" "}
-        <span className="text-platinum/85">ViewContent</span> + kode unit di halaman mobil,{" "}
-        <span className="text-platinum/85">ViewCategory</span> saat masuk/pilih jenis,{" "}
-        <span className="text-platinum/85">Contact</span> saat klik WhatsApp/telepon.
-      </p>
-      <div className="mt-4">
-        <p className="text-micro font-medium text-platinum">Link tujuan iklan</p>
-        <p className="mt-0.5 mb-2.5 text-[12px] text-steel">
-          Iklan per jenis: pakai link di bawah (stok langsung tersaring). Iklan satu mobil: salin link mobilnya dari halaman{" "}
-          <Link href="/admin/katalog" className="text-platinum underline underline-offset-4">Katalog</Link>. Merek juga bisa:{" "}
-          <span className="font-mono text-platinum/85">/?merek=toyota</span>.
-        </p>
-        <CopyLinks
-          links={[
-            { label: "Semua stok", url: `${origin}/#stok` },
-            ...CATEGORIES.map((g) => ({ label: g, url: `${origin}/?jenis=${g.toLowerCase()}` })),
-          ]}
-        />
-      </div>
-      <div className="mt-4">
-        <CopyRow
-          title="Feed katalog untuk Meta"
-          hint={
-            <>
-              Commerce Manager → Katalog → Sumber data → <em>Feed terjadwal</em>, tempel alamat ini, jadwal tiap jam. Mobil terjual/booking otomatis berhenti diiklankan.
-            </>
-          }
-          value={`${origin}/feed/meta-katalog.csv`}
-          button="Salin alamat"
-        />
-      </div>
-    </div>
-  );
-}
-
-function SetupPill({ on, label }: { on: boolean; label: string }) {
-  return (
-    <span className="dash-badge inline-flex items-center gap-1.5 text-platinum">
-      <span aria-hidden className="text-[11px]" style={{ color: on ? "var(--good)" : "var(--viz-muted)" }}>
-        {on ? "●" : "○"}
-      </span>
-      {label}
-    </span>
   );
 }

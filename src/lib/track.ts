@@ -4,10 +4,8 @@
 // - Tidak berjalan di /admin, di browser otomatis, atau bila pemilik menekan "Abaikan kunjungan saya".
 
 import type { EventType } from "@/lib/analytics/events";
-import { metaEventsFor } from "@/lib/meta/events";
-import { pixelTrack } from "@/lib/meta/pixel";
 
-type Attr = { src?: string; med?: string; cmp?: string; cnt?: string; trm?: string; cid?: string; ref?: string; fbc?: string };
+type Attr = { src?: string; med?: string; cmp?: string; cnt?: string; trm?: string; cid?: string; ref?: string };
 
 const rid = () => Math.random().toString(36).slice(2, 12) + Math.random().toString(36).slice(2, 8);
 
@@ -54,10 +52,7 @@ function attribution(): Attr {
       /* referrer tidak valid */
     }
     const cid = q.has("fbclid") ? "fbclid" : q.has("gclid") ? "gclid" : q.has("ttclid") ? "ttclid" : undefined;
-    // Format resmi Meta untuk klik iklan (fbc), dipakai Conversions API sebelum cookie _fbc dari Pixel ada.
-    const fbclid = q.get("fbclid")?.slice(0, 300);
-    const fbc = fbclid ? `fb.1.${Date.now()}.${fbclid}` : undefined;
-    const a: Attr = { src: g("utm_source"), med: g("utm_medium"), cmp: g("utm_campaign"), cnt: g("utm_content"), trm: g("utm_term"), cid, ref, fbc };
+    const a: Attr = { src: g("utm_source"), med: g("utm_medium"), cmp: g("utm_campaign"), cnt: g("utm_content"), trm: g("utm_term"), cid, ref };
     return JSON.stringify(a);
   });
   try {
@@ -71,38 +66,16 @@ function attribution(): Attr {
 /** Kode unit dari URL detail mobil (/mobil/MS-0007-…). */
 export const carFromPath = (path: string) => path.match(/^\/mobil\/(MS-\d{4})/)?.[1] ?? null;
 
-type TrackOpts = {
-  label?: string | null;
-  car?: string | null;
-  path?: string;
-  /** Pindah halaman di dalam situs (tanpa muat ulang). */
-  nav?: boolean;
-  /** Kode unit yang sedang tampil (ViewCategory untuk iklan katalog per jenis). */
-  ids?: string[];
-};
-
-export function track(type: EventType, opts: TrackOpts = {}) {
+export function track(type: EventType, opts: { label?: string | null; car?: string | null; path?: string } = {}) {
   if (typeof window === "undefined" || trackingDisabled()) return;
   const path = opts.path ?? location.pathname;
-  const car = opts.car ?? carFromPath(path);
-  const v = store("local", "ms_v", rid);
-  // Id event dipakai bersama Pixel (browser) dan Conversions API (server) supaya Meta tidak menghitung dobel.
-  const e = rid();
-  try {
-    pixelTrack(metaEventsFor({ type, eventId: e, car, path, nav: opts.nav, label: opts.label, ids: opts.ids }), v);
-  } catch {
-    /* Pixel tidak boleh mengganggu situs */
-  }
   const body = JSON.stringify({
     type,
     path,
-    car,
+    car: opts.car ?? carFromPath(path),
     label: opts.label ?? null,
     s: store("session", "ms_s", rid),
-    v,
-    e,
-    nav: opts.nav || undefined,
-    ids: opts.ids?.length ? opts.ids.slice(0, 10) : undefined,
+    v: store("local", "ms_v", rid),
     a: attribution(),
   });
   try {
