@@ -66,6 +66,8 @@ export function StudioBackdrop({
       readColors();
       w = cv.clientWidth;
       h = cv.clientHeight;
+      // Belum terlihat / ukuran nol (mis. disembunyikan): jangan hitung gradien dengan NaN, itu menjatuhkan halaman.
+      if (w < 2 || h < 2) return;
       cv.width = Math.round(w);
       cv.height = Math.round(h);
       desk = w >= 1024;
@@ -74,13 +76,14 @@ export function StudioBackdrop({
       vpX = a && a.width ? a.left + a.width / 2 - cr.left : w / 2;
       hz = a && a.height ? a.top + a.height * 0.5 - cr.top : h * 0.55;
       const H = C.horizon;
+      const mid = Math.min(0.95, Math.max(0.05, vpX / w));
       hzGrad = ctx.createLinearGradient(0, 0, w, 0);
       hzGrad.addColorStop(0, `rgba(${H},0)`);
       // Desktop: garis cakrawala tidak melintas di belakang kolom teks kiri.
       if (desk) hzGrad.addColorStop(0.44, `rgba(${H},0)`);
-      else hzGrad.addColorStop(Math.max(0.05, vpX / w - 0.38), `rgba(${H},0.12)`);
-      hzGrad.addColorStop(vpX / w, `rgba(${H},0.55)`);
-      hzGrad.addColorStop(Math.min(0.95, vpX / w + 0.38), `rgba(${H},0.12)`);
+      else hzGrad.addColorStop(Math.max(0.02, mid - 0.38), `rgba(${H},0.12)`);
+      hzGrad.addColorStop(mid, `rgba(${H},0.55)`);
+      hzGrad.addColorStop(Math.min(0.98, mid + 0.38), `rgba(${H},0.12)`);
       hzGrad.addColorStop(1, `rgba(${H},0)`);
       hazeGrad = ctx.createLinearGradient(0, hz - 70, 0, hz + 70);
       hazeGrad.addColorStop(0, `rgba(${C.haze},0)`);
@@ -195,6 +198,7 @@ export function StudioBackdrop({
     };
 
     const drawHorizon = (t: number) => {
+      if (!hzGrad || base.width === 0 || base.height === 0) return;
       ctx.globalAlpha = 1;
       ctx.drawImage(base, 0, 0);
       ctx.globalAlpha = 0.75 + 0.25 * Math.sin(t / 1400);
