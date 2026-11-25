@@ -2269,3 +2269,20 @@ html[data-intro="reveal"] .studio {
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
+
+/* SEMENTARA — mode uji crash iPhone (lihat ujiScript di layout.tsx). Hapus setelah penyebab ketemu. */
+:is([data-uji~="semua"], [data-uji~="intro"]) .intro,
+:is([data-uji~="semua"], [data-uji~="hero"]) .hero-stage,
+:is([data-uji~="semua"], [data-uji~="latar"]) .studio,
+:is([data-uji~="semua"], [data-uji~="pita"]) .marquee-band,
+:is([data-uji~="semua"], [data-uji~="stok"]) #stok,
+:is([data-uji~="semua"], [data-uji~="showroom"]) #showroom,
+:is([data-uji~="semua"], [data-uji~="efek"]) :is(.cursor-light, .route-runner) {
+  display: none !important;
+}
+[data-uji~="gerak"] *,
+[data-uji~="gerak"] *::before,
+[data-uji~="gerak"] *::after {
+  animation: none !important;
+  transition: none !important;
+}
