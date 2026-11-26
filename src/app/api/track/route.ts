@@ -23,6 +23,8 @@ const Body = z.object({
   /** true = pindah halaman di dalam situs (tanpa muat ulang). */
   nav: z.boolean().optional(),
   ids: z.array(z.string().regex(/^MS-\d{4}$/)).max(10).optional().catch(undefined),
+  /** Kode Test events Meta (kunjungan tes pemilik): dikirim ke CAPI, tidak disimpan di laporan. */
+  t: z.string().regex(/^TEST\d{3,10}$/).optional().catch(undefined),
   a: z
     .object({
       src: str(100),
@@ -82,9 +84,11 @@ export async function POST(req: Request) {
         fbc: cookieValue(cookie, "_fbc") ?? a.fbc ?? null,
         visitor: body.v,
         car: car ? { name: `${car.brand} ${car.model} ${car.year}`, price: car.price } : null,
+        testCode: body.t,
       });
     });
   }
+  if (body.t) return none();
 
   const sql = neon(process.env.DATABASE_URL);
   await sql`

@@ -27,9 +27,25 @@ function store(kind: "local" | "session", key: string, make: () => string): stri
 
 export const IGNORE_KEY = "ms_notrack";
 
+/**
+ * Kode "Test events" Meta (mis. TEST12851) dari link ?meta_test=…, diingat selama sesi.
+ * Event server kunjungan ini muncul di tab Test events dan tidak dicatat di laporan admin.
+ */
+function metaTestCode(): string | undefined {
+  try {
+    const q = new URLSearchParams(location.search).get("meta_test")?.trim().toUpperCase();
+    if (q && /^TEST\d{3,10}$/.test(q)) sessionStorage.setItem("ms_mt", q);
+    return sessionStorage.getItem("ms_mt") ?? undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 export function trackingDisabled(): boolean {
   if (location.pathname.startsWith("/admin")) return true;
   try {
+    // Tes Meta dari HP/laptop pemilik tetap jalan walau "Abaikan kunjungan saya" aktif.
+    if (metaTestCode() && !/^(localhost|127\.)/.test(location.hostname)) return false;
     if (localStorage.getItem(IGNORE_KEY) === "1") return true;
     const test = localStorage.getItem("ms_track_test") === "1";
     if (navigator.webdriver && !test) return true;
@@ -103,6 +119,7 @@ export function track(type: EventType, opts: TrackOpts = {}) {
     e,
     nav: opts.nav || undefined,
     ids: opts.ids?.length ? opts.ids.slice(0, 10) : undefined,
+    t: metaTestCode(),
     a: attribution(),
   });
   try {

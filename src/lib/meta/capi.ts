@@ -17,6 +17,8 @@ export type CapiInput = {
   visitor: string;
   /** Nama & harga mobil untuk ViewContent / Contact. */
   car: { name: string; price: number } | null;
+  /** Kode Test events (kunjungan tes lewat ?meta_test=TEST…). */
+  testCode?: string;
   now?: number;
 };
 
@@ -57,7 +59,8 @@ export async function sendCapi(input: CapiInput) {
   if (!PIXEL_ID || !token || input.events.length === 0) return;
   const version = process.env.META_API_VERSION || "v24.0";
   const body: Record<string, unknown> = { data: capiPayload(input), access_token: token };
-  if (process.env.META_TEST_EVENT_CODE) body.test_event_code = process.env.META_TEST_EVENT_CODE;
+  const testCode = input.testCode || process.env.META_TEST_EVENT_CODE;
+  if (testCode) body.test_event_code = testCode;
   try {
     const res = await fetch(`https://graph.facebook.com/${version}/${PIXEL_ID}/events`, {
       method: "POST",
