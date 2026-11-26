@@ -28,8 +28,12 @@ describe("event Meta", () => {
   });
 
   it("WhatsApp/telepon → Contact, event lain tidak dikirim", () => {
-    expect(ev("wa_click", "MS-0007", "/mobil/MS-0007-a")).toEqual([{ name: "Contact", id: "abc12345", car: "MS-0007" }]);
-    expect(ev("tel_click", null, "/")[0].name).toBe("Contact");
+    const [wa] = ev("wa_click", "MS-0007", "/mobil/MS-0007-a", { label: "detail" });
+    expect(wa).toEqual({ name: "Contact", id: "abc12345", car: "MS-0007", method: "whatsapp", area: "detail" });
+    expect(contentFor(wa)).toEqual({ content_ids: ["MS-0007"], content_type: "product", contact_method: "whatsapp", contact_area: "detail" });
+    const [tel] = ev("tel_click", null, "/");
+    expect(tel.name).toBe("Contact");
+    expect(contentFor(tel)).toEqual({ contact_method: "telepon" });
     expect(ev("brand", null, "/", { label: "Toyota" })).toEqual([]);
     expect(ev("card_click", "MS-0007", "/")).toEqual([]);
   });

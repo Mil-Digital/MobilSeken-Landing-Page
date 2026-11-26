@@ -19,6 +19,10 @@ export type MetaEvent = {
   /** ViewCategory: SUV / MPV / Sedan + unit teratas di jenis itu (iklan katalog per jenis). */
   category?: string;
   ids?: string[];
+  /** Contact: lewat apa (custom conversion "Klik WhatsApp" = Contact dengan contact_method whatsapp). */
+  method?: "whatsapp" | "telepon";
+  /** Contact: posisi tombol (header, hero, detail, tombol-melayang, …). */
+  area?: string;
 };
 
 export type SiteEvent = {
@@ -48,7 +52,10 @@ export function metaEventsFor(e: SiteEvent): MetaEvent[] {
   if (e.type === "category" && e.label && isCategory(e.label)) {
     return [{ name: "ViewCategory", id: e.eventId, car: null, category: e.label, ids: (e.ids ?? []).slice(0, 10) }];
   }
-  if (e.type === "wa_click" || e.type === "tel_click") return [{ name: "Contact", id: e.eventId, car: e.car }];
+  if (e.type === "wa_click" || e.type === "tel_click") {
+    const method = e.type === "wa_click" ? "whatsapp" : "telepon";
+    return [{ name: "Contact", id: e.eventId, car: e.car, method, ...(e.label ? { area: e.label } : {}) }];
+  }
   return [];
 }
 
@@ -57,5 +64,9 @@ export function contentFor(e: MetaEvent): Record<string, unknown> {
   if (e.name === "ViewCategory") {
     return { content_category: e.category, content_type: "product", ...(e.ids?.length ? { content_ids: e.ids } : {}) };
   }
-  return e.car ? { content_ids: [e.car], content_type: "product" } : {};
+  const product = e.car ? { content_ids: [e.car], content_type: "product" } : {};
+  if (e.name === "Contact" && e.method) {
+    return { ...product, contact_method: e.method, ...(e.area ? { contact_area: e.area } : {}) };
+  }
+  return product;
 }
