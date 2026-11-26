@@ -130,6 +130,15 @@ export function track(type: EventType, opts: TrackOpts = {}) {
   fetch("/api/track", { method: "POST", body, keepalive: true, headers: { "content-type": "application/json" } }).catch(() => {});
 }
 
+/**
+ * Link WhatsApp dalam bentuk apa pun: wa.me, api.whatsapp.com, whatsapp:// (aplikasi), atau link yang
+ * dibungkus/diubah browser Facebook & Instagram (Meta bisa mengganti link WA saat situs dibuka dari iklan).
+ */
+export const isWhatsAppLink = (href: string) =>
+  /^whatsapp:\/\//i.test(href) ||
+  /^https?:\/\/([\w-]+\.)*(wa\.me|whatsapp\.com)\//i.test(href) ||
+  /^https?:\/\/l\.(facebook|instagram)\.com\/.*(wa\.me|whatsapp\.com)/i.test(decodeURIComponent(href));
+
 /** Area tombol yang diklik, dari [data-track-area] terdekat (mis. "header", "hero", "stok"). */
 const areaOf = (el: Element) => el.closest<HTMLElement>("[data-track-area]")?.dataset.trackArea ?? "lainnya";
 
@@ -142,7 +151,7 @@ export function installClickTracking() {
       if (!el) return;
       const href = el.getAttribute("href") ?? "";
       const area = areaOf(el);
-      if (/^https:\/\/(wa\.me|api\.whatsapp\.com)\//.test(href)) return track("wa_click", { label: area });
+      if (isWhatsAppLink(href)) return track("wa_click", { label: area });
       if (href.startsWith("tel:")) return track("tel_click", { label: area });
       if (/google\.[a-z.]+\/maps|maps\.app\.goo\.gl|goo\.gl\/maps|share\.google/.test(href)) return track("maps_click", { label: area });
       const car = carFromPath(href);
