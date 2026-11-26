@@ -10,13 +10,22 @@ try {
 
 let lastPath = typeof location !== "undefined" ? location.pathname : "";
 
-/** Navigasi di dalam situs (tanpa muat ulang): catat sebagai kunjungan halaman. */
+/**
+ * Navigasi di dalam situs (tanpa muat ulang): catat sebagai kunjungan halaman.
+ * Dicatat setelah alamat di browser berganti, supaya Pixel Meta membaca URL halaman tujuan (bukan halaman asal).
+ */
 export function onRouterTransitionStart(url: string) {
   try {
     const path = new URL(url, location.origin).pathname;
     if (path === lastPath) return;
     lastPath = path;
-    track("page_view", { path, car: carFromPath(path), nav: true });
+    const started = performance.now();
+    const fire = () => {
+      if (lastPath !== path) return; // sudah pindah lagi sebelum sampai
+      if (location.pathname !== path && performance.now() - started < 4000) return void requestAnimationFrame(fire);
+      track("page_view", { path, car: carFromPath(path), nav: true });
+    };
+    fire();
   } catch {
     /* abaikan */
   }
